@@ -1,43 +1,78 @@
 ---
 import { siteConfig } from "../config";
-const base = import.meta.env.BASE_URL;
+
+const hasProjects = siteConfig.projects && siteConfig.projects.length > 0;
+const hasExperience = siteConfig.experience && siteConfig.experience.length > 0;
+const hasEducation = siteConfig.education && siteConfig.education.length > 0;
 ---
-<header id="site-header" class="fixed inset-x-0 top-0 z-50 border-b border-white/0 transition-all duration-300">
-  <nav class="section-shell flex h-20 items-center justify-between">
-    <a href={base} class="flex items-center gap-3" aria-label="Accueil Hackus Mans">
-      <span class="grid size-10 place-items-center rounded-xl border border-[var(--accent)]/30 bg-[var(--accent)]/10 text-sm font-bold text-[var(--accent)]">HM</span>
-      <span class="hidden text-sm font-bold text-white sm:block">{siteConfig.handle}</span>
-    </a>
-    <button id="menu-toggle" class="grid size-10 place-items-center rounded-xl border border-white/10 md:hidden" aria-expanded="false" aria-controls="site-menu">
-      <span class="sr-only">Ouvrir le menu</span>
-      <span class="block h-px w-5 bg-white"></span>
-      <span class="mt-1 block h-px w-5 bg-white"></span>
-    </button>
-    <div id="site-menu" class="absolute left-4 right-4 top-[4.7rem] hidden flex-col gap-1 rounded-2xl border border-white/10 bg-[#09100d]/95 p-3 shadow-2xl md:static md:flex md:flex-row md:items-center md:border-0 md:bg-transparent md:p-0 md:shadow-none">
-      <a class="rounded-lg px-3 py-2 text-sm text-zinc-400 hover:bg-white/5 hover:text-white" href={base + "#about"}>À propos</a>
-      <a class="rounded-lg px-3 py-2 text-sm text-zinc-400 hover:bg-white/5 hover:text-white" href={base + "#projects"}>Projets</a>
-      <a class="rounded-lg px-3 py-2 text-sm text-zinc-400 hover:bg-white/5 hover:text-white" href={base + "#credentials"}>Preuves</a>
-      <a class="rounded-lg px-3 py-2 text-sm text-zinc-400 hover:bg-white/5 hover:text-white" href={base + "work/"}>Labs</a>
-      <a class="ml-0 rounded-lg border border-[var(--accent)]/30 bg-[var(--accent)]/10 px-3 py-2 text-sm font-bold text-[var(--accent)] md:ml-2" href={"mailto:" + siteConfig.social.email}>Contact ↗</a>
-    </div>
+
+<header
+  id="header"
+  class="fixed top-0 left-0 right-0 z-50 hidden md:block transition-all duration-300"
+>
+  <nav class="max-w-7xl mx-auto px-8 py-4">
+    <ul class="flex items-center gap-8 justify-center">
+      <li>
+        <a
+          href="#about"
+          class="text-gray-700 hover:text-black transition-colors font-medium"
+        >
+          About
+        </a>
+      </li>
+      {
+        hasProjects && (
+          <li>
+            <a
+              href="#projects"
+              class="text-gray-700 hover:text-black transition-colors font-medium"
+            >
+              Projects
+            </a>
+          </li>
+        )
+      }
+      {
+        hasExperience && (
+          <li>
+            <a
+              href="#experience"
+              class="text-gray-700 hover:text-black transition-colors font-medium"
+            >
+              Experience
+            </a>
+          </li>
+        )
+      }
+      {
+        hasEducation && (
+          <li>
+            <a
+              href="#education"
+              class="text-gray-700 hover:text-black transition-colors font-medium"
+            >
+              Education
+            </a>
+          </li>
+        )
+      }
+    </ul>
   </nav>
 </header>
+
 <script>
-  const header = document.getElementById("site-header");
-  const button = document.getElementById("menu-toggle");
-  const menu = document.getElementById("site-menu");
-  const syncHeader = () => {
-    if (!header) return;
-    header.classList.toggle("bg-[#050807]/85", window.scrollY > 24);
-    header.classList.toggle("backdrop-blur-xl", window.scrollY > 24);
-    header.classList.toggle("border-white/10", window.scrollY > 24);
-  };
-  syncHeader();
-  window.addEventListener("scroll", syncHeader, { passive: true });
-  button?.addEventListener("click", () => {
-    const open = menu?.classList.contains("hidden") ?? true;
-    menu?.classList.toggle("hidden", !open);
-    menu?.classList.toggle("flex", open);
-    button.setAttribute("aria-expanded", open ? "true" : "false");
+  window.addEventListener("scroll", () => {
+    const header = document.getElementById("header");
+    if (window.scrollY > 100) {
+      header?.classList.add("bg-white/80", "backdrop-blur-sm");
+    } else {
+      header?.classList.remove("bg-white/80", "backdrop-blur-sm");
+    }
   });
 </script>
+
+<style>
+  html {
+    scroll-behavior: smooth;
+  }
+</style>

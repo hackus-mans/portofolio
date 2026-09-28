@@ -1,7 +1,16 @@
 {
-  "name": "hackus-mans-portfolio",
+  "name": "devportfolio",
   "type": "module",
-  "version": "2.0.0",
-  "scripts": {"dev":"astro dev","build":"astro build","preview":"astro preview"},
-  "dependencies": {"@tailwindcss/vite":"^4.1.11","astro":"^5.12.3","tailwindcss":"^4.1.11"}
+  "version": "0.0.1",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "astro": "astro"
+  },
+  "dependencies": {
+    "@tailwindcss/vite": "^4.1.11",
+    "astro": "^5.12.3",
+    "tailwindcss": "^4.1.11"
+  }
 }

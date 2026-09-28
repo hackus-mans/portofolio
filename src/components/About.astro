@@ -1,18 +1,39 @@
 ---
 import { siteConfig } from "../config";
 ---
-<section id="about" class="border-y border-white/10 bg-[#080d0b]/75 py-24 sm:py-32">
-  <div class="section-shell grid gap-12 lg:grid-cols-12 lg:gap-16">
-    <div class="lg:col-span-4">
-      <p class="kicker">01 — À propos</p>
-      <h2 class="mt-4 text-4xl font-bold tracking-[-.04em] text-white sm:text-5xl">Une progression construite sur la pratique.</h2>
-    </div>
-    <div class="lg:col-span-8">
-      <p class="max-w-4xl text-xl leading-9 text-zinc-300">{siteConfig.aboutMe}</p>
-      <div class="mt-8 flex flex-wrap gap-2">
-        {siteConfig.skills.map((skill) => (
-          <span class="rounded-full border border-white/10 bg-white/[.025] px-3 py-2 text-xs text-zinc-300 hover:border-[var(--accent)]/30 hover:text-[var(--accent)]">{skill}</span>
-        ))}
+
+<section id="about" class="p-8 sm:p-12 md:p-16 lg:p-24">
+  <div>
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-16 items-start">
+      <div class="lg:col-span-4">
+        <h2
+          class="text-3xl sm:text-4xl md:text-5xl xl:text-7xl font-bold text-gray-900"
+        >
+          About Me
+        </h2>
+        <div
+          class="w-[75px] h-[5px] mt-2 rounded-full"
+          style={`background-color: ${siteConfig.accentColor}`}
+        >
+        </div>
+      </div>
+
+      <div class="lg:col-span-8 space-y-8">
+        <p class="text-lg sm:text-xl md:text-2xl leading-relaxed text-gray-600">
+          {siteConfig.aboutMe}
+        </p>
+
+        <div class="pt-4">
+          <div class="flex flex-wrap gap-3">
+            {
+              siteConfig.skills.map((skill) => (
+                <span class="px-3 sm:px-4 py-1.5 sm:py-2 bg-gray-100 text-gray-800 rounded-full text-sm sm:text-base md:text-lg font-medium hover:bg-gray-200 transition-colors duration-200">
+                  {skill}
+                </span>
+              ))
+            }
+          </div>
+        </div>
       </div>
     </div>
   </div>
