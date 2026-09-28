@@ -1,0 +1,19 @@
+---
+import { siteConfig } from "../config";
+---
+<section id="about" class="border-y border-white/10 bg-[#080d0b]/75 py-24 sm:py-32">
+  <div class="section-shell grid gap-12 lg:grid-cols-12 lg:gap-16">
+    <div class="lg:col-span-4">
+      <p class="kicker">01 — À propos</p>
+      <h2 class="mt-4 text-4xl font-bold tracking-[-.04em] text-white sm:text-5xl">Une progression construite sur la pratique.</h2>
+    </div>
+    <div class="lg:col-span-8">
+      <p class="max-w-4xl text-xl leading-9 text-zinc-300">{siteConfig.aboutMe}</p>
+      <div class="mt-8 flex flex-wrap gap-2">
+        {siteConfig.skills.map((skill) => (
+          <span class="rounded-full border border-white/10 bg-white/[.025] px-3 py-2 text-xs text-zinc-300 hover:border-[var(--accent)]/30 hover:text-[var(--accent)]">{skill}</span>
+        ))}
+      </div>
+    </div>
+  </div>
+</section>

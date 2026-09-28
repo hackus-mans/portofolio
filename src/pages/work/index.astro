@@ -1,0 +1,51 @@
+---
+import Header from "../../components/Header.astro";
+import Footer from "../../components/Footer.astro";
+import { siteConfig } from "../../config";
+import "../../styles/global.css";
+const base = import.meta.env.BASE_URL;
+---
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width" />
+  <meta name="description" content="Labs et write-ups publics de Hackus Mans." />
+  <meta name="theme-color" content="#050807" />
+  <link rel="icon" type="image/svg+xml" href={base + "favicon.svg"} />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <title>Labs & Write-ups — {siteConfig.handle}</title>
+</head>
+<body>
+  <Header />
+  <main class="pt-20">
+    <section class="section-shell py-20 sm:py-28">
+      <p class="kicker">Technical evidence</p>
+      <h1 class="mt-5 max-w-5xl text-5xl font-bold leading-[.98] tracking-[-.055em] text-white sm:text-7xl">Labs & <span class="text-[var(--accent)]">write-ups.</span></h1>
+      <p class="mt-7 max-w-3xl text-base leading-8 text-zinc-400">Des travaux issus d’environnements autorisés. L’objectif est de conserver le raisonnement : observation → hypothèse → test → résultat → interprétation.</p>
+    </section>
+    <section class="section-shell pb-28">
+      <div class="grid gap-5 md:grid-cols-2">
+        {siteConfig.writeups.map((item, index) => (
+          <article class="rounded-2xl border border-white/10 bg-white/[.025] p-6">
+            <div class="flex justify-between gap-4 text-xs">
+              <span class="font-bold text-[var(--accent)]">0{index + 1} · {item.platform}</span>
+              <span class="text-zinc-600">{item.category}</span>
+            </div>
+            <h2 class="mt-8 text-2xl font-bold tracking-[-.03em] text-white">{item.title}</h2>
+            <p class="mt-3 text-sm leading-7 text-zinc-400">{item.summary}</p>
+            <div class="mt-6 flex flex-wrap gap-2">
+              {item.tags.map((tag) => <span class="rounded-lg bg-[#111a16] px-3 py-2 text-[11px] text-zinc-400">{tag}</span>)}
+            </div>
+          </article>
+        ))}
+      </div>
+      <div class="mt-12 rounded-2xl border border-white/10 bg-[#080d0b] p-6 text-sm leading-7 text-zinc-500">
+        Le dépôt vient d’être recréé. Les write-ups détaillés et leurs médias seront réintégrés progressivement à partir de la base de connaissances, sans transformer des notes brutes en prétendus rapports professionnels.
+      </div>
+    </section>
+  </main>
+  <Footer />
+</body>
+</html>

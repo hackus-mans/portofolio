@@ -1,0 +1,39 @@
+---
+import Header from "../components/Header.astro";
+import Hero from "../components/Hero.astro";
+import About from "../components/About.astro";
+import Projects from "../components/Projects.astro";
+import Practice from "../components/Practice.astro";
+import Credentials from "../components/Credentials.astro";
+import Education from "../components/Education.astro";
+import Footer from "../components/Footer.astro";
+import { siteConfig } from "../config";
+import "../styles/global.css";
+const base = import.meta.env.BASE_URL;
+---
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="generator" content={Astro.generator} />
+    <meta name="description" content={siteConfig.description} />
+    <meta name="theme-color" content="#050807" />
+    <link rel="icon" type="image/svg+xml" href={base + "favicon.svg"} />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <title>{siteConfig.handle} — Portfolio Cybersécurité</title>
+  </head>
+  <body>
+    <Header />
+    <main>
+      <Hero />
+      <About />
+      <Projects />
+      <Practice />
+      <Credentials />
+      <Education />
+    </main>
+    <Footer />
+  </body>
+</html>

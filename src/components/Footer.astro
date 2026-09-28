@@ -1,0 +1,19 @@
+---
+import { siteConfig } from "../config";
+const base = import.meta.env.BASE_URL;
+---
+<footer class="py-16">
+  <div class="section-shell flex flex-col justify-between gap-8 border-t border-white/10 pt-10 md:flex-row md:items-end">
+    <div>
+      <p class="kicker">{siteConfig.handle}</p>
+      <h2 class="mt-3 text-2xl font-bold text-white">{siteConfig.name}</h2>
+      <p class="mt-2 max-w-xl text-sm leading-6 text-zinc-500">{siteConfig.title}</p>
+    </div>
+    <div class="flex flex-wrap gap-4 text-sm text-zinc-400">
+      <a href={siteConfig.social.github} target="_blank" rel="noopener noreferrer" class="hover:text-[var(--accent)]">GitHub ↗</a>
+      <a href={"mailto:" + siteConfig.social.email} class="hover:text-[var(--accent)]">Email ↗</a>
+      <a href={base + "work/"} class="hover:text-[var(--accent)]">Labs ↗</a>
+    </div>
+  </div>
+  <div class="section-shell mt-10 text-xs text-zinc-600">© {new Date().getFullYear()} {siteConfig.name}. Base : DevPortfolio de Ryan Fitzgerald, adaptée sous licence MIT.</div>
+</footer>

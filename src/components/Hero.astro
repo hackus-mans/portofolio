@@ -1,0 +1,46 @@
+---
+import { siteConfig } from "../config";
+const base = import.meta.env.BASE_URL;
+---
+<section class="relative min-h-screen overflow-hidden pt-20">
+  <div class="pointer-events-none absolute inset-0 -z-10">
+    <div class="absolute left-[-12rem] top-20 h-[32rem] w-[32rem] rounded-full bg-[var(--accent)]/10 blur-3xl"></div>
+    <div class="dot-grid absolute inset-0 opacity-30 [mask-image:linear-gradient(to_bottom,black,transparent_82%)]"></div>
+  </div>
+  <div class="section-shell grid min-h-[calc(100vh-5rem)] items-center gap-14 py-16 lg:grid-cols-12 lg:py-24">
+    <div class="lg:col-span-8">
+      <div class="mb-8 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[.03] px-3 py-2 text-[11px] text-zinc-400">
+        <span class="size-2 rounded-full bg-[var(--accent)] shadow-[0_0_18px_var(--accent)]"></span>
+        {siteConfig.location} · {siteConfig.status}
+      </div>
+      <p class="kicker">Pentest · SOC · Systems · Network</p>
+      <h1 class="mt-5 max-w-5xl text-5xl font-bold leading-[.97] tracking-[-.055em] text-white sm:text-6xl lg:text-8xl">
+        Comprendre les systèmes <span class="text-[var(--accent)]">jusqu’à leurs frontières de confiance.</span>
+      </h1>
+      <p class="mt-8 max-w-3xl text-base leading-8 text-zinc-400 sm:text-lg">
+        Je suis <strong class="text-white">{siteConfig.name}</strong>, alias <strong class="text-white">{siteConfig.handle}</strong>. {siteConfig.title}. Je construis mes compétences à travers des labs, CTF, projets défensifs et analyses techniques documentées.
+      </p>
+      <div class="mt-9 flex flex-wrap items-center gap-3">
+        <a href="#projects" class="rounded-xl bg-[var(--accent)] px-5 py-3 text-sm font-bold text-[#051009] hover:brightness-90">Voir mes projets</a>
+        <a href={base + "work/"} class="rounded-xl border border-white/10 bg-white/[.03] px-5 py-3 text-sm font-bold text-white hover:bg-white/[.07]">Labs & write-ups</a>
+        <a href={siteConfig.social.github} target="_blank" rel="noopener noreferrer" class="px-2 py-3 text-sm font-bold text-zinc-400 hover:text-white">GitHub ↗</a>
+      </div>
+      <p class="mt-10 max-w-3xl border-l border-[var(--accent)]/40 pl-4 text-sm leading-7 text-zinc-500">{siteConfig.philosophy}</p>
+    </div>
+    <aside class="lg:col-span-4">
+      <div class="relative overflow-hidden rounded-[2rem] border border-white/10 bg-[#09110d] p-6 shadow-2xl shadow-black/40">
+        <div class="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[var(--accent)]/60 to-transparent"></div>
+        <div class="mb-8 flex items-center gap-2 border-b border-white/10 pb-4 text-[10px] text-zinc-600">
+          <span class="size-2 rounded-full bg-red-400/70"></span><span class="size-2 rounded-full bg-amber-300/70"></span><span class="size-2 rounded-full bg-[var(--accent)]/70"></span><span class="ml-2">~/hackus-mans/profile</span>
+        </div>
+        <div class="space-y-6 text-xs">
+          <div><span class="text-zinc-600">$ whoami</span><strong class="mt-2 block text-base text-white">cybersecurity_student</strong></div>
+          <div><span class="text-zinc-600">$ focus --current</span><strong class="mt-2 block leading-7 text-[var(--accent)]">web · systems · soc · network</strong></div>
+          <div><span class="text-zinc-600">$ methodology</span><strong class="mt-2 block leading-7 text-white">OBSERVE → HYPOTHESIZE → TEST → INTERPRET</strong></div>
+          <div><span class="text-zinc-600">$ target</span><strong class="mt-2 block leading-7 text-white">professional → expert</strong></div>
+        </div>
+        <div class="scan-line pointer-events-none absolute inset-x-0 top-0 h-20 bg-gradient-to-b from-transparent via-[var(--accent)]/[.035] to-transparent"></div>
+      </div>
+    </aside>
+  </div>
+</section>
