@@ -1,0 +1,37 @@
+---
+import { site } from "../config";
+const base = import.meta.env.BASE_URL;
+---
+<header class="nav-shell">
+  <nav class="nav wrap" aria-label="Primary navigation">
+    <a class="brand" href={base}>
+      <span class="brand-mark">F/</span>
+      <span>FUSION</span>
+    </a>
+    <div class="nav-links">
+      <a href={base + "#work"}>Work</a>
+      <a href={base + "#process"}>Process</a>
+      <a href={base + "#about"}>About</a>
+    </div>
+    <div class="nav-actions">
+      <div class="theme-picker" aria-label="Theme">
+        <button data-set-theme="mono" title="Mono theme"><span></span></button>
+        <button data-set-theme="phosphor" title="Phosphor theme"><span></span></button>
+        <button data-set-theme="amber" title="Amber theme"><span></span></button>
+      </div>
+      <button class="terminal-trigger" data-terminal-open aria-label="Open command palette">
+        <span>⌘K</span>
+      </button>
+      <a class="nav-contact" href={"mailto:" + site.email}>Contact ↗</a>
+    </div>
+  </nav>
+</header>
+<script>
+  document.querySelectorAll("[data-set-theme]").forEach((button) => {
+    button.addEventListener("click", () => {
+      const theme = button.getAttribute("data-set-theme") || "mono";
+      document.documentElement.dataset.theme = theme;
+      try { localStorage.setItem("fusion-theme", theme); } catch {}
+    });
+  });
+</script>

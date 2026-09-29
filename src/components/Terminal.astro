@@ -1,0 +1,75 @@
+---
+import { site } from "../config";
+---
+<div class="terminal-modal" data-terminal hidden>
+  <button class="terminal-backdrop" data-terminal-close aria-label="Close terminal"></button>
+  <section class="terminal-window" role="dialog" aria-modal="true" aria-label="Interactive terminal">
+    <header class="terminal-titlebar">
+      <div class="window-dots"><i></i><i></i><i></i></div>
+      <span>portfolio://command</span>
+      <button data-terminal-close aria-label="Close">×</button>
+    </header>
+    <div class="terminal-screen" data-terminal-output>
+      <p><span class="t-muted">fusion v1.0</span></p>
+      <p>Type <b>help</b> to explore the template.</p>
+    </div>
+    <form class="terminal-input-row" data-terminal-form>
+      <span>guest@fusion:~$</span>
+      <input data-terminal-input autocomplete="off" spellcheck="false" aria-label="Terminal command" />
+    </form>
+  </section>
+</div>
+<script define:vars={{ projects: site.projects.map(p => p.name).join(", "), email: site.email }}>
+  const modal = document.querySelector("[data-terminal]");
+  const input = document.querySelector("[data-terminal-input]");
+  const output = document.querySelector("[data-terminal-output]");
+  const form = document.querySelector("[data-terminal-form]");
+  const open = () => {
+    if (!modal) return;
+    modal.hidden = false;
+    document.body.classList.add("modal-open");
+    setTimeout(() => input?.focus(), 30);
+  };
+  const close = () => {
+    if (!modal) return;
+    modal.hidden = true;
+    document.body.classList.remove("modal-open");
+  };
+  document.querySelectorAll("[data-terminal-open]").forEach((el) => el.addEventListener("click", open));
+  document.querySelectorAll("[data-terminal-close]").forEach((el) => el.addEventListener("click", close));
+  document.addEventListener("keydown", (e) => {
+    if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") { e.preventDefault(); open(); }
+    if (e.key === "Escape") close();
+  });
+  const line = (html) => {
+    const p = document.createElement("p");
+    p.innerHTML = html;
+    output?.appendChild(p);
+    output?.scrollTo({ top: output.scrollHeight, behavior: "smooth" });
+  };
+  const commands = {
+    help: () => line("<b>help</b> · about · projects · themes · clear · contact"),
+    about: () => line("A neutral hybrid portfolio template: editorial + bento + case studies + terminal."),
+    projects: () => line("Projects: " + projects),
+    themes: () => line("Theme commands: <b>theme mono</b>, <b>theme phosphor</b>, <b>theme amber</b>"),
+    contact: () => line('<a href="mailto:' + email + '">' + email + "</a>"),
+    clear: () => { if (output) output.innerHTML = ""; }
+  };
+  form?.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const raw = input?.value.trim() || "";
+    if (!raw) return;
+    line('<span class="t-muted">guest@fusion:~$</span> ' + raw.replace(/[<>]/g, ""));
+    const [cmd, arg] = raw.toLowerCase().split(/\s+/);
+    if (cmd === "theme" && ["mono","phosphor","amber"].includes(arg)) {
+      document.documentElement.dataset.theme = arg;
+      try { localStorage.setItem("fusion-theme", arg); } catch {}
+      line("Theme switched to <b>" + arg + "</b>.");
+    } else if (commands[cmd]) {
+      commands[cmd]();
+    } else {
+      line('Command not found. Try <b>help</b>.');
+    }
+    if (input) input.value = "";
+  });
+</script>
