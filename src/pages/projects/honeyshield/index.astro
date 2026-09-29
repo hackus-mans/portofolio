@@ -1,0 +1,30 @@
+---
+import BaseLayout from "../../../layouts/BaseLayout.astro";
+import Nav from "../../../components/Nav.astro";
+const rawBase = import.meta.env.BASE_URL;
+const base = rawBase.endsWith("/") ? rawBase : rawBase + "/";
+---
+<BaseLayout title="HoneyShield — Joseph NAKORE" description="HoneyShield, projet de cybersécurité orienté honeypot et détection, 1er Prix JPOPE 2026.">
+  <Nav />
+  <main class="case-main">
+    <section class="case-hero wrap">
+      <a class="back-link" href={base}>← Retour au portfolio</a>
+      <div class="case-kicker"><span>PROJECT / HONEYSHIELD</span><span>2026</span></div>
+      <h1>HoneyShield</h1>
+      <p>Projet orienté honeypot, observation d’activité hostile et exploitation de la télémétrie de sécurité dans un environnement contrôlé.</p>
+      <div class="case-meta">
+        <div><small>Domaine</small><strong>Honeypot / Detection</strong></div>
+        <div><small>Résultat</small><strong>1er Prix — JPOPE 2026</strong></div>
+        <div><small>Approche</small><strong>Security + AI</strong></div>
+      </div>
+    </section>
+    <section class="case-grid wrap">
+      <aside class="case-sidebar"><nav><a href="#vision">01 Vision</a><a href="#work">02 Travail</a><a href="#result">03 Résultat</a></nav></aside>
+      <article class="case-content">
+        <section id="vision"><span>01 / VISION</span><h2>Transformer l’observation en compréhension.</h2><p>HoneyShield explore l’usage d’un honeypot comme source d’observation et d’apprentissage : collecte d’interactions, analyse des événements et mise en contexte pour comprendre les comportements observés.</p></section>
+        <section id="work"><span>02 / TRAVAIL</span><h2>Concevoir une expérience défensive exploitable.</h2><p>Le projet combine réflexion sur l’exposition contrôlée, collecte de traces, analyse, restitution et usage d’outils d’assistance pour rendre les données de sécurité plus compréhensibles.</p></section>
+        <section id="result"><span>03 / RÉSULTAT</span><h2>1er Prix — JPOPE 2026.</h2><p>Le projet a obtenu le premier prix lors de JPOPE 2026. Cette distinction est présentée ici comme un résultat du projet, sans transformer l’expérience en certification ou expérience professionnelle.</p><a class="button secondary" href={base}>Retour au portfolio ↗</a></section>
+      </article>
+    </section>
+  </main>
+</BaseLayout>

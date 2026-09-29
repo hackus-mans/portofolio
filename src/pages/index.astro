@@ -5,71 +5,80 @@ import { site } from "../config";
 const rawBase = import.meta.env.BASE_URL;
 const base = rawBase.endsWith("/") ? rawBase : rawBase + "/";
 ---
-<BaseLayout title="Fusion — Hybrid Portfolio Template">
+<BaseLayout
+  title={site.name + " — Cybersécurité"}
+  description={site.intro}
+>
   <Nav />
   <main>
     <section class="hero wrap">
       <div class="hero-grid">
         <div class="hero-copy reveal">
-          <div class="eyebrow"><span class="signal-dot"></span> Portfolio system / available now</div>
+          <div class="eyebrow"><span class="signal-dot"></span> {site.location} · Cybersécurité offensive & défensive</div>
           <h1>
-            One portfolio.<br />
-            <span class="scramble" data-scramble="Many modes.">Many modes.</span>
+            Joseph NAKORE.<br />
+            <span class="scramble" data-scramble="Cybersecurity.">Cybersecurity.</span>
           </h1>
           <p>{site.intro}</p>
           <div class="hero-actions">
-            <a class="button primary magnetic" href="#work">Explore work <span>↘</span></a>
-            <a class="button secondary" href={base + "terminal/"}>Launch Linux sandbox <kbd>⌘K</kbd></a>
+            <a class="button primary magnetic" href="#work">Voir mes projets <span>↘</span></a>
+            <a class="button secondary" href={base + "roadmap/"}>Voir ma roadmap <span>↗</span></a>
           </div>
         </div>
 
-        <aside class="hero-console reveal" aria-label="System preview">
-          <div class="console-bar"><i></i><i></i><i></i><span>system.status</span></div>
+        <aside class="hero-console reveal" aria-label="Profil cybersécurité">
+          <div class="console-bar"><i></i><i></i><i></i><span>profile.status</span></div>
           <div class="console-content">
-            <small>MODE</small><strong>visual + terminal</strong>
-            <small>LAYOUT</small><strong>bento / editorial</strong>
-            <small>CONTENT</small><strong>case-study first</strong>
-            <small>MOTION</small><strong>quiet / intentional</strong>
+            <small>ROLE</small><strong>Cybersecurity Student</strong>
+            <small>FOCUS</small><strong>Pentest · SOC · Web/API</strong>
+            <small>SYSTEMS</small><strong>Linux · Windows · Active Directory</strong>
+            <small>CURRENT</small><strong>CPTS + CAPT preparation</strong>
           </div>
           <div class="scan"></div>
         </aside>
       </div>
       <div class="hero-marquee" aria-hidden="true">
-        <div><span>CASE STUDIES</span><span>BENTO GRID</span><span>TERMINAL UI</span><span>THEME PRESETS</span><span>EDITORIAL TYPE</span><span>MOTION</span><span>CASE STUDIES</span><span>BENTO GRID</span></div>
+        <div>
+          <span>PENTEST</span><span>SOC</span><span>WEB / API</span><span>ACTIVE DIRECTORY</span><span>LINUX</span><span>WINDOWS</span><span>CTF</span><span>PYTHON</span><span>PENTEST</span><span>SOC</span>
+        </div>
       </div>
     </section>
 
     <section class="section wrap" id="about">
       <div class="section-head reveal">
-        <span>01 / SYSTEM</span>
-        <h2>A template designed as a system, not a skin.</h2>
-        <p>Use the visual interface when you want clarity. Open the terminal when you want personality. Switch themes without changing content. Every section is built from the same spacing, type and interaction rules.</p>
+        <span>01 / À PROPOS</span>
+        <h2>Comprendre l’attaque pour mieux défendre.</h2>
+        <p>Je construis mes compétences autour d’une approche pratique : comprendre les systèmes, les réseaux et les applications, formuler des hypothèses, les tester dans des environnements autorisés, analyser les traces produites et relier chaque faiblesse à une correction ou une détection.</p>
       </div>
 
       <div class="bento">
         <article class="bento-card bento-large reveal tilt">
-          <span class="card-label">Identity</span>
-          <h3>YOUR NAME</h3>
-          <p>Role, point of view and one sharp sentence about what you do.</p>
-          <div class="big-type">Aa</div>
+          <span class="card-label">Identité</span>
+          <h3>{site.name}</h3>
+          <p>{site.role}</p>
+          <div class="big-type">JN</div>
         </article>
-        <article class="bento-card reveal">
-          <span class="card-label">Stack</span>
+
+        <article class="bento-card reveal" id="skills">
+          <span class="card-label">Compétences</span>
           <div class="chip-cloud">{site.stack.map((item) => <span>{item}</span>)}</div>
         </article>
+
         <article class="bento-card reveal">
-          <span class="card-label">Availability</span>
-          <div class="availability"><i></i><strong>Open to selected work</strong></div>
-          <p>Remote / worldwide</p>
+          <span class="card-label">Formation</span>
+          <div class="availability"><i></i><strong>IPNET Institute of Technology</strong></div>
+          <p>Licence professionnelle en Cybersécurité · 2024–2027 · Lomé</p>
         </article>
+
         <article class="bento-card bento-wide reveal">
-          <span class="card-label">Principle</span>
-          <blockquote>“Show the decisions behind the output.”</blockquote>
-          <p>Borrowing the case-study-first idea: context, constraints, trade-offs, decisions and measurable outcomes belong in the portfolio.</p>
+          <span class="card-label">Approche</span>
+          <blockquote>“Comprendre les mécanismes, pas seulement lancer des outils.”</blockquote>
+          <p>Reconnaissance, énumération, analyse, exploitation autorisée, élévation de privilèges, investigation et reporting : je travaille la méthodologie autant que les outils.</p>
         </article>
+
         <article class="bento-card reveal terminal-mini">
-          <span class="card-label">Shortcut</span>
-          <div class="mini-screen"><b>$</b> ephemeral Linux<br/><em>→ isolated · disposable · real shell</em></div>
+          <span class="card-label">Handle</span>
+          <div class="mini-screen"><b>$</b> whoami<br/><em>{site.handle}</em><br/>github.com/hackus-mans</div>
         </article>
       </div>
     </section>
@@ -77,8 +86,8 @@ const base = rawBase.endsWith("/") ? rawBase : rawBase + "/";
     <section class="section work-section" id="work">
       <div class="wrap">
         <div class="section-head split reveal">
-          <div><span>02 / SELECTED WORK</span><h2>Case studies, not thumbnails.</h2></div>
-          <p>Each project is presented as a small argument: what changed, why the decisions mattered and what was learned.</p>
+          <div><span>02 / PROJETS & PRATIQUE</span><h2>Construire, tester, analyser.</h2></div>
+          <p>Des projets de sécurité défensive aux labs offensifs, mon portfolio documente les systèmes construits, les méthodes employées et les compétences réellement travaillées.</p>
         </div>
         <div class="project-list">
           {site.projects.map((project) => (
@@ -90,7 +99,7 @@ const base = rawBase.endsWith("/") ? rawBase : rawBase + "/";
                 <p>{project.summary}</p>
                 <div class="project-tags">{project.tags.map(tag => <span>{tag}</span>)}</div>
               </div>
-              <div class="project-metric"><small>Outcome</small><strong>{project.metric}</strong></div>
+              <div class="project-metric"><small>Repère</small><strong>{project.metric}</strong></div>
               <div class="project-arrow">↗</div>
             </a>
           ))}
@@ -98,49 +107,50 @@ const base = rawBase.endsWith("/") ? rawBase : rawBase + "/";
       </div>
     </section>
 
-
     <section class="section wrap platform-section" id="learning-platform">
       <div class="section-head split reveal">
         <div>
-          <span>03 / LEARNING SYSTEM</span>
-          <h2>Explore the path. Use the tools.</h2>
+          <span>03 / ROADMAP</span>
+          <h2>Le parcours que je suis, ouvert aux autres.</h2>
         </div>
-        <p>The portfolio connects to an interactive cybersecurity roadmap and an isolated Linux sandbox. Visitors can explore the learning path, save their own progress, and experiment without touching the host system.</p>
+        <p>Ma roadmap cybersécurité est intégrée au portfolio et reste utilisable par les visiteurs : fondations, pentest, environnements d’entreprise, spécialisations, projets et progression personnelle.</p>
       </div>
       <div class="experience-grid">
         <a class="experience-card roadmap-card reveal" href={base + "roadmap/"}>
           <div class="experience-card-head">
-            <span class="card-label">Interactive roadmap</span>
+            <span class="card-label">Roadmap interactive</span>
             <span class="experience-arrow">↗</span>
           </div>
           <h3>Lumina Academy</h3>
-          <p>A usable roadmap with prerequisites, progression, projects and specialization tracks.</p>
+          <p>Un parcours structuré pour progresser des fondations systèmes/réseaux jusqu’au pentest, à Active Directory, au cloud et au Red/Purple Team.</p>
           <div class="experience-stats">
-            <div><strong>22</strong><span>skills</span></div>
-            <div><strong>42</strong><span>prerequisite links</span></div>
-            <div><strong>6</strong><span>specializations</span></div>
+            <div><strong>22</strong><span>compétences</span></div>
+            <div><strong>42</strong><span>prérequis</span></div>
+            <div><strong>6</strong><span>spécialisations</span></div>
           </div>
-          <div class="experience-note">Your progress stays in your browser.</div>
+          <div class="experience-note">La progression de chaque visiteur reste dans son navigateur.</div>
         </a>
-        <a class="experience-card sandbox-card reveal" href={base + "terminal/"}>
+
+        <article class="experience-card sandbox-card reveal">
           <div class="experience-card-head">
-            <span class="card-label">Ephemeral sandbox</span>
-            <span class="experience-arrow">↗</span>
+            <span class="card-label">Objectifs actuels</span>
+            <span class="experience-arrow">◎</span>
           </div>
-          <h3>Real Linux terminal</h3>
-          <p>Each visitor receives an isolated, non-root, resource-limited Linux environment. Closing the session destroys it.</p>
+          <h3>CPTS & CAPT</h3>
+          <p>Ces certifications sont actuellement des objectifs de formation, pas des certifications déjà obtenues.</p>
           <div class="sandbox-specs">
-            <span>NO HOST MOUNTS</span><span>NO ROOT</span><span>TTL</span><span>NETWORK OFF</span>
+            {site.currentTargets.map((target) => <span>{target}</span>)}
+            <span>PRIVESC</span><span>AD</span><span>WEB</span><span>REPORTING</span>
           </div>
-          <div class="experience-note">Designed for disposable experimentation.</div>
-        </a>
+          <div class="experience-note">Progression axée sur la méthodologie et la pratique en lab.</div>
+        </article>
       </div>
     </section>
 
     <section class="section wrap" id="process">
       <div class="section-head reveal">
-        <span>03 / PROCESS</span>
-        <h2>A visible decision trail.</h2>
+        <span>04 / PARCOURS</span>
+        <h2>Une progression construite par la pratique.</h2>
       </div>
       <div class="timeline">
         {site.timeline.map((item) => (
@@ -153,32 +163,40 @@ const base = rawBase.endsWith("/") ? rawBase : rawBase + "/";
       </div>
     </section>
 
-    <section class="section wrap">
+    <section class="section wrap" id="certifications">
       <div class="editorial-panel reveal">
-        <div><span class="card-label">Writing / Notes</span><h2>Long-form content without visual noise.</h2></div>
+        <div>
+          <span class="card-label">Certifications obtenues</span>
+          <h2>Des acquis validés, sans confondre objectifs et certifications.</h2>
+        </div>
         <div class="editorial-list">
-          <a href="#"><span>Designing for useful density</span><small>8 min</small></a>
-          <a href="#"><span>When a dashboard needs less</span><small>6 min</small></a>
-          <a href="#"><span>A decision log is a portfolio asset</span><small>11 min</small></a>
+          {site.certifications.map((certification) => (
+            <div class="cert-row"><span>{certification}</span><small>OBTENUE</small></div>
+          ))}
+          <div class="cert-row target-row">
+            <span>{site.currentTargets.join(" · ")}</span><small>EN PRÉPARATION</small>
+          </div>
         </div>
       </div>
     </section>
 
     <section class="contact-section wrap reveal">
       <div>
-        <span class="card-label">04 / CONTACT</span>
-        <h2>Make the final action obvious.</h2>
-        <p>Replace the demo identity later. For now, this template remains intentionally generic.</p>
+        <span class="card-label">05 / CONTACT</span>
+        <h2>Parlons cybersécurité.</h2>
+        <p>Retrouve mes projets, ma progression et mes activités publiques sur GitHub et LinkedIn.</p>
       </div>
-      <a class="button primary magnetic" href={"mailto:" + site.email}>Start a conversation ↗</a>
+      <div class="hero-actions">
+        <a class="button primary magnetic" href={site.social[1].href} target="_blank" rel="noopener noreferrer">LinkedIn ↗</a>
+        <a class="button secondary" href={site.social[0].href} target="_blank" rel="noopener noreferrer">GitHub ↗</a>
+      </div>
     </section>
   </main>
 
   <footer class="footer wrap">
-    <div><strong>FUSION / 01</strong><span>Hybrid Astro portfolio template</span></div>
-    <div>{site.social.map(item => <a href={item.href}>{item.label}</a>)}</div>
+    <div><strong>{site.shortName}</strong><span>Cybersecurity portfolio · {site.location}</span></div>
+    <div>{site.social.map(item => <a href={item.href} target="_blank" rel="noopener noreferrer">{item.label}</a>)}</div>
   </footer>
-
 
   <script>
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;

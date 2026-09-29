@@ -4,81 +4,74 @@ import Nav from "../../components/Nav.astro";
 const rawBase = import.meta.env.BASE_URL;
 const base = rawBase.endsWith("/") ? rawBase : rawBase + "/";
 ---
-<BaseLayout title="Atlas — Sample Case Study" description="A structured case-study demo showing context, constraints, decisions and outcomes.">
+<BaseLayout title="CyberMind X — Joseph NAKORE" description="CyberMind X, mini-SOC intelligent combinant détection, honeypot, SOAR et assistance IA.">
   <Nav />
   <main class="case-main">
     <section class="case-hero wrap">
-      <a class="back-link" href={base}>← Back to portfolio</a>
-      <div class="case-kicker"><span>CASE STUDY / 01</span><span>2026</span></div>
-      <h1>Atlas</h1>
-      <p>A neutral case-study page showing how a portfolio can communicate thinking instead of only showing polished screenshots.</p>
+      <a class="back-link" href={base}>← Retour au portfolio</a>
+      <div class="case-kicker"><span>PROJECT / CYBERMIND X</span><span>2026</span></div>
+      <h1>CyberMind X</h1>
+      <p>Un mini-SOC intelligent conçu pour réunir collecte, détection, honeypot, orchestration et assistance IA dans un environnement de laboratoire cohérent.</p>
       <div class="case-meta">
-        <div><small>Role</small><strong>Product / Systems</strong></div>
-        <div><small>Duration</small><strong>8 weeks</strong></div>
-        <div><small>Outcome</small><strong>−42% task time</strong></div>
+        <div><small>Domaine</small><strong>SOC / Blue Team</strong></div>
+        <div><small>Approche</small><strong>Detection + SOAR + IA</strong></div>
+        <div><small>Environnement</small><strong>Lab autorisé</strong></div>
       </div>
     </section>
 
     <section class="case-grid wrap">
       <aside class="case-sidebar">
         <nav>
-          <a href="#context">01 Context</a>
-          <a href="#constraints">02 Constraints</a>
-          <a href="#decisions">03 Decisions</a>
-          <a href="#outcome">04 Outcome</a>
-          <a href="#learning">05 Learning</a>
+          <a href="#objectif">01 Objectif</a>
+          <a href="#architecture">02 Architecture</a>
+          <a href="#telemetrie">03 Télémétrie</a>
+          <a href="#automation">04 Automatisation</a>
+          <a href="#learning">05 Apprentissages</a>
         </nav>
       </aside>
+
       <article class="case-content">
-        <section id="context">
-          <span>01 / CONTEXT</span>
-          <h2>The problem was not a missing feature. It was accumulated complexity.</h2>
-          <p>The previous workflow had grown through small additions. Each feature made sense locally, but the complete journey required too many decisions, too many context switches and too much hidden knowledge.</p>
-          <div class="case-visual">
-            <div><small>Before</small><strong>14</strong><span>steps</span></div>
-            <div class="flow-arrow">→</div>
-            <div><small>After</small><strong>8</strong><span>steps</span></div>
-          </div>
+        <section id="objectif">
+          <span>01 / OBJECTIF</span>
+          <h2>Construire un SOC de laboratoire qui relie attaque, traces et réponse.</h2>
+          <p>CyberMind X sert de terrain pratique pour comprendre comment des événements systèmes et réseau deviennent de la télémétrie exploitable, comment une détection est produite, puis comment elle peut être enrichie et transformée en action.</p>
         </section>
 
-        <section id="constraints">
-          <span>02 / CONSTRAINTS</span>
-          <h2>What could not change.</h2>
+        <section id="architecture">
+          <span>02 / ARCHITECTURE</span>
+          <h2>Plusieurs briques, un seul flux d’analyse.</h2>
           <ul class="constraint-list">
-            <li><b>01</b><div><strong>No backend rewrite</strong><p>The redesign had to work with the existing service boundaries.</p></div></li>
-            <li><b>02</b><div><strong>Keyboard-first users</strong><p>Power users could not lose speed while new users gained clarity.</p></div></li>
-            <li><b>03</b><div><strong>Incremental rollout</strong><p>The new workflow needed to coexist with the previous one.</p></div></li>
+            <li><b>01</b><div><strong>Wazuh</strong><p>Collecte, supervision et corrélation d’événements de sécurité.</p></div></li>
+            <li><b>02</b><div><strong>Suricata</strong><p>Inspection réseau et génération d’alertes IDS.</p></div></li>
+            <li><b>03</b><div><strong>Cowrie</strong><p>Honeypot pour observer et étudier des interactions hostiles dans le lab.</p></div></li>
+            <li><b>04</b><div><strong>Shuffle / SOAR</strong><p>Orchestration de workflows de réponse et d’enrichissement.</p></div></li>
+            <li><b>05</b><div><strong>Ollama</strong><p>Expérimentation autour de l’assistance IA pour résumer et contextualiser les alertes.</p></div></li>
           </ul>
         </section>
 
-        <section id="decisions">
-          <span>03 / DECISION LOG</span>
-          <h2>Decisions deserve their own documentation.</h2>
-          <div class="decision-card">
-            <header><strong>ADR-003</strong><span>Accepted</span></header>
-            <h3>Progressive disclosure over a single dense form</h3>
-            <p><b>Context:</b> expert users wanted speed while new users needed guidance.</p>
-            <p><b>Alternatives:</b> one long form, wizard, command-only interface.</p>
-            <p><b>Decision:</b> preserve direct keyboard actions while grouping secondary options behind contextual controls.</p>
-            <p><b>Trade-off:</b> slightly more implementation complexity in exchange for lower cognitive load.</p>
-          </div>
+        <section id="telemetrie">
+          <span>03 / TÉLÉMÉTRIE</span>
+          <h2>Observer ce que produit réellement une action.</h2>
+          <p>Le projet permet de tester des scénarios contrôlés — scans réseau, événements systèmes, changements de fichiers, authentifications — puis d’observer leur traduction dans les logs et alertes. L’objectif est de comprendre la chaîne complète attaque → télémétrie → détection → investigation.</p>
         </section>
 
-        <section id="outcome">
-          <span>04 / OUTCOME</span>
-          <h2>Measure the change, not the aesthetics.</h2>
-          <div class="outcome-grid">
-            <div><strong>−42%</strong><span>median task time</span></div>
-            <div><strong>−31%</strong><span>support requests</span></div>
-            <div><strong>+18%</strong><span>feature adoption</span></div>
+        <section id="automation">
+          <span>04 / AUTOMATISATION</span>
+          <h2>Passer d’une alerte brute à un contexte exploitable.</h2>
+          <div class="decision-card">
+            <header><strong>WORKFLOW</strong><span>LAB</span></header>
+            <h3>Détection → enrichissement → décision</h3>
+            <p><b>Entrée :</b> événement ou alerte issue du SIEM / IDS / honeypot.</p>
+            <p><b>Traitement :</b> normalisation, enrichissement et résumé du contexte.</p>
+            <p><b>Sortie :</b> informations utiles à l’investigation et, selon le scénario, action de réponse contrôlée.</p>
           </div>
         </section>
 
         <section id="learning">
-          <span>05 / LEARNING</span>
-          <h2>What would change next time.</h2>
-          <p>The strongest improvement came from removing decisions, not adding UI. The next iteration would instrument hesitation points earlier instead of waiting for usability sessions to expose them.</p>
-          <a class="button secondary" href={base}>Return home ↗</a>
+          <span>05 / APPRENTISSAGES</span>
+          <h2>Le projet relie offensive et défensive.</h2>
+          <p>CyberMind X me permet de travailler à la fois l’administration des composants, la qualité de la télémétrie, la logique de détection, l’analyse d’incident, l’automatisation et la compréhension des chaînes d’attaque.</p>
+          <a class="button secondary" href={base}>Retour au portfolio ↗</a>
         </section>
       </article>
     </section>
