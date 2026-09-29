@@ -1,6 +1,7 @@
 ---
 import { site } from "../config";
-const base = import.meta.env.BASE_URL;
+const rawBase = import.meta.env.BASE_URL;
+const base = rawBase.endsWith("/") ? rawBase : rawBase + "/";
 ---
 <header class="nav-shell">
   <nav class="nav wrap" aria-label="Primary navigation">
