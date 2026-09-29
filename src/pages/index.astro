@@ -1,7 +1,6 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
 import Nav from "../components/Nav.astro";
-import Terminal from "../components/Terminal.astro";
 import { site } from "../config";
 const base = import.meta.env.BASE_URL;
 ---
@@ -19,7 +18,7 @@ const base = import.meta.env.BASE_URL;
           <p>{site.intro}</p>
           <div class="hero-actions">
             <a class="button primary magnetic" href="#work">Explore work <span>↘</span></a>
-            <button class="button secondary" data-terminal-open>Open terminal <kbd>⌘K</kbd></button>
+            <a class="button secondary" href={base + "terminal/"}>Launch Linux sandbox <kbd>⌘K</kbd></a>
           </div>
         </div>
 
@@ -69,7 +68,7 @@ const base = import.meta.env.BASE_URL;
         </article>
         <article class="bento-card reveal terminal-mini">
           <span class="card-label">Shortcut</span>
-          <div class="mini-screen"><b>$</b> press <kbd>⌘ K</kbd><br/><em>→ interactive CLI</em></div>
+          <div class="mini-screen"><b>$</b> ephemeral Linux<br/><em>→ isolated · disposable · real shell</em></div>
         </article>
       </div>
     </section>
@@ -95,6 +94,45 @@ const base = import.meta.env.BASE_URL;
             </a>
           ))}
         </div>
+      </div>
+    </section>
+
+
+    <section class="section wrap platform-section" id="learning-platform">
+      <div class="section-head split reveal">
+        <div>
+          <span>03 / LEARNING SYSTEM</span>
+          <h2>Explore the path. Use the tools.</h2>
+        </div>
+        <p>The portfolio connects to an interactive cybersecurity roadmap and an isolated Linux sandbox. Visitors can explore the learning path, save their own progress, and experiment without touching the host system.</p>
+      </div>
+      <div class="experience-grid">
+        <a class="experience-card roadmap-card reveal" href={base + "roadmap/"}>
+          <div class="experience-card-head">
+            <span class="card-label">Interactive roadmap</span>
+            <span class="experience-arrow">↗</span>
+          </div>
+          <h3>Lumina Academy</h3>
+          <p>A usable roadmap with prerequisites, progression, projects and specialization tracks.</p>
+          <div class="experience-stats">
+            <div><strong>22</strong><span>skills</span></div>
+            <div><strong>42</strong><span>prerequisite links</span></div>
+            <div><strong>6</strong><span>specializations</span></div>
+          </div>
+          <div class="experience-note">Your progress stays in your browser.</div>
+        </a>
+        <a class="experience-card sandbox-card reveal" href={base + "terminal/"}>
+          <div class="experience-card-head">
+            <span class="card-label">Ephemeral sandbox</span>
+            <span class="experience-arrow">↗</span>
+          </div>
+          <h3>Real Linux terminal</h3>
+          <p>Each visitor receives an isolated, non-root, resource-limited Linux environment. Closing the session destroys it.</p>
+          <div class="sandbox-specs">
+            <span>NO HOST MOUNTS</span><span>NO ROOT</span><span>TTL</span><span>NETWORK OFF</span>
+          </div>
+          <div class="experience-note">Designed for disposable experimentation.</div>
+        </a>
       </div>
     </section>
 
@@ -140,7 +178,6 @@ const base = import.meta.env.BASE_URL;
     <div>{site.social.map(item => <a href={item.href}>{item.label}</a>)}</div>
   </footer>
 
-  <Terminal />
 
   <script>
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;

@@ -10,6 +10,7 @@ const base = import.meta.env.BASE_URL;
     </a>
     <div class="nav-links">
       <a href={base + "#work"}>Work</a>
+      <a href={base + "roadmap/"}>Roadmap</a>
       <a href={base + "#process"}>Process</a>
       <a href={base + "#about"}>About</a>
     </div>
@@ -19,19 +20,25 @@ const base = import.meta.env.BASE_URL;
         <button data-set-theme="phosphor" title="Phosphor theme"><span></span></button>
         <button data-set-theme="amber" title="Amber theme"><span></span></button>
       </div>
-      <button class="terminal-trigger" data-terminal-open aria-label="Open command palette">
-        <span>⌘K</span>
-      </button>
+      <a class="terminal-trigger" href={base + "terminal/"} aria-label="Open Linux sandbox terminal">
+        <span>TERMINAL</span>
+      </a>
       <a class="nav-contact" href={"mailto:" + site.email}>Contact ↗</a>
     </div>
   </nav>
 </header>
-<script>
+<script define:vars={{ terminalPath: base + "terminal/" }}>
   document.querySelectorAll("[data-set-theme]").forEach((button) => {
     button.addEventListener("click", () => {
       const theme = button.getAttribute("data-set-theme") || "mono";
       document.documentElement.dataset.theme = theme;
       try { localStorage.setItem("fusion-theme", theme); } catch {}
     });
+  });
+  document.addEventListener("keydown", (event) => {
+    if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === "k") {
+      event.preventDefault();
+      window.location.href = terminalPath;
+    }
   });
 </script>
