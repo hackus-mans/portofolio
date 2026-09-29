@@ -1,39 +1,189 @@
 ---
-import Header from "../components/Header.astro";
-import Hero from "../components/Hero.astro";
-import About from "../components/About.astro";
-import Projects from "../components/Projects.astro";
-import Experience from "../components/Experience.astro";
-import Education from "../components/Education.astro";
-import Footer from "../components/Footer.astro";
-import { siteConfig } from "../config";
-import "../styles/global.css";
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Nav from "../components/Nav.astro";
+import Terminal from "../components/Terminal.astro";
+import { site } from "../config";
+const base = import.meta.env.BASE_URL;
 ---
+<BaseLayout title="Fusion — Hybrid Portfolio Template">
+  <Nav />
+  <main>
+    <section class="hero wrap">
+      <div class="hero-grid">
+        <div class="hero-copy reveal">
+          <div class="eyebrow"><span class="signal-dot"></span> Portfolio system / available now</div>
+          <h1>
+            One portfolio.<br />
+            <span class="scramble" data-scramble="Many modes.">Many modes.</span>
+          </h1>
+          <p>{site.intro}</p>
+          <div class="hero-actions">
+            <a class="button primary magnetic" href="#work">Explore work <span>↘</span></a>
+            <button class="button secondary" data-terminal-open>Open terminal <kbd>⌘K</kbd></button>
+          </div>
+        </div>
 
-<html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <link rel="icon" type="image/svg+xml" href={import.meta.env.BASE_URL + "favicon.svg"} />
-    <meta name="viewport" content="width=device-width" />
-    <meta name="generator" content={Astro.generator} />
-    <meta name="description" content={siteConfig.description} />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&display=swap"
-      rel="stylesheet"
-    />
-    <title>{siteConfig.name} - {siteConfig.title}</title>
-  </head>
-  <body>
-    <Header />
-    <section>
-      <Hero />
-      <About />
-      <Projects />
-      <Experience />
-      <Education />
+        <aside class="hero-console reveal" aria-label="System preview">
+          <div class="console-bar"><i></i><i></i><i></i><span>system.status</span></div>
+          <div class="console-content">
+            <small>MODE</small><strong>visual + terminal</strong>
+            <small>LAYOUT</small><strong>bento / editorial</strong>
+            <small>CONTENT</small><strong>case-study first</strong>
+            <small>MOTION</small><strong>quiet / intentional</strong>
+          </div>
+          <div class="scan"></div>
+        </aside>
+      </div>
+      <div class="hero-marquee" aria-hidden="true">
+        <div><span>CASE STUDIES</span><span>BENTO GRID</span><span>TERMINAL UI</span><span>THEME PRESETS</span><span>EDITORIAL TYPE</span><span>MOTION</span><span>CASE STUDIES</span><span>BENTO GRID</span></div>
+      </div>
     </section>
-    <Footer />
-  </body>
-</html>
+
+    <section class="section wrap" id="about">
+      <div class="section-head reveal">
+        <span>01 / SYSTEM</span>
+        <h2>A template designed as a system, not a skin.</h2>
+        <p>Use the visual interface when you want clarity. Open the terminal when you want personality. Switch themes without changing content. Every section is built from the same spacing, type and interaction rules.</p>
+      </div>
+
+      <div class="bento">
+        <article class="bento-card bento-large reveal tilt">
+          <span class="card-label">Identity</span>
+          <h3>YOUR NAME</h3>
+          <p>Role, point of view and one sharp sentence about what you do.</p>
+          <div class="big-type">Aa</div>
+        </article>
+        <article class="bento-card reveal">
+          <span class="card-label">Stack</span>
+          <div class="chip-cloud">{site.stack.map((item) => <span>{item}</span>)}</div>
+        </article>
+        <article class="bento-card reveal">
+          <span class="card-label">Availability</span>
+          <div class="availability"><i></i><strong>Open to selected work</strong></div>
+          <p>Remote / worldwide</p>
+        </article>
+        <article class="bento-card bento-wide reveal">
+          <span class="card-label">Principle</span>
+          <blockquote>“Show the decisions behind the output.”</blockquote>
+          <p>Borrowing the case-study-first idea: context, constraints, trade-offs, decisions and measurable outcomes belong in the portfolio.</p>
+        </article>
+        <article class="bento-card reveal terminal-mini">
+          <span class="card-label">Shortcut</span>
+          <div class="mini-screen"><b>$</b> press <kbd>⌘ K</kbd><br/><em>→ interactive CLI</em></div>
+        </article>
+      </div>
+    </section>
+
+    <section class="section work-section" id="work">
+      <div class="wrap">
+        <div class="section-head split reveal">
+          <div><span>02 / SELECTED WORK</span><h2>Case studies, not thumbnails.</h2></div>
+          <p>Each project is presented as a small argument: what changed, why the decisions mattered and what was learned.</p>
+        </div>
+        <div class="project-list">
+          {site.projects.map((project) => (
+            <a class="project-row reveal" href={base + project.href}>
+              <div class="project-index">{project.index}</div>
+              <div class="project-main">
+                <span>{project.type}</span>
+                <h3>{project.name}</h3>
+                <p>{project.summary}</p>
+                <div class="project-tags">{project.tags.map(tag => <span>{tag}</span>)}</div>
+              </div>
+              <div class="project-metric"><small>Outcome</small><strong>{project.metric}</strong></div>
+              <div class="project-arrow">↗</div>
+            </a>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <section class="section wrap" id="process">
+      <div class="section-head reveal">
+        <span>03 / PROCESS</span>
+        <h2>A visible decision trail.</h2>
+      </div>
+      <div class="timeline">
+        {site.timeline.map((item) => (
+          <article class="timeline-item reveal">
+            <span>{item.year}</span>
+            <h3>{item.title}</h3>
+            <p>{item.text}</p>
+          </article>
+        ))}
+      </div>
+    </section>
+
+    <section class="section wrap">
+      <div class="editorial-panel reveal">
+        <div><span class="card-label">Writing / Notes</span><h2>Long-form content without visual noise.</h2></div>
+        <div class="editorial-list">
+          <a href="#"><span>Designing for useful density</span><small>8 min</small></a>
+          <a href="#"><span>When a dashboard needs less</span><small>6 min</small></a>
+          <a href="#"><span>A decision log is a portfolio asset</span><small>11 min</small></a>
+        </div>
+      </div>
+    </section>
+
+    <section class="contact-section wrap reveal">
+      <div>
+        <span class="card-label">04 / CONTACT</span>
+        <h2>Make the final action obvious.</h2>
+        <p>Replace the demo identity later. For now, this template remains intentionally generic.</p>
+      </div>
+      <a class="button primary magnetic" href={"mailto:" + site.email}>Start a conversation ↗</a>
+    </section>
+  </main>
+
+  <footer class="footer wrap">
+    <div><strong>FUSION / 01</strong><span>Hybrid Astro portfolio template</span></div>
+    <div>{site.social.map(item => <a href={item.href}>{item.label}</a>)}</div>
+  </footer>
+
+  <Terminal />
+
+  <script>
+    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (!reduced) {
+      const io = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("is-visible");
+            io.unobserve(entry.target);
+          }
+        });
+      }, { threshold: .1 });
+      document.querySelectorAll(".reveal").forEach((node) => io.observe(node));
+
+      document.querySelectorAll(".tilt").forEach((card) => {
+        card.addEventListener("pointermove", (event) => {
+          const rect = card.getBoundingClientRect();
+          const rx = ((event.clientY - rect.top) / rect.height - .5) * -5;
+          const ry = ((event.clientX - rect.left) / rect.width - .5) * 5;
+          card.style.transform = "perspective(900px) rotateX(" + rx + "deg) rotateY(" + ry + "deg)";
+        });
+        card.addEventListener("pointerleave", () => card.style.transform = "");
+      });
+
+      const target = document.querySelector("[data-scramble]");
+      if (target) {
+        const finalText = target.getAttribute("data-scramble") || "";
+        const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789#@/";
+        let frame = 0;
+        const tick = () => {
+          const progress = frame / 24;
+          target.textContent = finalText.split("").map((char, i) => {
+            if (char === " ") return " ";
+            return i / finalText.length < progress ? char : chars[Math.floor(Math.random() * chars.length)];
+          }).join("");
+          frame++;
+          if (frame <= 24) requestAnimationFrame(tick);
+          else target.textContent = finalText;
+        };
+        setTimeout(tick, 350);
+      }
+    } else {
+      document.querySelectorAll(".reveal").forEach((node) => node.classList.add("is-visible"));
+    }
+  </script>
+</BaseLayout>

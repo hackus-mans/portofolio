@@ -1,0 +1,87 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import Nav from "../../components/Nav.astro";
+import Terminal from "../../components/Terminal.astro";
+const base = import.meta.env.BASE_URL;
+---
+<BaseLayout title="Atlas — Sample Case Study" description="A structured case-study demo showing context, constraints, decisions and outcomes.">
+  <Nav />
+  <main class="case-main">
+    <section class="case-hero wrap">
+      <a class="back-link" href={base}>← Back to portfolio</a>
+      <div class="case-kicker"><span>CASE STUDY / 01</span><span>2026</span></div>
+      <h1>Atlas</h1>
+      <p>A neutral case-study page showing how a portfolio can communicate thinking instead of only showing polished screenshots.</p>
+      <div class="case-meta">
+        <div><small>Role</small><strong>Product / Systems</strong></div>
+        <div><small>Duration</small><strong>8 weeks</strong></div>
+        <div><small>Outcome</small><strong>−42% task time</strong></div>
+      </div>
+    </section>
+
+    <section class="case-grid wrap">
+      <aside class="case-sidebar">
+        <nav>
+          <a href="#context">01 Context</a>
+          <a href="#constraints">02 Constraints</a>
+          <a href="#decisions">03 Decisions</a>
+          <a href="#outcome">04 Outcome</a>
+          <a href="#learning">05 Learning</a>
+        </nav>
+      </aside>
+      <article class="case-content">
+        <section id="context">
+          <span>01 / CONTEXT</span>
+          <h2>The problem was not a missing feature. It was accumulated complexity.</h2>
+          <p>The previous workflow had grown through small additions. Each feature made sense locally, but the complete journey required too many decisions, too many context switches and too much hidden knowledge.</p>
+          <div class="case-visual">
+            <div><small>Before</small><strong>14</strong><span>steps</span></div>
+            <div class="flow-arrow">→</div>
+            <div><small>After</small><strong>8</strong><span>steps</span></div>
+          </div>
+        </section>
+
+        <section id="constraints">
+          <span>02 / CONSTRAINTS</span>
+          <h2>What could not change.</h2>
+          <ul class="constraint-list">
+            <li><b>01</b><div><strong>No backend rewrite</strong><p>The redesign had to work with the existing service boundaries.</p></div></li>
+            <li><b>02</b><div><strong>Keyboard-first users</strong><p>Power users could not lose speed while new users gained clarity.</p></div></li>
+            <li><b>03</b><div><strong>Incremental rollout</strong><p>The new workflow needed to coexist with the previous one.</p></div></li>
+          </ul>
+        </section>
+
+        <section id="decisions">
+          <span>03 / DECISION LOG</span>
+          <h2>Decisions deserve their own documentation.</h2>
+          <div class="decision-card">
+            <header><strong>ADR-003</strong><span>Accepted</span></header>
+            <h3>Progressive disclosure over a single dense form</h3>
+            <p><b>Context:</b> expert users wanted speed while new users needed guidance.</p>
+            <p><b>Alternatives:</b> one long form, wizard, command-only interface.</p>
+            <p><b>Decision:</b> preserve direct keyboard actions while grouping secondary options behind contextual controls.</p>
+            <p><b>Trade-off:</b> slightly more implementation complexity in exchange for lower cognitive load.</p>
+          </div>
+        </section>
+
+        <section id="outcome">
+          <span>04 / OUTCOME</span>
+          <h2>Measure the change, not the aesthetics.</h2>
+          <div class="outcome-grid">
+            <div><strong>−42%</strong><span>median task time</span></div>
+            <div><strong>−31%</strong><span>support requests</span></div>
+            <div><strong>+18%</strong><span>feature adoption</span></div>
+          </div>
+        </section>
+
+        <section id="learning">
+          <span>05 / LEARNING</span>
+          <h2>What would change next time.</h2>
+          <p>The strongest improvement came from removing decisions, not adding UI. The next iteration would instrument hesitation points earlier instead of waiting for usability sessions to expose them.</p>
+          <a class="button secondary" href={base}>Return home ↗</a>
+        </section>
+      </article>
+    </section>
+  </main>
+  <Terminal />
+</BaseLayout>
