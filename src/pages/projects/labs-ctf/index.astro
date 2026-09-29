@@ -1,0 +1,30 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import Nav from "../../components/Nav.astro";
+const rawBase = import.meta.env.BASE_URL;
+const base = rawBase.endsWith("/") ? rawBase : rawBase + "/";
+---
+<BaseLayout title="Labs & CTF — Joseph NAKORE" description="Pratique cybersécurité sur Hack The Box, TryHackMe et CTF.">
+  <Nav />
+  <main class="case-main">
+    <section class="case-hero wrap">
+      <a class="back-link" href={base}>← Retour au portfolio</a>
+      <div class="case-kicker"><span>PRACTICE / LABS & CTF</span><span>ONGOING</span></div>
+      <h1>Labs & CTF</h1>
+      <p>Une pratique régulière pour transformer la théorie en réflexes : reconnaissance, énumération, analyse, exploitation en environnement autorisé, privesc, investigation et reporting.</p>
+      <div class="case-meta">
+        <div><small>Plateformes</small><strong>HTB · TryHackMe</strong></div>
+        <div><small>Domaines</small><strong>Web · System · Network</strong></div>
+        <div><small>Résultats</small><strong>Top 1 ×2 · Top 3 Cyberbattle</strong></div>
+      </div>
+    </section>
+    <section class="case-grid wrap">
+      <aside class="case-sidebar"><nav><a href="#domains">01 Domaines</a><a href="#method">02 Méthode</a><a href="#results">03 Résultats</a></nav></aside>
+      <article class="case-content">
+        <section id="domains"><span>01 / DOMAINES</span><h2>Des environnements variés, une méthodologie commune.</h2><div class="chip-cloud">{["Web / API","Linux","Windows","Active Directory","Réseau","Cryptographie","Forensic","Reverse engineering"].map(item => <span>{item}</span>)}</div></section>
+        <section id="method"><span>02 / MÉTHODE</span><h2>Recon → Enum → Analyse → Validation → Reporting.</h2><p>Je privilégie la compréhension des mécanismes et la prise de notes : chaque lab doit produire des hypothèses vérifiables, des preuves et une explication claire de la cause technique.</p></section>
+        <section id="results"><span>03 / COMPÉTITIONS</span><h2>Résultats CTF documentés.</h2><p>Mon parcours comprend deux résultats Top 1 en CTF ainsi qu’un Top 3 lors d’un Cyberbattle IPNET. Ces résultats complètent la pratique quotidienne, mais ne remplacent pas le travail de fond sur les systèmes et les méthodologies.</p><a class="button secondary" href={base}>Retour au portfolio ↗</a></section>
+      </article>
+    </section>
+  </main>
+</BaseLayout>

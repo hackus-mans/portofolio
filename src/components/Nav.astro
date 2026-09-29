@@ -4,27 +4,27 @@ const rawBase = import.meta.env.BASE_URL;
 const base = rawBase.endsWith("/") ? rawBase : rawBase + "/";
 ---
 <header class="nav-shell">
-  <nav class="nav wrap" aria-label="Primary navigation">
+  <nav class="nav wrap" aria-label="Navigation principale">
     <a class="brand" href={base}>
-      <span class="brand-mark">F/</span>
-      <span>FUSION</span>
+      <span class="brand-mark">JN</span>
+      <span>{site.shortName}</span>
     </a>
     <div class="nav-links">
-      <a href={base + "#work"}>Work</a>
+      <a href={base + "#work"}>Projets</a>
       <a href={base + "roadmap/"}>Roadmap</a>
-      <a href={base + "#process"}>Process</a>
-      <a href={base + "#about"}>About</a>
+      <a href={base + "#skills"}>Compétences</a>
+      <a href={base + "#about"}>À propos</a>
     </div>
     <div class="nav-actions">
-      <div class="theme-picker" aria-label="Theme">
-        <button data-set-theme="mono" title="Mono theme"><span></span></button>
-        <button data-set-theme="phosphor" title="Phosphor theme"><span></span></button>
-        <button data-set-theme="amber" title="Amber theme"><span></span></button>
+      <div class="theme-picker" aria-label="Thème">
+        <button data-set-theme="mono" title="Thème mono"><span></span></button>
+        <button data-set-theme="phosphor" title="Thème phosphore"><span></span></button>
+        <button data-set-theme="amber" title="Thème ambre"><span></span></button>
       </div>
-      <a class="terminal-trigger" href={base + "terminal/"} aria-label="Open Linux sandbox terminal">
+      <a class="terminal-trigger" href={base + "terminal/"} aria-label="Ouvrir le terminal">
         <span>TERMINAL</span>
       </a>
-      <a class="nav-contact" href={"mailto:" + site.email}>Contact ↗</a>
+      <a class="nav-contact" href={site.social[1].href} target="_blank" rel="noopener noreferrer">LinkedIn ↗</a>
     </div>
   </nav>
 </header>
