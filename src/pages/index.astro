@@ -19,7 +19,7 @@ const base = rawBase.endsWith("/") ? rawBase : rawBase + "/";
           <p>{site.intro}</p>
           <div class="hero-actions">
             <a class="button primary magnetic" href="#work">Explore work <span>↘</span></a>
-            <a class="button secondary" href={base + "terminal/"}>Launch Linux Lab <kbd>⌘K</kbd></a>
+            <a class="button secondary" href={base + "terminal/"}>Launch Linux sandbox <kbd>⌘K</kbd></a>
           </div>
         </div>
 
@@ -69,7 +69,7 @@ const base = rawBase.endsWith("/") ? rawBase : rawBase + "/";
         </article>
         <article class="bento-card reveal terminal-mini">
           <span class="card-label">Shortcut</span>
-          <div class="mini-screen"><b>$</b> GitHub Codespaces<br/><em>→ personal · real Linux · browser-based</em></div>
+          <div class="mini-screen"><b>$</b> ephemeral Linux<br/><em>→ isolated · disposable · real shell</em></div>
         </article>
       </div>
     </section>
@@ -105,7 +105,7 @@ const base = rawBase.endsWith("/") ? rawBase : rawBase + "/";
           <span>03 / LEARNING SYSTEM</span>
           <h2>Explore the path. Use the tools.</h2>
         </div>
-        <p>The portfolio connects to an interactive cybersecurity roadmap and a personal GitHub Codespaces Linux lab. Visitors can explore the learning path, save their own progress, and experiment without touching the host system.</p>
+        <p>The portfolio connects to an interactive cybersecurity roadmap and an isolated Linux sandbox. Visitors can explore the learning path, save their own progress, and experiment without touching the host system.</p>
       </div>
       <div class="experience-grid">
         <a class="experience-card roadmap-card reveal" href={base + "roadmap/"}>
@@ -128,11 +128,11 @@ const base = rawBase.endsWith("/") ? rawBase : rawBase + "/";
             <span class="experience-arrow">↗</span>
           </div>
           <h3>Real Linux terminal</h3>
-          <p>Each visitor can create a personal Linux development environment in GitHub Codespaces from the same repository.</p>
+          <p>Each visitor receives an isolated, non-root, resource-limited Linux environment. Closing the session destroys it.</p>
           <div class="sandbox-specs">
-            <span>REAL LINUX</span><span>PERSONAL</span><span>CODESPACES</span><span>NO VPS</span>
+            <span>NO HOST MOUNTS</span><span>NO ROOT</span><span>TTL</span><span>NETWORK OFF</span>
           </div>
-          <div class="experience-note">Created and billed, if applicable, on the visitor's own GitHub account.</div>
+          <div class="experience-note">Designed for disposable experimentation.</div>
         </a>
       </div>
     </section>
