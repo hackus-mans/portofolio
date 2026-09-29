@@ -1,4 +1,4 @@
-name: Validate portfolio and sandbox
+name: Validate portfolio and Codespaces lab
 on:
   pull_request:
     branches: [main]
@@ -15,10 +15,12 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm run build
-      - name: Validate sandbox gateway
-        working-directory: sandbox-server
+      - name: Validate devcontainer JSON
+        run: node -e "JSON.parse(require('fs').readFileSync('.devcontainer/devcontainer.json','utf8')); console.log('devcontainer.json valid')"
+      - name: Validate lab scripts
         run: |
-          npm install --ignore-scripts --no-audit --no-fund
-          npm run check
-      - name: Build disposable Linux image
-        run: docker build -t portfolio-sandbox:test sandbox-server/sandbox-image
+          bash -n .devcontainer/setup-lab.sh
+          bash -n .devcontainer/welcome.sh
+          bash -n lab/check-environment.sh
+      - name: Build Codespaces image
+        run: docker build -t portfolio-codespaces-lab:test .devcontainer

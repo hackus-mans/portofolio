@@ -12,6 +12,7 @@ const base = rawBase.endsWith("/") ? rawBase : rawBase + "/";
     <div class="nav-links">
       <a href={base + "#work"}>Work</a>
       <a href={base + "roadmap/"}>Roadmap</a>
+      <a href={base + "terminal/"}>Linux Lab</a>
       <a href={base + "#process"}>Process</a>
       <a href={base + "#about"}>About</a>
     </div>
@@ -21,14 +22,14 @@ const base = rawBase.endsWith("/") ? rawBase : rawBase + "/";
         <button data-set-theme="phosphor" title="Phosphor theme"><span></span></button>
         <button data-set-theme="amber" title="Amber theme"><span></span></button>
       </div>
-      <a class="terminal-trigger" href={base + "terminal/"} aria-label="Open Linux sandbox terminal">
-        <span>TERMINAL</span>
+      <a class="terminal-trigger" href={base + "terminal/"} aria-label="Launch Linux lab with GitHub Codespaces">
+        <span>LINUX LAB</span>
       </a>
       <a class="nav-contact" href={"mailto:" + site.email}>Contact ↗</a>
     </div>
   </nav>
 </header>
-<script define:vars={{ terminalPath: base + "terminal/" }}>
+<script define:vars={{ labPath: base + "terminal/" }}>
   document.querySelectorAll("[data-set-theme]").forEach((button) => {
     button.addEventListener("click", () => {
       const theme = button.getAttribute("data-set-theme") || "mono";
@@ -39,7 +40,7 @@ const base = rawBase.endsWith("/") ? rawBase : rawBase + "/";
   document.addEventListener("keydown", (event) => {
     if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === "k") {
       event.preventDefault();
-      window.location.href = terminalPath;
+      window.location.href = labPath;
     }
   });
 </script>
