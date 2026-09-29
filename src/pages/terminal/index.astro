@@ -1,213 +1,79 @@
 ---
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import Nav from "../../components/Nav.astro";
-const rawBase = import.meta.env.BASE_URL;
-const base = rawBase.endsWith("/") ? rawBase : rawBase + "/";
+const codespaceUrl = "https://codespaces.new/hackus-mans/portofolio?quickstart=1";
 ---
-<BaseLayout title="Ephemeral Linux Sandbox" description="A disposable, isolated Linux terminal session running outside the static portfolio.">
+<BaseLayout title="Linux Lab — GitHub Codespaces" description="Launch a personal Linux lab from the portfolio using GitHub Codespaces.">
   <Nav />
   <main class="sandbox-main">
     <section class="sandbox-hero wrap">
       <div>
-        <span class="card-label">EPHEMERAL / ISOLATED</span>
-        <h1>Linux sandbox.</h1>
-        <p>A real shell session created only for this browser visit. The environment is non-root, resource-limited, isolated from the host and destroyed when the session ends.</p>
+        <span class="card-label">GITHUB CODESPACES / PERSONAL LAB</span>
+        <h1>Launch a real Linux lab.</h1>
+        <p>One click creates a real cloud development environment from this repository. The lab is attached to the visitor's own GitHub account — no shared VPS and no access to the portfolio server.</p>
+        <div class="hero-actions">
+          <a class="button primary" href={codespaceUrl} target="_blank" rel="noopener noreferrer">Launch Linux Lab ↗</a>
+          <a class="button secondary" href="https://github.com/hackus-mans/portofolio/tree/main/.devcontainer" target="_blank" rel="noopener noreferrer">Inspect configuration</a>
+        </div>
       </div>
       <div class="sandbox-policy">
-        <div><span>CPU</span><strong>0.5 core</strong></div>
-        <div><span>RAM</span><strong>256 MB</strong></div>
-        <div><span>PID</span><strong>64 max</strong></div>
-        <div><span>NETWORK</span><strong>disabled</strong></div>
-        <div><span>ROOT FS</span><strong>read-only</strong></div>
-        <div><span>HOME</span><strong>temporary</strong></div>
+        <div><span>PLATFORM</span><strong>GitHub Codespaces</strong></div>
+        <div><span>OS</span><strong>Ubuntu 24.04</strong></div>
+        <div><span>USER</span><strong>non-root developer</strong></div>
+        <div><span>WORKSPACE</span><strong>personal copy</strong></div>
+        <div><span>TOOLS</span><strong>Python · GCC · Git · Nmap</strong></div>
+        <div><span>PERSISTENCE</span><strong>until user deletes it</strong></div>
       </div>
     </section>
 
     <section class="sandbox-workspace wrap">
-      <div class="sandbox-toolbar">
-        <div class="sandbox-status">
-          <i data-status-dot></i>
-          <strong data-status-label>Checking sandbox service…</strong>
-          <span data-session-timer></span>
-        </div>
-        <div class="sandbox-controls">
-          <button class="button secondary" data-start-session>Start fresh session</button>
-          <button class="button danger" data-end-session disabled>Destroy session</button>
-        </div>
-      </div>
-      <div class="real-terminal-shell">
+      <div class="codespace-preview">
         <div class="real-terminal-titlebar">
           <div class="window-dots"><i></i><i></i><i></i></div>
-          <span data-terminal-title>guest@sandbox — disconnected</span>
-          <span>everything here is disposable</span>
+          <span>codespace@linux-lab — ~/lab</span>
+          <span>visitor-owned environment</span>
         </div>
-        <div id="xterm-root"></div>
+        <div class="codespace-terminal">
+          <p><span>$</span> whoami</p>
+          <strong>vscode</strong>
+          <p><span>$</span> pwd</p>
+          <strong>/workspaces/portofolio/lab</strong>
+          <p><span>$</span> python3 --version</p>
+          <strong>Python 3.x</strong>
+          <p><span>$</span> nmap --version</p>
+          <strong>Nmap available</strong>
+          <p><span>$</span> cat README.md</p>
+          <strong>Welcome to the Linux practice lab.</strong>
+        </div>
       </div>
+
+      <div class="codespace-flow">
+        <article>
+          <span>01</span>
+          <h2>Click launch</h2>
+          <p>GitHub opens the Codespaces creation screen for this repository.</p>
+        </article>
+        <article>
+          <span>02</span>
+          <h2>GitHub builds it</h2>
+          <p>The checked-in devcontainer installs the lab environment automatically.</p>
+        </article>
+        <article>
+          <span>03</span>
+          <h2>Use real Linux</h2>
+          <p>The visitor gets VS Code in the browser plus an actual terminal and writable workspace.</p>
+        </article>
+        <article>
+          <span>04</span>
+          <h2>Delete when done</h2>
+          <p>Closing the tab does not instantly erase a Codespace. The visitor can stop or delete it from GitHub when finished.</p>
+        </article>
+      </div>
+
       <div class="sandbox-footnote">
-        <p><strong>Isolation model:</strong> no host filesystem mounts, all Linux capabilities dropped, no-new-privileges, read-only root filesystem, temporary home and automatic cleanup.</p>
-        <p>The public portfolio itself remains static on GitHub Pages; the shell runs on a separate sandbox host.</p>
+        <p><strong>Important:</strong> usage belongs to the GitHub account that creates the Codespace. Visitors must sign in to GitHub.</p>
+        <p>This removes the need for DigitalOcean or another VPS for the lab experience.</p>
       </div>
     </section>
   </main>
-
-  <script src={base + "runtime-config.js"}></script>
-  <style is:global>@import url("https://cdn.jsdelivr.net/npm/@xterm/xterm@5.5.0/css/xterm.css");</style>
-  <script is:inline type="module">
-    import { Terminal } from "https://cdn.jsdelivr.net/npm/@xterm/xterm@5.5.0/+esm";
-    import { FitAddon } from "https://cdn.jsdelivr.net/npm/@xterm/addon-fit@0.10.0/+esm";
-
-    const config = window.PORTFOLIO_RUNTIME || {};
-    const api = String(config.sandboxApi || "").replace(/\/$/, "");
-    const root = document.getElementById("xterm-root");
-    const statusLabel = document.querySelector("[data-status-label]");
-    const statusDot = document.querySelector("[data-status-dot]");
-    const timer = document.querySelector("[data-session-timer]");
-    const title = document.querySelector("[data-terminal-title]");
-    const startButton = document.querySelector("[data-start-session]");
-    const endButton = document.querySelector("[data-end-session]");
-
-    const term = new Terminal({
-      cursorBlink: true,
-      convertEol: true,
-      fontFamily: '"IBM Plex Mono", ui-monospace, monospace',
-      fontSize: 14,
-      lineHeight: 1.25,
-      scrollback: 2500,
-      theme: {
-        background: "#070907",
-        foreground: "#dce5df",
-        cursor: "#62ff9f",
-        selectionBackground: "#244332",
-        black: "#101410",
-        brightBlack: "#667069",
-        green: "#62ff9f",
-        brightGreen: "#9cffbf"
-      }
-    });
-    const fit = new FitAddon();
-    term.loadAddon(fit);
-    term.open(root);
-    fit.fit();
-
-    let socket = null;
-    let session = null;
-    let countdown = null;
-
-    function setStatus(mode, message) {
-      statusLabel.textContent = message;
-      statusDot.dataset.mode = mode;
-    }
-    function writeBanner() {
-      term.clear();
-      term.writeln("\x1b[1;32mPortfolio Sandbox\x1b[0m");
-      term.writeln("Disposable Linux environment. No data survives the session.");
-      term.writeln("");
-    }
-    async function checkHealth() {
-      if (!api) {
-        setStatus("offline", "Sandbox backend not connected yet");
-        term.writeln("\x1b[33mSandbox service is not configured on this deployment.\x1b[0m");
-        term.writeln("The frontend and isolated runtime are ready; a sandbox host still needs to be connected.");
-        startButton.disabled = true;
-        return;
-      }
-      try {
-        const response = await fetch(api + "/api/health", { mode: "cors" });
-        const data = await response.json();
-        if (!response.ok || !data.ready) throw new Error(data.error || "not ready");
-        setStatus("ready", "Sandbox service ready");
-        term.writeln("\x1b[32mService ready. Start a fresh Linux session.\x1b[0m");
-      } catch (error) {
-        setStatus("offline", "Sandbox service unavailable");
-        term.writeln("\x1b[31mSandbox backend is currently unavailable.\x1b[0m");
-      }
-    }
-    function beginCountdown(expiresAt) {
-      clearInterval(countdown);
-      const tick = () => {
-        const left = Math.max(0, new Date(expiresAt).getTime() - Date.now());
-        const min = Math.floor(left / 60000);
-        const sec = Math.floor((left % 60000) / 1000);
-        timer.textContent = left ? "TTL " + min + ":" + String(sec).padStart(2, "0") : "expired";
-      };
-      tick();
-      countdown = setInterval(tick, 1000);
-    }
-    async function startSession() {
-      if (!api || socket) return;
-      startButton.disabled = true;
-      setStatus("working", "Allocating isolated Linux…");
-      writeBanner();
-      try {
-        const response = await fetch(api + "/api/sessions", { method: "POST", headers: { "Content-Type": "application/json" }, body: "{}" });
-        const data = await response.json();
-        if (!response.ok) throw new Error(data.error || "session creation failed");
-        session = data;
-        beginCountdown(data.expiresAt);
-        socket = new WebSocket(data.wsUrl);
-        socket.addEventListener("open", () => {
-          setStatus("live", "Session active");
-          title.textContent = "guest@sandbox — live";
-          endButton.disabled = false;
-          fit.fit();
-        });
-        socket.addEventListener("message", (event) => {
-          try {
-            const msg = JSON.parse(event.data);
-            if (msg.type === "output") term.write(msg.data);
-            if (msg.type === "notice") term.writeln("\r\n\x1b[33m" + msg.data + "\x1b[0m");
-          } catch {}
-        });
-        socket.addEventListener("close", () => {
-          socket = null;
-          session = null;
-          endButton.disabled = true;
-          startButton.disabled = false;
-          clearInterval(countdown);
-          timer.textContent = "";
-          title.textContent = "guest@sandbox — destroyed";
-          setStatus("ready", "Session destroyed");
-          term.writeln("\r\n\x1b[90m[environment destroyed]\x1b[0m");
-        });
-        socket.addEventListener("error", () => setStatus("offline", "Terminal connection failed"));
-      } catch (error) {
-        startButton.disabled = false;
-        setStatus("offline", error.message || "Unable to start sandbox");
-        term.writeln("\x1b[31mUnable to create sandbox session.\x1b[0m");
-      }
-    }
-    async function endSession() {
-      if (!session) return;
-      try {
-        await fetch(api + "/api/sessions/" + encodeURIComponent(session.id), {
-          method: "DELETE",
-          headers: { Authorization: "Bearer " + session.token },
-          keepalive: true
-        });
-      } catch {}
-      socket?.close();
-    }
-
-    term.onData((data) => {
-      if (socket?.readyState === WebSocket.OPEN) socket.send(JSON.stringify({ type: "input", data }));
-    });
-    term.onResize(({ cols, rows }) => {
-      if (socket?.readyState === WebSocket.OPEN) socket.send(JSON.stringify({ type: "resize", cols, rows }));
-    });
-    new ResizeObserver(() => fit.fit()).observe(root);
-    startButton.addEventListener("click", startSession);
-    endButton.addEventListener("click", endSession);
-    window.addEventListener("pagehide", () => {
-      if (socket) socket.close();
-      if (session) {
-        fetch(api + "/api/sessions/" + encodeURIComponent(session.id), {
-          method: "DELETE",
-          headers: { Authorization: "Bearer " + session.token },
-          keepalive: true
-        }).catch(() => {});
-      }
-    });
-    writeBanner();
-    checkHealth();
-  </script>
 </BaseLayout>

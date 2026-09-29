@@ -1,9 +1,9 @@
-# Fusion portfolio + roadmap + ephemeral Linux
+# Fusion portfolio + live roadmap + GitHub Codespaces lab
 
-The portfolio is an Astro static site deployed to GitHub Pages. It now has two connected interactive experiences:
+This Astro portfolio is deployed on GitHub Pages and connects two interactive experiences:
 
-- **Roadmap** — embeds the live Lumina Academy roadmap from `https://hackus-mans.github.io/roadmap/`. Visitors can use it and keep their own progress in browser storage.
-- **Linux Sandbox** — a real browser terminal UI that connects over WebSocket to a separate ephemeral-container gateway.
+- **Roadmap** — the live Lumina Academy roadmap is embedded from `https://hackus-mans.github.io/roadmap/`. Changes deployed in the roadmap repository appear automatically inside the portfolio.
+- **Linux Lab** — visitors launch a personal GitHub Codespace from this repository. The checked-in `.devcontainer/` config prepares the Linux environment automatically.
 
 ## Frontend
 
@@ -16,31 +16,42 @@ npm run build
 Routes:
 
 - `/` portfolio
-- `/roadmap/` embedded interactive roadmap
-- `/terminal/` real sandbox terminal client
+- `/roadmap/` live embedded roadmap
+- `/terminal/` GitHub Codespaces Linux Lab launcher
 - `/case-study/` sample case study
 
-The public sandbox gateway URL is configured in:
+## Linux Lab
+
+Direct Codespaces creation URL:
 
 ```text
-public/runtime-config.js
+https://codespaces.new/hackus-mans/portofolio?quickstart=1
 ```
 
-It is deliberately empty until a dedicated sandbox host is deployed.
+Environment definition:
 
-## Sandbox backend
+```text
+.devcontainer/
+├── devcontainer.json
+├── Dockerfile
+├── setup-lab.sh
+└── welcome.sh
+```
 
-See `sandbox-server/README.md`.
+Practice workspace:
 
-The sandbox backend is separated from GitHub Pages because a static host cannot create Linux processes or WebSocket-backed disposable containers.
+```text
+lab/
+├── README.md
+├── check-environment.sh
+├── exercises/
+├── playground/
+└── notes/
+```
 
-## Security defaults
-
-The public shell is not a shell on the portfolio server. Each visitor receives a separate non-root container with no network, no host mounts, a read-only root filesystem, strict CPU/RAM/PID limits, temporary storage and automatic destruction.
+A Codespace belongs to the GitHub account that creates it. Closing a browser tab does not immediately delete it; the user can stop or delete it through GitHub.
 
 ## GitHub Pages
-
-Frontend URL:
 
 ```text
 https://hackus-mans.github.io/portofolio/
