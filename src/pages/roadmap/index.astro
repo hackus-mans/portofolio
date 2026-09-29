@@ -1,0 +1,36 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import Nav from "../../components/Nav.astro";
+const roadmapUrl = "https://hackus-mans.github.io/roadmap/";
+---
+<BaseLayout title="Interactive Cybersecurity Roadmap" description="An interactive cybersecurity roadmap with prerequisites, progress tracking, projects and specialization tracks.">
+  <Nav />
+  <main class="embedded-app-main">
+    <section class="app-intro wrap">
+      <div>
+        <span class="card-label">LEARNING PATH / INTERACTIVE</span>
+        <h1>Cybersecurity roadmap.</h1>
+        <p>This is the learning path connected to the portfolio. You can explore it, open modules, validate prerequisites and keep your own progress locally in your browser.</p>
+      </div>
+      <div class="app-intro-actions">
+        <div class="app-stat"><strong>22</strong><span>skills</span></div>
+        <div class="app-stat"><strong>42</strong><span>links</span></div>
+        <div class="app-stat"><strong>6</strong><span>tracks</span></div>
+        <a class="button secondary" href={roadmapUrl} target="_blank" rel="noopener noreferrer">Open full screen ↗</a>
+      </div>
+    </section>
+    <section class="roadmap-frame-shell">
+      <div class="roadmap-frame-bar wrap">
+        <span><i></i> Lumina Academy / live roadmap</span>
+        <span>progress is stored per visitor</span>
+      </div>
+      <iframe
+        class="roadmap-frame"
+        src={roadmapUrl}
+        title="Lumina Academy cybersecurity roadmap"
+        loading="eager"
+        referrerpolicy="strict-origin-when-cross-origin"
+      ></iframe>
+    </section>
+  </main>
+</BaseLayout>

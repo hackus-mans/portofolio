@@ -1,29 +1,11 @@
-# Fusion — Hybrid Astro Portfolio Template
+# Fusion portfolio + roadmap + ephemeral Linux
 
-A neutral portfolio template that combines several portfolio patterns into one coherent system:
+The portfolio is an Astro static site deployed to GitHub Pages. It now has two connected interactive experiences:
 
-- dark minimal visual language
-- modular bento layout
-- interactive terminal / command palette
-- multiple visual theme presets
-- case-study-first project presentation
-- editorial typography
-- scroll reveal and subtle tilt motion
-- structured decision-log content
-- responsive navigation
-- centralized demo configuration
+- **Roadmap** — embeds the live Lumina Academy roadmap from `https://hackus-mans.github.io/roadmap/`. Visitors can use it and keep their own progress in browser storage.
+- **Linux Sandbox** — a real browser terminal UI that connects over WebSocket to a separate ephemeral-container gateway.
 
-The template intentionally contains generic demo content. Personal content can be added later from `src/config.ts`.
-
-## Stack
-
-- Astro
-- TypeScript
-- Tailwind CSS v4
-- Vanilla JavaScript interactions
-- GitHub Pages
-
-## Commands
+## Frontend
 
 ```bash
 npm ci
@@ -31,30 +13,35 @@ npm run dev
 npm run build
 ```
 
-## Keyboard
+Routes:
 
-Press `Ctrl/Cmd + K` to open the interactive terminal.
+- `/` portfolio
+- `/roadmap/` embedded interactive roadmap
+- `/terminal/` real sandbox terminal client
+- `/case-study/` sample case study
 
-Terminal commands:
+The public sandbox gateway URL is configured in:
 
 ```text
-help
-about
-projects
-themes
-theme mono
-theme phosphor
-theme amber
-contact
-clear
+public/runtime-config.js
 ```
 
-## Deployment
+It is deliberately empty until a dedicated sandbox host is deployed.
 
-Configured for:
+## Sandbox backend
+
+See `sandbox-server/README.md`.
+
+The sandbox backend is separated from GitHub Pages because a static host cannot create Linux processes or WebSocket-backed disposable containers.
+
+## Security defaults
+
+The public shell is not a shell on the portfolio server. Each visitor receives a separate non-root container with no network, no host mounts, a read-only root filesystem, strict CPU/RAM/PID limits, temporary storage and automatic destruction.
+
+## GitHub Pages
+
+Frontend URL:
 
 ```text
 https://hackus-mans.github.io/portofolio/
 ```
-
-The GitHub Pages workflow remains in `.github/workflows/deploy-astro.yml`.

@@ -1,4 +1,4 @@
-name: Validate hybrid template
+name: Validate portfolio and sandbox
 on:
   pull_request:
     branches: [main]
@@ -15,3 +15,10 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm run build
+      - name: Validate sandbox gateway
+        working-directory: sandbox-server
+        run: |
+          npm install --ignore-scripts --no-audit --no-fund
+          npm run check
+      - name: Build disposable Linux image
+        run: docker build -t portfolio-sandbox:test sandbox-server/sandbox-image
