@@ -1,29 +1,52 @@
 ---
 import BaseLayout from "../../../layouts/BaseLayout.astro";
 import Nav from "../../../components/Nav.astro";
+import { site } from "../../../config";
 const rawBase = import.meta.env.BASE_URL;
 const base = rawBase.endsWith("/") ? rawBase : rawBase + "/";
 ---
-<BaseLayout title="Labs & CTF — Joseph NAKORE" description="Pratique cybersécurité sur Hack The Box, TryHackMe et CTF.">
+<BaseLayout title={"Labs & CTF — " + site.name} description="Pratique cybersécurité continue sur HTB, TryHackMe et en CTF.">
   <Nav />
-  <main class="case-main">
-    <section class="case-hero wrap">
-      <a class="back-link" href={base}>← Retour au portfolio</a>
-      <div class="case-kicker"><span>PRACTICE / LABS & CTF</span><span>ONGOING</span></div>
+  <main class="project-page">
+    <section class="project-hero shell">
+      <a class="breadcrumb" href={base + "#projects"}>← Retour aux projets</a>
+      <p class="project-overline">OFFENSIVE SECURITY · CONTINUOUS PRACTICE</p>
       <h1>Labs & CTF</h1>
-      <p>Une pratique régulière pour transformer la théorie en réflexes : reconnaissance, énumération, analyse, exploitation en environnement autorisé, privesc, investigation et reporting.</p>
-      <div class="case-meta">
-        <div><small>Plateformes</small><strong>HTB · TryHackMe</strong></div>
-        <div><small>Domaines</small><strong>Web · System · Network</strong></div>
-        <div><small>Résultats</small><strong>Top 1 ×2 · Top 3 Cyberbattle</strong></div>
+      <p class="project-lead">Une pratique régulière pour transformer les concepts en réflexes : reconnaissance, énumération, analyse, validation, exploitation autorisée, élévation de privilèges et reporting.</p>
+      <div class="project-meta-grid">
+        <div><span>Plateformes</span><strong>HTB · TryHackMe · Hackviser</strong></div>
+        <div><span>Domaines</span><strong>Web · Systems · Network</strong></div>
+        <div><span>Résultats</span><strong>Top 1 ×2 · Top 3</strong></div>
       </div>
     </section>
-    <section class="case-grid wrap">
-      <aside class="case-sidebar"><nav><a href="#domains">01 Domaines</a><a href="#method">02 Méthode</a><a href="#results">03 Résultats</a></nav></aside>
-      <article class="case-content">
-        <section id="domains"><span>01 / DOMAINES</span><h2>Des environnements variés, une méthodologie commune.</h2><div class="chip-cloud">{["Web / API","Linux","Windows","Active Directory","Réseau","Cryptographie","Forensic","Reverse engineering"].map(item => <span>{item}</span>)}</div></section>
-        <section id="method"><span>02 / MÉTHODE</span><h2>Recon → Enum → Analyse → Validation → Reporting.</h2><p>Je privilégie la compréhension des mécanismes et la prise de notes : chaque lab doit produire des hypothèses vérifiables, des preuves et une explication claire de la cause technique.</p></section>
-        <section id="results"><span>03 / COMPÉTITIONS</span><h2>Résultats CTF documentés.</h2><p>Mon parcours comprend deux résultats Top 1 en CTF ainsi qu’un Top 3 lors d’un Cyberbattle IPNET. Ces résultats complètent la pratique quotidienne, mais ne remplacent pas le travail de fond sur les systèmes et les méthodologies.</p><a class="button secondary" href={base}>Retour au portfolio ↗</a></section>
+
+    <section class="project-content shell">
+      <aside class="project-sidebar"><nav><a href="#domains">01 · Domaines</a><a href="#method">02 · Méthode</a><a href="#results">03 · Résultats</a></nav></aside>
+      <article class="project-article">
+        <section id="domains">
+          <span class="project-section-label">01 / DOMAINES</span>
+          <h2>Changer d’environnement sans perdre la méthode.</h2>
+          <div class="architecture-list">
+            {[
+              ["Web / API", "HTTP, logique applicative, contrôle d’accès, injection et analyse de flux."],
+              ["Linux", "Services, permissions, fichiers, processus et élévation de privilèges."],
+              ["Windows / AD", "SMB, RDP, droits, services et environnements d’entreprise."],
+              ["Réseau", "Découverte, services, protocoles, segmentation et hypothèses d’attaque."],
+              ["Crypto / Reverse / Forensic", "Challenges permettant de renforcer le raisonnement et l’analyse."]
+            ].map(item => <div><strong>{item[0]}</strong><p>{item[1]}</p></div>)}
+          </div>
+        </section>
+        <section id="method">
+          <span class="project-section-label">02 / MÉTHODE</span>
+          <h2>Recon → Enum → Analyse → Hypothèse → Validation → Reporting.</h2>
+          <p>Chaque lab doit produire plus qu’un flag. Je cherche à comprendre la cause technique, documenter le chemin suivi, distinguer les fausses pistes des signaux utiles et être capable de refaire l’analyse sans dépendre d’un walkthrough.</p>
+        </section>
+        <section id="results">
+          <span class="project-section-label">03 / RÉSULTATS</span>
+          <h2>La compétition comme test ponctuel, la pratique comme fondation.</h2>
+          <p>Le parcours inclut deux résultats Top 1 en CTF ainsi qu’un Top 3 lors d’un Cyberbattle IPNET. Ces résultats servent de repères, mais la progression principale vient de la pratique régulière et de la documentation.</p>
+          <a class="btn btn-secondary" href={base + "#projects"}>Retour aux projets</a>
+        </section>
       </article>
     </section>
   </main>

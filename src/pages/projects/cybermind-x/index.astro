@@ -1,0 +1,77 @@
+---
+import BaseLayout from "../../../layouts/BaseLayout.astro";
+import Nav from "../../../components/Nav.astro";
+import { site } from "../../../config";
+const rawBase = import.meta.env.BASE_URL;
+const base = rawBase.endsWith("/") ? rawBase : rawBase + "/";
+---
+<BaseLayout title={"CyberMind X — " + site.name} description="Mini-SOC expérimental combinant détection, honeypot, SOAR et assistance IA.">
+  <Nav />
+  <main class="project-page">
+    <section class="project-hero shell">
+      <a class="breadcrumb" href={base + "#projects"}>← Retour aux projets</a>
+      <p class="project-overline">SECURITY ENGINEERING · SOC · 2026</p>
+      <h1>CyberMind X</h1>
+      <p class="project-lead">Un mini-SOC expérimental conçu pour relier collecte, détection, honeypot, orchestration et assistance IA dans une chaîne cohérente d’analyse de sécurité.</p>
+
+      <div class="project-meta-grid">
+        <div><span>Objectif</span><strong>Rendre la télémétrie exploitable</strong></div>
+        <div><span>Architecture</span><strong>Detection + SOAR + AI</strong></div>
+        <div><span>Environnement</span><strong>Lab contrôlé</strong></div>
+      </div>
+    </section>
+
+    <section class="project-content shell">
+      <aside class="project-sidebar">
+        <nav>
+          <a href="#problem">01 · Problème</a>
+          <a href="#architecture">02 · Architecture</a>
+          <a href="#validation">03 · Validation</a>
+          <a href="#learning">04 · Apprentissage</a>
+        </nav>
+      </aside>
+
+      <article class="project-article">
+        <section id="problem">
+          <span class="project-section-label">01 / PROBLÈME</span>
+          <h2>Un SOC n’est utile que si les signaux deviennent compréhensibles et actionnables.</h2>
+          <p>CyberMind X part d’une question pratique : comment relier plusieurs sources de sécurité sans transformer le lab en accumulation d’outils ? Le projet cherche à faire circuler les événements depuis la collecte jusqu’à l’analyse puis, lorsque cela est pertinent, vers une action orchestrée.</p>
+        </section>
+
+        <section id="architecture">
+          <span class="project-section-label">02 / ARCHITECTURE</span>
+          <h2>Chaque composant doit avoir un rôle clair dans la chaîne.</h2>
+          <div class="architecture-list">
+            {[
+              ["Wazuh", "Collecte, événements hôte et corrélation."],
+              ["Suricata", "Détection réseau et génération d’alertes."],
+              ["Cowrie", "Honeypot pour observer des interactions contrôlées."],
+              ["Shuffle", "Orchestration de workflows et réponses."],
+              ["Ollama / LLM", "Aide à la synthèse et à la contextualisation des événements."],
+              ["Docker", "Isolation et reproductibilité des composants du lab."]
+            ].map(item => (
+              <div><strong>{item[0]}</strong><p>{item[1]}</p></div>
+            ))}
+          </div>
+        </section>
+
+        <section id="validation">
+          <span class="project-section-label">03 / VALIDATION</span>
+          <h2>Tester la chaîne avec des événements simples avant d’ajouter de la complexité.</h2>
+          <p>Le lab est validé avec des scénarios contrôlés : scans réseau, tentatives SSH, modifications de fichiers surveillés, création d’utilisateurs et autres événements permettant de vérifier ce qui est vu, ce qui est alerté et ce qui peut être orchestré.</p>
+          <div class="evidence-callout">
+            <span>MÉTHODE</span>
+            <p>Événement → télémétrie → détection → investigation → action → documentation.</p>
+          </div>
+        </section>
+
+        <section id="learning">
+          <span class="project-section-label">04 / APPRENTISSAGE</span>
+          <h2>Le projet sert surtout à relier attaque, visibilité et réponse.</h2>
+          <p>La valeur du projet n’est pas de prétendre recréer un SOC d’entreprise. Elle est de comprendre les flux entre composants, les limites de chaque source de données et la manière dont une action offensive produit des traces exploitables côté défense.</p>
+          <a class="btn btn-secondary" href={base + "#projects"}>Retour aux projets</a>
+        </section>
+      </article>
+    </section>
+  </main>
+</BaseLayout>

@@ -3,43 +3,37 @@ import { site } from "../config";
 const rawBase = import.meta.env.BASE_URL;
 const base = rawBase.endsWith("/") ? rawBase : rawBase + "/";
 ---
-<header class="nav-shell">
-  <nav class="nav wrap" aria-label="Navigation principale">
-    <a class="brand" href={base}>
-      <span class="brand-mark">JN</span>
-      <span>{site.shortName}</span>
+<header class="site-header">
+  <nav class="site-nav shell" aria-label="Navigation principale">
+    <a class="identity" href={base} aria-label="Accueil — Joseph NAKORE">
+      <span class="identity-mark">JN</span>
+      <span class="identity-copy">
+        <strong>{site.shortName}</strong>
+        <small>Cybersecurity</small>
+      </span>
     </a>
-    <div class="nav-links">
-      <a href={base + "#work"}>Projets</a>
-      <a href={base + "roadmap/"}>Roadmap</a>
+
+    <div class="desktop-nav">
+      <a href={base + "#projects"}>Projets</a>
       <a href={base + "#skills"}>Compétences</a>
-      <a href={base + "#about"}>À propos</a>
+      <a href={base + "#trajectory"}>Parcours</a>
+      <a href={base + "roadmap/"}>Roadmap</a>
     </div>
-    <div class="nav-actions">
-      <div class="theme-picker" aria-label="Thème">
-        <button data-set-theme="mono" title="Thème mono"><span></span></button>
-        <button data-set-theme="phosphor" title="Thème phosphore"><span></span></button>
-        <button data-set-theme="amber" title="Thème ambre"><span></span></button>
+
+    <a class="nav-cta desktop-cta" href={site.social[1].href} target="_blank" rel="noopener noreferrer">
+      LinkedIn <span>↗</span>
+    </a>
+
+    <details class="mobile-menu">
+      <summary>Menu</summary>
+      <div class="mobile-menu-panel">
+        <a href={base + "#projects"}>Projets</a>
+        <a href={base + "#skills"}>Compétences</a>
+        <a href={base + "#trajectory"}>Parcours</a>
+        <a href={base + "roadmap/"}>Roadmap</a>
+        <a href={site.social[1].href} target="_blank" rel="noopener noreferrer">LinkedIn ↗</a>
+        <a href={site.social[0].href} target="_blank" rel="noopener noreferrer">GitHub ↗</a>
       </div>
-      <a class="terminal-trigger" href={base + "terminal/"} aria-label="Ouvrir le terminal">
-        <span>TERMINAL</span>
-      </a>
-      <a class="nav-contact" href={site.social[1].href} target="_blank" rel="noopener noreferrer">LinkedIn ↗</a>
-    </div>
+    </details>
   </nav>
 </header>
-<script define:vars={{ terminalPath: base + "terminal/" }}>
-  document.querySelectorAll("[data-set-theme]").forEach((button) => {
-    button.addEventListener("click", () => {
-      const theme = button.getAttribute("data-set-theme") || "mono";
-      document.documentElement.dataset.theme = theme;
-      try { localStorage.setItem("fusion-theme", theme); } catch {}
-    });
-  });
-  document.addEventListener("keydown", (event) => {
-    if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === "k") {
-      event.preventDefault();
-      window.location.href = terminalPath;
-    }
-  });
-</script>

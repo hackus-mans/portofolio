@@ -1,33 +1,42 @@
 ---
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import Nav from "../../components/Nav.astro";
+import { site } from "../../config";
 const roadmapUrl = "https://hackus-mans.github.io/roadmap/";
+const rawBase = import.meta.env.BASE_URL;
+const base = rawBase.endsWith("/") ? rawBase : rawBase + "/";
 ---
-<BaseLayout title="Interactive Cybersecurity Roadmap" description="An interactive cybersecurity roadmap with prerequisites, progress tracking, projects and specialization tracks.">
+<BaseLayout title={"Roadmap — " + site.name} description={site.roadmap.description}>
   <Nav />
-  <main class="embedded-app-main">
-    <section class="app-intro wrap">
-      <div>
-        <span class="card-label">LEARNING PATH / INTERACTIVE</span>
-        <h1>Cybersecurity roadmap.</h1>
-        <p>This is the learning path connected to the portfolio. You can explore it, open modules, validate prerequisites and keep your own progress locally in your browser.</p>
-      </div>
-      <div class="app-intro-actions">
-        <div class="app-stat"><strong>22</strong><span>skills</span></div>
-        <div class="app-stat"><strong>42</strong><span>links</span></div>
-        <div class="app-stat"><strong>6</strong><span>tracks</span></div>
-        <a class="button secondary" href={roadmapUrl} target="_blank" rel="noopener noreferrer">Open full screen ↗</a>
+  <main class="roadmap-page">
+    <section class="roadmap-page-hero shell">
+      <a class="breadcrumb" href={base}>← Retour au portfolio</a>
+      <div class="roadmap-page-grid">
+        <div>
+          <p class="section-kicker">LUMINA ACADEMY · ROADMAP LIVE</p>
+          <h1>Le parcours que je structure et que les visiteurs peuvent utiliser.</h1>
+          <p>{site.roadmap.description}</p>
+        </div>
+        <div class="roadmap-page-side">
+          <div class="roadmap-page-stats">
+            {site.roadmap.stats.map(stat => (
+              <article><strong>{stat.value}</strong><span>{stat.label}</span></article>
+            ))}
+          </div>
+          <a class="btn btn-secondary" href={roadmapUrl} target="_blank" rel="noopener noreferrer">Ouvrir en plein écran ↗</a>
+        </div>
       </div>
     </section>
-    <section class="roadmap-frame-shell">
-      <div class="roadmap-frame-bar wrap">
-        <span><i></i> Lumina Academy / live roadmap</span>
-        <span>progress is stored per visitor</span>
+
+    <section class="roadmap-live-shell">
+      <div class="roadmap-live-bar shell">
+        <span><i></i> Version publiée de Lumina Academy</span>
+        <span>mise à jour automatiquement après chaque déploiement</span>
       </div>
       <iframe
         class="roadmap-frame"
         src={roadmapUrl}
-        title="Lumina Academy cybersecurity roadmap"
+        title="Lumina Academy — roadmap cybersécurité"
         loading="eager"
         referrerpolicy="strict-origin-when-cross-origin"
       ></iframe>

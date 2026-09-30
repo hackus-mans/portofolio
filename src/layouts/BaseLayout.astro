@@ -2,35 +2,49 @@
 import "../styles/global.css";
 import { site } from "../config";
 const {
-  title = site.name,
+  title = site.name + " — Cybersécurité",
   description = site.intro
 } = Astro.props;
 const rawBase = import.meta.env.BASE_URL;
 const base = rawBase.endsWith("/") ? rawBase : rawBase + "/";
+const canonical = new URL(Astro.url.pathname, "https://hackus-mans.github.io").toString();
+const personSchema = {
+  "@context": "https://schema.org",
+  "@type": "Person",
+  name: site.name,
+  alternateName: site.handle,
+  url: "https://hackus-mans.github.io/portofolio/",
+  sameAs: site.social.map(item => item.href),
+  jobTitle: "Étudiant en cybersécurité",
+  address: {
+    "@type": "PostalAddress",
+    addressLocality: "Lomé",
+    addressCountry: "TG"
+  },
+  alumniOf: {
+    "@type": "CollegeOrUniversity",
+    name: site.education.school
+  }
+};
 ---
 <!doctype html>
-<html lang="en" data-theme="mono">
+<html lang="fr">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width" />
-    <meta name="theme-color" content="#0a0a0a" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#07111b" />
+    <meta name="color-scheme" content="dark" />
     <meta name="description" content={description} />
+    <meta name="robots" content="index,follow" />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:locale" content="fr_FR" />
+    <link rel="canonical" href={canonical} />
     <link rel="icon" type="image/svg+xml" href={base + "favicon.svg"} />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
     <title>{title}</title>
-    <script is:inline>
-      (() => {
-        try {
-          const theme = localStorage.getItem("fusion-theme");
-          if (theme) document.documentElement.dataset.theme = theme;
-        } catch {}
-      })();
-    </script>
+    <script type="application/ld+json" set:html={JSON.stringify(personSchema)} />
   </head>
   <body>
     <slot />

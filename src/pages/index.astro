@@ -5,241 +5,264 @@ import { site } from "../config";
 const rawBase = import.meta.env.BASE_URL;
 const base = rawBase.endsWith("/") ? rawBase : rawBase + "/";
 ---
-<BaseLayout
-  title={site.name + " — Cybersécurité"}
-  description={site.intro}
->
+<BaseLayout title={site.name + " — Pentest, SOC & sécurité systèmes/réseaux"} description={site.intro}>
   <Nav />
+
   <main>
-    <section class="hero wrap">
-      <div class="hero-grid">
-        <div class="hero-copy reveal">
-          <div class="eyebrow"><span class="signal-dot"></span> {site.location} · Cybersécurité offensive & défensive</div>
-          <h1>
-            Joseph NAKORE.<br />
-            <span class="scramble" data-scramble="Cybersecurity.">Cybersecurity.</span>
-          </h1>
-          <p>{site.intro}</p>
-          <div class="hero-actions">
-            <a class="button primary magnetic" href="#work">Voir mes projets <span>↘</span></a>
-            <a class="button secondary" href={base + "roadmap/"}>Voir ma roadmap <span>↗</span></a>
+    <section class="hero shell">
+      <div class="hero-copy">
+        <div class="status-line">
+          <span class="status-dot" aria-hidden="true"></span>
+          <span>{site.location}</span>
+          <span class="separator">/</span>
+          <span>Cybersecurity student</span>
+        </div>
+
+        <h1>{site.headline}</h1>
+        <p class="hero-lead">{site.intro}</p>
+
+        <div class="hero-actions">
+          <a class="btn btn-primary" href="#projects">Voir les projets <span>↓</span></a>
+          <a class="btn btn-secondary" href={base + "roadmap/"}>Explorer la roadmap <span>↗</span></a>
+        </div>
+
+        <div class="hero-links" aria-label="Profils publics">
+          {site.social.map(item => (
+            <a href={item.href} target="_blank" rel="noopener noreferrer">{item.label} ↗</a>
+          ))}
+        </div>
+      </div>
+
+      <aside class="profile-card" aria-label="Résumé du profil">
+        <div class="profile-card-top">
+          <div class="monogram">JN</div>
+          <div>
+            <small>PROFIL</small>
+            <strong>{site.shortName}</strong>
           </div>
         </div>
 
-        <aside class="hero-console reveal" aria-label="Profil cybersécurité">
-          <div class="console-bar"><i></i><i></i><i></i><span>profile.status</span></div>
-          <div class="console-content">
-            <small>ROLE</small><strong>Cybersecurity Student</strong>
-            <small>FOCUS</small><strong>Pentest · SOC · Web/API</strong>
-            <small>SYSTEMS</small><strong>Linux · Windows · Active Directory</strong>
-            <small>CURRENT</small><strong>CPTS + CAPT preparation</strong>
-          </div>
-          <div class="scan"></div>
-        </aside>
+        <dl class="profile-facts">
+          <div><dt>Formation</dt><dd>Licence pro Cybersécurité</dd></div>
+          <div><dt>École</dt><dd>IPNET Institute of Technology</dd></div>
+          <div><dt>Focus</dt><dd>Pentest · SOC · Web/API</dd></div>
+          <div><dt>Systèmes</dt><dd>Linux · Windows · AD</dd></div>
+          <div><dt>Actuellement</dt><dd>CPTS + CAPT en préparation</dd></div>
+        </dl>
+
+        <div class="profile-principle">
+          <span>PRINCIPE</span>
+          <p>Comprendre le mécanisme avant d’automatiser l’outil.</p>
+        </div>
+      </aside>
+    </section>
+
+    <section class="proof-strip" aria-label="Repères vérifiables">
+      <div class="shell proof-grid">
+        {site.proof.map(item => (
+          <article>
+            <strong>{item.value}</strong>
+            <span>{item.label}</span>
+            <small>{item.detail}</small>
+          </article>
+        ))}
       </div>
-      <div class="hero-marquee" aria-hidden="true">
+    </section>
+
+    <section class="section shell audience-section">
+      <div class="section-heading">
+        <span class="section-index">01</span>
         <div>
-          <span>PENTEST</span><span>SOC</span><span>WEB / API</span><span>ACTIVE DIRECTORY</span><span>LINUX</span><span>WINDOWS</span><span>CTF</span><span>PYTHON</span><span>PENTEST</span><span>SOC</span>
+          <p class="section-kicker">UNE LECTURE ADAPTÉE À CHAQUE VISITEUR</p>
+          <h2>Le site doit répondre vite à la bonne question.</h2>
         </div>
+      </div>
+
+      <div class="audience-grid">
+        <a class="audience-card" href="#trajectory">
+          <span>Recruteur / DSI</span>
+          <h3>Quel profil est-ce que je recrute ?</h3>
+          <p>Formation, domaines de compétence, certifications, objectifs actuels et preuves de progression.</p>
+          <strong>Voir le parcours →</strong>
+        </a>
+        <a class="audience-card" href="#projects">
+          <span>Évaluateur technique</span>
+          <h3>Qu’est-ce qu’il sait réellement faire ?</h3>
+          <p>Projets, architectures, méthodologies, technologies utilisées et résultats obtenus.</p>
+          <strong>Voir les preuves →</strong>
+        </a>
+        <a class="audience-card" href={base + "roadmap/"}>
+          <span>Étudiant / pair</span>
+          <h3>Comment est structuré son apprentissage ?</h3>
+          <p>Une roadmap interactive ouverte aux visiteurs, avec prérequis, spécialisations et projets.</p>
+          <strong>Explorer la roadmap →</strong>
+        </a>
       </div>
     </section>
 
-    <section class="section wrap" id="about">
-      <div class="section-head reveal">
-        <span>01 / À PROPOS</span>
-        <h2>Comprendre l’attaque pour mieux défendre.</h2>
-        <p>Je construis mes compétences autour d’une approche pratique : comprendre les systèmes, les réseaux et les applications, formuler des hypothèses, les tester dans des environnements autorisés, analyser les traces produites et relier chaque faiblesse à une correction ou une détection.</p>
+    <section class="section shell" id="skills">
+      <div class="section-heading">
+        <span class="section-index">02</span>
+        <div>
+          <p class="section-kicker">CAPACITÉS</p>
+          <h2>Compétences organisées par ce que je peux analyser et construire.</h2>
+        </div>
       </div>
 
-      <div class="bento">
-        <article class="bento-card bento-large reveal tilt">
-          <span class="card-label">Identité</span>
-          <h3>{site.name}</h3>
-          <p>{site.role}</p>
-          <div class="big-type">JN</div>
-        </article>
-
-        <article class="bento-card reveal" id="skills">
-          <span class="card-label">Compétences</span>
-          <div class="chip-cloud">{site.stack.map((item) => <span>{item}</span>)}</div>
-        </article>
-
-        <article class="bento-card reveal">
-          <span class="card-label">Formation</span>
-          <div class="availability"><i></i><strong>IPNET Institute of Technology</strong></div>
-          <p>Licence professionnelle en Cybersécurité · 2024–2027 · Lomé</p>
-        </article>
-
-        <article class="bento-card bento-wide reveal">
-          <span class="card-label">Approche</span>
-          <blockquote>“Comprendre les mécanismes, pas seulement lancer des outils.”</blockquote>
-          <p>Reconnaissance, énumération, analyse, exploitation autorisée, élévation de privilèges, investigation et reporting : je travaille la méthodologie autant que les outils.</p>
-        </article>
-
-        <article class="bento-card reveal terminal-mini">
-          <span class="card-label">Handle</span>
-          <div class="mini-screen"><b>$</b> whoami<br/><em>{site.handle}</em><br/>github.com/hackus-mans</div>
-        </article>
+      <div class="capability-grid">
+        {site.capabilities.map((capability, i) => (
+          <article class="capability-card">
+            <div class="capability-number">{String(i + 1).padStart(2, "0")}</div>
+            <h3>{capability.title}</h3>
+            <p>{capability.description}</p>
+            <div class="tag-list">
+              {capability.tools.map(tool => <span>{tool}</span>)}
+            </div>
+          </article>
+        ))}
       </div>
     </section>
 
-    <section class="section work-section" id="work">
-      <div class="wrap">
-        <div class="section-head split reveal">
-          <div><span>02 / PROJETS & PRATIQUE</span><h2>Construire, tester, analyser.</h2></div>
-          <p>Des projets de sécurité défensive aux labs offensifs, mon portfolio documente les systèmes construits, les méthodes employées et les compétences réellement travaillées.</p>
+    <section class="section projects-section" id="projects">
+      <div class="shell">
+        <div class="section-heading section-heading-light">
+          <span class="section-index">03</span>
+          <div>
+            <p class="section-kicker">PROJETS & PRATIQUE</p>
+            <h2>Des preuves plus utiles qu’une simple liste d’outils.</h2>
+          </div>
         </div>
-        <div class="project-list">
-          {site.projects.map((project) => (
-            <a class="project-row reveal" href={base + project.href}>
+
+        <div class="project-stack">
+          {site.projects.map(project => (
+            <a class="project-card" href={base + project.href}>
               <div class="project-index">{project.index}</div>
-              <div class="project-main">
-                <span>{project.type}</span>
+              <div class="project-body">
+                <p class="project-type">{project.type}</p>
                 <h3>{project.name}</h3>
-                <p>{project.summary}</p>
-                <div class="project-tags">{project.tags.map(tag => <span>{tag}</span>)}</div>
+                <p class="project-summary">{project.summary}</p>
+                <div class="tag-list tag-list-dark">
+                  {project.tags.map(tag => <span>{tag}</span>)}
+                </div>
               </div>
-              <div class="project-metric"><small>Repère</small><strong>{project.metric}</strong></div>
-              <div class="project-arrow">↗</div>
+              <div class="project-outcome">
+                <span>REPÈRE</span>
+                <strong>{project.outcome}</strong>
+              </div>
+              <div class="project-arrow" aria-hidden="true">↗</div>
             </a>
           ))}
         </div>
       </div>
     </section>
 
-    <section class="section wrap platform-section" id="learning-platform">
-      <div class="section-head split reveal">
+    <section class="section shell method-section">
+      <div class="section-heading">
+        <span class="section-index">04</span>
         <div>
-          <span>03 / ROADMAP</span>
-          <h2>Le parcours que je suis, ouvert aux autres.</h2>
+          <p class="section-kicker">MÉTHODOLOGIE</p>
+          <h2>Je veux être capable d’expliquer le chemin, pas seulement le résultat.</h2>
         </div>
-        <p>Ma roadmap cybersécurité est intégrée au portfolio et reste utilisable par les visiteurs : fondations, pentest, environnements d’entreprise, spécialisations, projets et progression personnelle.</p>
       </div>
-      <div class="experience-grid">
-        <a class="experience-card roadmap-card reveal" href={base + "roadmap/"}>
-          <div class="experience-card-head">
-            <span class="card-label">Roadmap interactive</span>
-            <span class="experience-arrow">↗</span>
-          </div>
-          <h3>Lumina Academy</h3>
-          <p>Un parcours structuré pour progresser des fondations systèmes/réseaux jusqu’au pentest, à Active Directory, au cloud et au Red/Purple Team.</p>
-          <div class="experience-stats">
-            <div><strong>22</strong><span>compétences</span></div>
-            <div><strong>42</strong><span>prérequis</span></div>
-            <div><strong>6</strong><span>spécialisations</span></div>
-          </div>
-          <div class="experience-note">La progression de chaque visiteur reste dans son navigateur.</div>
-        </a>
 
-        <article class="experience-card sandbox-card reveal">
-          <div class="experience-card-head">
-            <span class="card-label">Objectifs actuels</span>
-            <span class="experience-arrow">◎</span>
-          </div>
-          <h3>CPTS & CAPT</h3>
-          <p>Ces certifications sont actuellement des objectifs de formation, pas des certifications déjà obtenues.</p>
-          <div class="sandbox-specs">
-            {site.currentTargets.map((target) => <span>{target}</span>)}
-            <span>PRIVESC</span><span>AD</span><span>WEB</span><span>REPORTING</span>
-          </div>
-          <div class="experience-note">Progression axée sur la méthodologie et la pratique en lab.</div>
-        </article>
-      </div>
-    </section>
-
-    <section class="section wrap" id="process">
-      <div class="section-head reveal">
-        <span>04 / PARCOURS</span>
-        <h2>Une progression construite par la pratique.</h2>
-      </div>
-      <div class="timeline">
-        {site.timeline.map((item) => (
-          <article class="timeline-item reveal">
-            <span>{item.year}</span>
-            <h3>{item.title}</h3>
-            <p>{item.text}</p>
+      <div class="method-flow" aria-label="Méthodologie de travail">
+        {[
+          ["01", "Observer", "Contexte, surface d’attaque, télémétrie et contraintes."],
+          ["02", "Énumérer", "Services, versions, permissions, contenus et relations."],
+          ["03", "Formuler", "Hypothèses techniques basées sur les preuves collectées."],
+          ["04", "Valider", "Tests contrôlés, exploitation autorisée ou reproduction."],
+          ["05", "Expliquer", "Cause, impact, traces, mitigation et documentation."]
+        ].map(step => (
+          <article>
+            <span>{step[0]}</span>
+            <h3>{step[1]}</h3>
+            <p>{step[2]}</p>
           </article>
         ))}
       </div>
     </section>
 
-    <section class="section wrap" id="certifications">
-      <div class="editorial-panel reveal">
+    <section class="section shell trajectory-section" id="trajectory">
+      <div class="section-heading">
+        <span class="section-index">05</span>
         <div>
-          <span class="card-label">Certifications obtenues</span>
-          <h2>Des acquis validés, sans confondre objectifs et certifications.</h2>
+          <p class="section-kicker">PARCOURS & VALIDATION</p>
+          <h2>Ce qui est acquis, ce qui est en cours, et où je vais.</h2>
         </div>
-        <div class="editorial-list">
-          {site.certifications.map((certification) => (
-            <div class="cert-row"><span>{certification}</span><small>OBTENUE</small></div>
-          ))}
-          <div class="cert-row target-row">
-            <span>{site.currentTargets.join(" · ")}</span><small>EN PRÉPARATION</small>
+      </div>
+
+      <div class="trajectory-grid">
+        <article class="trajectory-primary">
+          <span class="eyebrow-label">FORMATION</span>
+          <h3>{site.education.program}</h3>
+          <p>{site.education.school}</p>
+          <dl>
+            <div><dt>Période</dt><dd>{site.education.period}</dd></div>
+            <div><dt>Lieu</dt><dd>{site.education.location}</dd></div>
+            <div><dt>Orientation</dt><dd>Pentest · systèmes/réseaux · SOC</dd></div>
+          </dl>
+        </article>
+
+        <article class="trajectory-secondary">
+          <div class="trajectory-block">
+            <span class="eyebrow-label">CERTIFICATIONS OBTENUES</span>
+            <ul class="clean-list">
+              {site.certifications.map(cert => <li><span>✓</span>{cert}</li>)}
+            </ul>
           </div>
+          <div class="trajectory-block targets">
+            <span class="eyebrow-label">OBJECTIFS ACTUELS</span>
+            <div class="target-row">
+              {site.currentTargets.map(target => <strong>{target}</strong>)}
+            </div>
+            <p>Ces éléments sont des objectifs de formation en cours, pas des certifications déjà obtenues.</p>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="section shell roadmap-feature">
+      <div class="roadmap-copy">
+        <span class="section-index">06</span>
+        <p class="section-kicker">ROADMAP INTERACTIVE</p>
+        <h2>{site.roadmap.name}</h2>
+        <p>{site.roadmap.description}</p>
+        <a class="btn btn-primary" href={base + "roadmap/"}>Ouvrir la roadmap <span>↗</span></a>
+      </div>
+      <div class="roadmap-stats">
+        {site.roadmap.stats.map(stat => (
+          <article><strong>{stat.value}</strong><span>{stat.label}</span></article>
+        ))}
+        <div class="roadmap-note">
+          <span>LIVE</span>
+          <p>La page intégrée charge directement la version publiée de la roadmap. Une mise à jour de la roadmap apparaît automatiquement ici après son déploiement.</p>
         </div>
       </div>
     </section>
 
-    <section class="contact-section wrap reveal">
+    <section class="contact-section shell">
       <div>
-        <span class="card-label">05 / CONTACT</span>
-        <h2>Parlons cybersécurité.</h2>
-        <p>Retrouve mes projets, ma progression et mes activités publiques sur GitHub et LinkedIn.</p>
+        <p class="section-kicker">CONTACT & PREUVES PUBLIQUES</p>
+        <h2>Continuer la conversation ou vérifier le travail.</h2>
+        <p>LinkedIn pour le parcours professionnel. GitHub pour le code, les projets et l’activité technique publique.</p>
       </div>
-      <div class="hero-actions">
-        <a class="button primary magnetic" href={site.social[1].href} target="_blank" rel="noopener noreferrer">LinkedIn ↗</a>
-        <a class="button secondary" href={site.social[0].href} target="_blank" rel="noopener noreferrer">GitHub ↗</a>
+      <div class="contact-actions">
+        <a class="btn btn-primary" href={site.social[1].href} target="_blank" rel="noopener noreferrer">LinkedIn ↗</a>
+        <a class="btn btn-secondary" href={site.social[0].href} target="_blank" rel="noopener noreferrer">GitHub ↗</a>
       </div>
     </section>
   </main>
 
-  <footer class="footer wrap">
-    <div><strong>{site.shortName}</strong><span>Cybersecurity portfolio · {site.location}</span></div>
-    <div>{site.social.map(item => <a href={item.href} target="_blank" rel="noopener noreferrer">{item.label}</a>)}</div>
+  <footer class="site-footer">
+    <div class="shell footer-inner">
+      <div>
+        <strong>{site.name}</strong>
+        <span>{site.role}</span>
+      </div>
+      <div>
+        <span>{site.location}</span>
+        <span>Portfolio cybersécurité · 2026</span>
+      </div>
+    </div>
   </footer>
-
-  <script>
-    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (!reduced) {
-      const io = new IntersectionObserver((entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add("is-visible");
-            io.unobserve(entry.target);
-          }
-        });
-      }, { threshold: .1 });
-      document.querySelectorAll(".reveal").forEach((node) => io.observe(node));
-
-      document.querySelectorAll(".tilt").forEach((card) => {
-        card.addEventListener("pointermove", (event) => {
-          const rect = card.getBoundingClientRect();
-          const rx = ((event.clientY - rect.top) / rect.height - .5) * -5;
-          const ry = ((event.clientX - rect.left) / rect.width - .5) * 5;
-          card.style.transform = "perspective(900px) rotateX(" + rx + "deg) rotateY(" + ry + "deg)";
-        });
-        card.addEventListener("pointerleave", () => card.style.transform = "");
-      });
-
-      const target = document.querySelector("[data-scramble]");
-      if (target) {
-        const finalText = target.getAttribute("data-scramble") || "";
-        const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789#@/";
-        let frame = 0;
-        const tick = () => {
-          const progress = frame / 24;
-          target.textContent = finalText.split("").map((char, i) => {
-            if (char === " ") return " ";
-            return i / finalText.length < progress ? char : chars[Math.floor(Math.random() * chars.length)];
-          }).join("");
-          frame++;
-          if (frame <= 24) requestAnimationFrame(tick);
-          else target.textContent = finalText;
-        };
-        setTimeout(tick, 350);
-      }
-    } else {
-      document.querySelectorAll(".reveal").forEach((node) => node.classList.add("is-visible"));
-    }
-  </script>
 </BaseLayout>
