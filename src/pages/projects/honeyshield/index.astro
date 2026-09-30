@@ -1,29 +1,45 @@
 ---
 import BaseLayout from "../../../layouts/BaseLayout.astro";
 import Nav from "../../../components/Nav.astro";
+import { site } from "../../../config";
 const rawBase = import.meta.env.BASE_URL;
 const base = rawBase.endsWith("/") ? rawBase : rawBase + "/";
 ---
-<BaseLayout title="HoneyShield — Joseph NAKORE" description="HoneyShield, projet de cybersécurité orienté honeypot et détection, 1er Prix JPOPE 2026.">
+<BaseLayout title={"HoneyShield — " + site.name} description="Projet honeypot et détection, 1er Prix JPOPE 2026.">
   <Nav />
-  <main class="case-main">
-    <section class="case-hero wrap">
-      <a class="back-link" href={base}>← Retour au portfolio</a>
-      <div class="case-kicker"><span>PROJECT / HONEYSHIELD</span><span>2026</span></div>
+  <main class="project-page">
+    <section class="project-hero shell">
+      <a class="breadcrumb" href={base + "#projects"}>← Retour aux projets</a>
+      <p class="project-overline">HONEYPOT · DETECTION · 2026</p>
       <h1>HoneyShield</h1>
-      <p>Projet orienté honeypot, observation d’activité hostile et exploitation de la télémétrie de sécurité dans un environnement contrôlé.</p>
-      <div class="case-meta">
-        <div><small>Domaine</small><strong>Honeypot / Detection</strong></div>
-        <div><small>Résultat</small><strong>1er Prix — JPOPE 2026</strong></div>
-        <div><small>Approche</small><strong>Security + AI</strong></div>
+      <p class="project-lead">Un projet centré sur l’observation d’activité hostile dans un environnement contrôlé, l’exploitation de la télémétrie et la restitution utile des événements de sécurité.</p>
+      <div class="project-meta-grid">
+        <div><span>Résultat</span><strong>1er Prix JPOPE 2026</strong></div>
+        <div><span>Domaine</span><strong>Honeypot / Detection</strong></div>
+        <div><span>Approche</span><strong>Security + AI</strong></div>
       </div>
     </section>
-    <section class="case-grid wrap">
-      <aside class="case-sidebar"><nav><a href="#vision">01 Vision</a><a href="#work">02 Travail</a><a href="#result">03 Résultat</a></nav></aside>
-      <article class="case-content">
-        <section id="vision"><span>01 / VISION</span><h2>Transformer l’observation en compréhension.</h2><p>HoneyShield explore l’usage d’un honeypot comme source d’observation et d’apprentissage : collecte d’interactions, analyse des événements et mise en contexte pour comprendre les comportements observés.</p></section>
-        <section id="work"><span>02 / TRAVAIL</span><h2>Concevoir une expérience défensive exploitable.</h2><p>Le projet combine réflexion sur l’exposition contrôlée, collecte de traces, analyse, restitution et usage d’outils d’assistance pour rendre les données de sécurité plus compréhensibles.</p></section>
-        <section id="result"><span>03 / RÉSULTAT</span><h2>1er Prix — JPOPE 2026.</h2><p>Le projet a obtenu le premier prix lors de JPOPE 2026. Cette distinction est présentée ici comme un résultat du projet, sans transformer l’expérience en certification ou expérience professionnelle.</p><a class="button secondary" href={base}>Retour au portfolio ↗</a></section>
+
+    <section class="project-content shell">
+      <aside class="project-sidebar"><nav><a href="#vision">01 · Vision</a><a href="#work">02 · Travail</a><a href="#result">03 · Résultat</a></nav></aside>
+      <article class="project-article">
+        <section id="vision">
+          <span class="project-section-label">01 / VISION</span>
+          <h2>Un honeypot devient intéressant lorsque l’observation produit de la compréhension.</h2>
+          <p>HoneyShield explore l’usage d’un environnement exposé de façon contrôlée pour collecter des interactions, observer des comportements et transformer ces données en éléments exploitables pour l’analyse.</p>
+        </section>
+        <section id="work">
+          <span class="project-section-label">02 / TRAVAIL</span>
+          <h2>Concevoir une expérience défensive, pas seulement un piège.</h2>
+          <p>Le projet combine exposition contrôlée, collecte de traces, analyse, restitution et assistance pour rendre les événements plus lisibles. L’objectif est d’apprendre à distinguer la donnée brute, le signal pertinent et l’interprétation.</p>
+        </section>
+        <section id="result">
+          <span class="project-section-label">03 / RÉSULTAT</span>
+          <h2>1er Prix — JPOPE 2026.</h2>
+          <p>Cette distinction valide la qualité du projet dans son contexte académique et compétitif. Elle est présentée comme un résultat de projet, distinct d’une certification ou d’une expérience professionnelle.</p>
+          <div class="evidence-callout"><span>PREUVE</span><p>Projet récompensé lors de JPOPE 2026.</p></div>
+          <a class="btn btn-secondary" href={base + "#projects"}>Retour aux projets</a>
+        </section>
       </article>
     </section>
   </main>

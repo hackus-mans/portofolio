@@ -1,79 +1,17 @@
 ---
-import BaseLayout from "../../layouts/BaseLayout.astro";
-import Nav from "../../components/Nav.astro";
 const rawBase = import.meta.env.BASE_URL;
 const base = rawBase.endsWith("/") ? rawBase : rawBase + "/";
+const target = base + "projects/cybermind-x/";
 ---
-<BaseLayout title="CyberMind X — Joseph NAKORE" description="CyberMind X, mini-SOC intelligent combinant détection, honeypot, SOAR et assistance IA.">
-  <Nav />
-  <main class="case-main">
-    <section class="case-hero wrap">
-      <a class="back-link" href={base}>← Retour au portfolio</a>
-      <div class="case-kicker"><span>PROJECT / CYBERMIND X</span><span>2026</span></div>
-      <h1>CyberMind X</h1>
-      <p>Un mini-SOC intelligent conçu pour réunir collecte, détection, honeypot, orchestration et assistance IA dans un environnement de laboratoire cohérent.</p>
-      <div class="case-meta">
-        <div><small>Domaine</small><strong>SOC / Blue Team</strong></div>
-        <div><small>Approche</small><strong>Detection + SOAR + IA</strong></div>
-        <div><small>Environnement</small><strong>Lab autorisé</strong></div>
-      </div>
-    </section>
-
-    <section class="case-grid wrap">
-      <aside class="case-sidebar">
-        <nav>
-          <a href="#objectif">01 Objectif</a>
-          <a href="#architecture">02 Architecture</a>
-          <a href="#telemetrie">03 Télémétrie</a>
-          <a href="#automation">04 Automatisation</a>
-          <a href="#learning">05 Apprentissages</a>
-        </nav>
-      </aside>
-
-      <article class="case-content">
-        <section id="objectif">
-          <span>01 / OBJECTIF</span>
-          <h2>Construire un SOC de laboratoire qui relie attaque, traces et réponse.</h2>
-          <p>CyberMind X sert de terrain pratique pour comprendre comment des événements systèmes et réseau deviennent de la télémétrie exploitable, comment une détection est produite, puis comment elle peut être enrichie et transformée en action.</p>
-        </section>
-
-        <section id="architecture">
-          <span>02 / ARCHITECTURE</span>
-          <h2>Plusieurs briques, un seul flux d’analyse.</h2>
-          <ul class="constraint-list">
-            <li><b>01</b><div><strong>Wazuh</strong><p>Collecte, supervision et corrélation d’événements de sécurité.</p></div></li>
-            <li><b>02</b><div><strong>Suricata</strong><p>Inspection réseau et génération d’alertes IDS.</p></div></li>
-            <li><b>03</b><div><strong>Cowrie</strong><p>Honeypot pour observer et étudier des interactions hostiles dans le lab.</p></div></li>
-            <li><b>04</b><div><strong>Shuffle / SOAR</strong><p>Orchestration de workflows de réponse et d’enrichissement.</p></div></li>
-            <li><b>05</b><div><strong>Ollama</strong><p>Expérimentation autour de l’assistance IA pour résumer et contextualiser les alertes.</p></div></li>
-          </ul>
-        </section>
-
-        <section id="telemetrie">
-          <span>03 / TÉLÉMÉTRIE</span>
-          <h2>Observer ce que produit réellement une action.</h2>
-          <p>Le projet permet de tester des scénarios contrôlés — scans réseau, événements systèmes, changements de fichiers, authentifications — puis d’observer leur traduction dans les logs et alertes. L’objectif est de comprendre la chaîne complète attaque → télémétrie → détection → investigation.</p>
-        </section>
-
-        <section id="automation">
-          <span>04 / AUTOMATISATION</span>
-          <h2>Passer d’une alerte brute à un contexte exploitable.</h2>
-          <div class="decision-card">
-            <header><strong>WORKFLOW</strong><span>LAB</span></header>
-            <h3>Détection → enrichissement → décision</h3>
-            <p><b>Entrée :</b> événement ou alerte issue du SIEM / IDS / honeypot.</p>
-            <p><b>Traitement :</b> normalisation, enrichissement et résumé du contexte.</p>
-            <p><b>Sortie :</b> informations utiles à l’investigation et, selon le scénario, action de réponse contrôlée.</p>
-          </div>
-        </section>
-
-        <section id="learning">
-          <span>05 / APPRENTISSAGES</span>
-          <h2>Le projet relie offensive et défensive.</h2>
-          <p>CyberMind X me permet de travailler à la fois l’administration des composants, la qualité de la télémétrie, la logique de détection, l’analyse d’incident, l’automatisation et la compréhension des chaînes d’attaque.</p>
-          <a class="button secondary" href={base}>Retour au portfolio ↗</a>
-        </section>
-      </article>
-    </section>
-  </main>
-</BaseLayout>
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="refresh" content={"0;url=" + target} />
+    <link rel="canonical" href={target} />
+    <title>Redirection — CyberMind X</title>
+  </head>
+  <body>
+    <p>Redirection vers <a href={target}>CyberMind X</a>…</p>
+  </body>
+</html>

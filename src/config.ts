@@ -2,70 +2,74 @@ export const site = {
   name: "Joseph Yendoubouame NAKORE",
   shortName: "Joseph NAKORE",
   handle: "hackus-mans",
-  role: "Étudiant en cybersécurité — Pentest, SOC & sécurité systèmes/réseaux",
   location: "Lomé, Togo",
+  role: "Étudiant en cybersécurité · Pentest, systèmes, réseaux & SOC",
+  headline: "Je transforme l’apprentissage cybersécurité en preuves concrètes.",
   intro:
-    "Étudiant en cybersécurité à IPNET Institute of Technology, je développe un profil pratique orienté pentest, sécurité des systèmes et réseaux, SOC, Web/API et analyse des chaînes d’attaque. Mon objectif est de comprendre les mécanismes en profondeur — pas seulement d’utiliser des outils.",
+    "Étudiant en cybersécurité à IPNET Institute of Technology, je développe un profil pratique à l’intersection du pentest, de la sécurité systèmes/réseaux, du Web/API et du SOC. Mon objectif : comprendre les mécanismes, construire des environnements, tester méthodiquement et savoir expliquer ce qui se passe.",
   social: [
     { label: "GitHub", href: "https://github.com/hackus-mans" },
     { label: "LinkedIn", href: "https://www.linkedin.com/in/yendoubouame-joseph-nakore/" }
   ],
-  focus: [
-    "Pentest",
-    "SOC & monitoring",
-    "Web & API Security",
-    "Linux",
-    "Windows",
-    "Active Directory",
-    "Network Security",
-    "Python & automation"
+  proof: [
+    { value: "1er Prix", label: "JPOPE 2026", detail: "HoneyShield" },
+    { value: "Top 1 ×2", label: "CTF", detail: "résultats en compétition" },
+    { value: "Top 3", label: "Cyberbattle", detail: "IPNET" },
+    { value: "2024–2027", label: "Licence Cyber", detail: "IPNET Institute of Technology" }
+  ],
+  capabilities: [
+    {
+      title: "Pentest & sécurité offensive",
+      description: "Reconnaissance, énumération, validation d’hypothèses, exploitation autorisée, élévation de privilèges et reporting.",
+      tools: ["Nmap", "Burp Suite", "ffuf", "Gobuster", "linPEAS", "WinPEAS"]
+    },
+    {
+      title: "Systèmes & environnements d’entreprise",
+      description: "Compréhension opérationnelle de Linux, Windows, services réseau, permissions, SMB/RDP et fondamentaux Active Directory.",
+      tools: ["Linux", "Windows", "SMB", "RDP", "Active Directory", "Bash"]
+    },
+    {
+      title: "Détection & SOC",
+      description: "Collecte de télémétrie, corrélation, honeypots, détection réseau et orchestration de réponses dans des labs contrôlés.",
+      tools: ["Wazuh", "Suricata", "Cowrie", "Shuffle", "Docker", "Ollama"]
+    },
+    {
+      title: "Web, API & automatisation",
+      description: "Analyse de flux HTTP, logique applicative, vulnérabilités Web/API et scripts d’automatisation pour accélérer l’analyse.",
+      tools: ["HTTP", "Web/API", "Python", "JavaScript", "JSON", "Git"]
+    }
   ],
   projects: [
     {
       index: "01",
       name: "CyberMind X",
-      type: "Mini-SOC intelligent",
+      type: "Security Engineering · SOC",
       summary:
-        "Un environnement SOC combinant collecte, détection, honeypot, SOAR et assistance IA pour analyser et orchestrer des réponses de sécurité.",
-      metric: "SOC + IA",
+        "Un mini-SOC expérimental qui relie collecte, détection, honeypot, SOAR et assistance IA pour analyser les événements et orchestrer des réponses.",
+      outcome: "Architecture SOC + IA",
       tags: ["Wazuh", "Suricata", "Cowrie", "Shuffle", "Docker", "Ollama"],
-      href: "case-study/"
+      href: "projects/cybermind-x/"
     },
     {
       index: "02",
       name: "HoneyShield",
-      type: "Honeypot & détection",
+      type: "Honeypot · Detection",
       summary:
-        "Projet de cybersécurité orienté honeypot et analyse d’activité hostile, présenté dans un contexte académique et compétitif.",
-      metric: "1er Prix JPOPE 2026",
-      tags: ["Honeypot", "Detection", "Cybersecurity", "AI"],
+        "Un projet orienté observation d’activité hostile, télémétrie et aide à l’analyse, récompensé lors de JPOPE 2026.",
+      outcome: "1er Prix JPOPE 2026",
+      tags: ["Honeypot", "Detection", "Telemetry", "Security + AI"],
       href: "projects/honeyshield/"
     },
     {
       index: "03",
       name: "Labs & CTF",
-      type: "Pratique offensive",
+      type: "Offensive Security · Practice",
       summary:
-        "Entraînement continu sur Hack The Box, TryHackMe et des CTF : Web, Linux, Windows, réseau, crypto, forensic et reverse engineering.",
-      metric: "Top 1 ×2 · Top 3",
-      tags: ["HTB", "TryHackMe", "CTF", "Web", "Linux", "Windows"],
+        "Une pratique continue sur HTB, TryHackMe et en CTF pour transformer les fondamentaux en méthodologie reproductible.",
+      outcome: "Top 1 ×2 · Top 3",
+      tags: ["HTB", "TryHackMe", "Web", "Linux", "Windows", "CTF"],
       href: "projects/labs-ctf/"
     }
-  ],
-  stack: [
-    "Linux",
-    "Windows",
-    "Active Directory",
-    "Python",
-    "Bash",
-    "PowerShell",
-    "Nmap",
-    "Burp Suite",
-    "Wazuh",
-    "Suricata",
-    "Docker",
-    "Cisco",
-    "FortiGate"
   ],
   certifications: [
     "Fortinet Certified Associate Cybersecurity",
@@ -75,26 +79,20 @@ export const site = {
     "CPPS — Hack&fix"
   ],
   currentTargets: ["HTB CPTS", "Hackviser CAPT"],
-  timeline: [
-    {
-      year: "2024",
-      title: "Licence en cybersécurité",
-      text: "Début de la Licence professionnelle en Cybersécurité à IPNET Institute of Technology, Lomé."
-    },
-    {
-      year: "2025",
-      title: "Labs, CTF & pratique",
-      text: "Développement d’une pratique régulière sur Linux, réseau, Web, forensic, SOC et challenges techniques."
-    },
-    {
-      year: "2026",
-      title: "Projets & compétitions",
-      text: "CyberMind X, HoneyShield, entraînements offensifs et résultats en compétitions CTF / JPOPE."
-    },
-    {
-      year: "NOW",
-      title: "CPTS & CAPT",
-      text: "Approfondissement méthodique du pentest, de l’élévation de privilèges et des environnements d’entreprise."
-    }
-  ]
+  education: {
+    school: "IPNET Institute of Technology",
+    program: "Licence professionnelle en Cybersécurité",
+    period: "2024–2027",
+    location: "Lomé, Togo"
+  },
+  roadmap: {
+    name: "Lumina Academy",
+    description:
+      "Une roadmap interactive qui structure le passage des fondations systèmes/réseaux vers le pentest Web/API, Linux/Windows PrivEsc, Active Directory, cloud et Red/Purple Team.",
+    stats: [
+      { value: "22", label: "compétences" },
+      { value: "42", label: "liens de prérequis" },
+      { value: "6", label: "spécialisations" }
+    ]
+  }
 };
