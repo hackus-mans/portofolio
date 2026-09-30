@@ -1,11 +1,67 @@
-# Fusion portfolio + roadmap + ephemeral Linux
+# Joseph NAKORE — living cybersecurity portfolio
 
-The portfolio is an Astro static site deployed to GitHub Pages. It now has two connected interactive experiences:
+Astro portfolio deployed on GitHub Pages:
 
-- **Roadmap** — embeds the live Lumina Academy roadmap from `https://hackus-mans.github.io/roadmap/`. Visitors can use it and keep their own progress in browser storage.
-- **Linux Sandbox** — a real browser terminal UI that connects over WebSocket to a separate ephemeral-container gateway.
+```text
+https://hackus-mans.github.io/portofolio/
+```
 
-## Frontend
+This repository is designed as a long-term platform rather than a static landing page.
+
+## Main sections
+
+- `/projects/` — flagship projects
+- `/writeups/` — technical writeups
+- `/labs/` — labs and experiments
+- `/notes/` — technical notes and checklists
+- `/roadmap/` — live embedded Lumina Academy roadmap
+
+## Add content without redesigning the site
+
+Content is managed with Astro Content Collections.
+
+### New writeup
+
+Create:
+
+```text
+src/content/writeups/my-writeup.md
+```
+
+Frontmatter:
+
+```yaml
+---
+title: "Title"
+summary: "Short description"
+publishedAt: 2026-09-30
+tags: ["Web", "Linux"]
+platform: "HTB"
+difficulty: "Medium"
+featured: false
+status: "published"
+---
+```
+
+### New lab
+
+Create:
+
+```text
+src/content/labs/my-lab.md
+```
+
+### New note
+
+Create:
+
+```text
+src/content/notes/my-note.md
+```
+
+The archive page and individual page are generated automatically at build time.
+
+## Local development
 
 ```bash
 npm ci
@@ -13,35 +69,12 @@ npm run dev
 npm run build
 ```
 
-Routes:
+## Roadmap integration
 
-- `/` portfolio
-- `/roadmap/` embedded interactive roadmap
-- `/terminal/` real sandbox terminal client
-- `/case-study/` sample case study
-
-The public sandbox gateway URL is configured in:
+The portfolio embeds the published roadmap directly from:
 
 ```text
-public/runtime-config.js
+https://hackus-mans.github.io/roadmap/
 ```
 
-It is deliberately empty until a dedicated sandbox host is deployed.
-
-## Sandbox backend
-
-See `sandbox-server/README.md`.
-
-The sandbox backend is separated from GitHub Pages because a static host cannot create Linux processes or WebSocket-backed disposable containers.
-
-## Security defaults
-
-The public shell is not a shell on the portfolio server. Each visitor receives a separate non-root container with no network, no host mounts, a read-only root filesystem, strict CPU/RAM/PID limits, temporary storage and automatic destruction.
-
-## GitHub Pages
-
-Frontend URL:
-
-```text
-https://hackus-mans.github.io/portofolio/
-```
+Therefore roadmap repository changes become visible in the portfolio after the roadmap deployment completes.

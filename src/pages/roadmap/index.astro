@@ -2,36 +2,32 @@
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import Nav from "../../components/Nav.astro";
 import { site } from "../../config";
+
 const roadmapUrl = "https://hackus-mans.github.io/roadmap/";
 const rawBase = import.meta.env.BASE_URL;
 const base = rawBase.endsWith("/") ? rawBase : rawBase + "/";
 ---
 <BaseLayout title={"Roadmap — " + site.name} description={site.roadmap.description}>
   <Nav />
-  <main class="roadmap-page">
-    <section class="roadmap-page-hero shell">
-      <a class="breadcrumb" href={base}>← Retour au portfolio</a>
-      <div class="roadmap-page-grid">
-        <div>
-          <p class="section-kicker">LUMINA ACADEMY · ROADMAP LIVE</p>
-          <h1>Le parcours que je structure et que les visiteurs peuvent utiliser.</h1>
-          <p>{site.roadmap.description}</p>
+  <main>
+    <section class="archive-hero shell roadmap-header">
+      <a class="back-link" href={base}>← Portfolio</a>
+      <p class="overline">LUMINA ACADEMY / ROADMAP LIVE</p>
+      <h1>Ma roadmap, utilisable par les visiteurs.</h1>
+      <p>{site.roadmap.description}</p>
+
+      <div class="roadmap-header-bottom">
+        <div class="roadmap-stats">
+          {site.roadmap.stats.map((stat) => <div><strong>{stat.value}</strong><span>{stat.label}</span></div>)}
         </div>
-        <div class="roadmap-page-side">
-          <div class="roadmap-page-stats">
-            {site.roadmap.stats.map(stat => (
-              <article><strong>{stat.value}</strong><span>{stat.label}</span></article>
-            ))}
-          </div>
-          <a class="btn btn-secondary" href={roadmapUrl} target="_blank" rel="noopener noreferrer">Ouvrir en plein écran ↗</a>
-        </div>
+        <a class="button secondary" href={roadmapUrl} target="_blank" rel="noopener noreferrer">Plein écran ↗</a>
       </div>
     </section>
 
-    <section class="roadmap-live-shell">
+    <section class="roadmap-embed">
       <div class="roadmap-live-bar shell">
         <span><i></i> Version publiée de Lumina Academy</span>
-        <span>mise à jour automatiquement après chaque déploiement</span>
+        <span>Les mises à jour du repo roadmap apparaissent ici après déploiement</span>
       </div>
       <iframe
         class="roadmap-frame"

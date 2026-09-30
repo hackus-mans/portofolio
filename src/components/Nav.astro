@@ -3,31 +3,35 @@ import { site } from "../config";
 const rawBase = import.meta.env.BASE_URL;
 const base = rawBase.endsWith("/") ? rawBase : rawBase + "/";
 ---
-<header class="clean-header">
-  <nav class="clean-nav shell" aria-label="Navigation principale">
-    <a class="clean-brand" href={base}>
-      <span class="clean-brand-mark">JN</span>
-      <span>{site.shortName}</span>
+<header class="site-header">
+  <nav class="site-nav shell" aria-label="Navigation principale">
+    <a class="site-brand" href={base} aria-label="Accueil — Joseph NAKORE">
+      <span class="brand-mark">JN</span>
+      <span class="brand-copy">
+        <strong>{site.shortName}</strong>
+        <small>Cybersecurity</small>
+      </span>
     </a>
 
-    <div class="clean-nav-links">
-      <a href={base + "#projects"}>Projets</a>
-      <a href={base + "#skills"}>Compétences</a>
-      <a href={base + "#trajectory"}>Parcours</a>
+    <div class="site-links">
+      <a href={base + "projects/"}>Projets</a>
+      <a href={base + "writeups/"}>Writeups</a>
+      <a href={base + "labs/"}>Labs</a>
+      <a href={base + "notes/"}>Notes</a>
       <a href={base + "roadmap/"}>Roadmap</a>
     </div>
 
-    <a class="clean-linkedin" href={site.social[1].href} target="_blank" rel="noopener noreferrer">
-      LinkedIn ↗
-    </a>
+    <a class="nav-social" href={site.social[1].href} target="_blank" rel="noopener noreferrer">LinkedIn ↗</a>
 
-    <details class="clean-mobile-menu">
+    <details class="mobile-menu">
       <summary>Menu</summary>
-      <div>
-        <a href={base + "#projects"}>Projets</a>
-        <a href={base + "#skills"}>Compétences</a>
-        <a href={base + "#trajectory"}>Parcours</a>
+      <div class="mobile-menu-panel">
+        <a href={base + "projects/"}>Projets</a>
+        <a href={base + "writeups/"}>Writeups</a>
+        <a href={base + "labs/"}>Labs</a>
+        <a href={base + "notes/"}>Notes</a>
         <a href={base + "roadmap/"}>Roadmap</a>
+        <a href={site.social[0].href} target="_blank" rel="noopener noreferrer">GitHub ↗</a>
         <a href={site.social[1].href} target="_blank" rel="noopener noreferrer">LinkedIn ↗</a>
       </div>
     </details>
