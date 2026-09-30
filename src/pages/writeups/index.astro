@@ -1,0 +1,38 @@
+---
+import { getCollection } from "astro:content";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import Nav from "../../components/Nav.astro";
+import { formatDate, slugFromId } from "../../lib/content";
+
+const rawBase = import.meta.env.BASE_URL;
+const base = rawBase.endsWith("/") ? rawBase : rawBase + "/";
+const entries = (await getCollection("writeups"))
+  .filter((entry) => entry.data.status === "published")
+  .sort((a, b) => b.data.publishedAt.getTime() - a.data.publishedAt.getTime());
+---
+<BaseLayout title="Writeups — Joseph NAKORE" description="Writeups techniques, méthodologies et retours de labs de Joseph NAKORE.">
+  <Nav />
+  <main>
+    <section class="archive-hero shell">
+      <a class="back-link" href={base}>← Portfolio</a>
+      <p class="overline">KNOWLEDGE BASE / WRITEUPS</p>
+      <h1>Writeups</h1>
+      <p>Machines, rooms, vulnérabilités, méthodologies et retours d’expérience. L’objectif n’est pas seulement de montrer une solution, mais d’expliquer le raisonnement.</p>
+    </section>
+
+    <section class="archive shell">
+      {entries.length ? entries.map((entry) => (
+        <a class="archive-row" href={base + "writeups/" + slugFromId(entry.id) + "/"}>
+          <div>
+            <span class="entry-kind">{entry.data.platform || "WRITEUP"}</span>
+            <h2>{entry.data.title}</h2>
+            <p>{entry.data.summary}</p>
+            <div class="chips">{entry.data.tags.map((tag) => <span>{tag}</span>)}</div>
+          </div>
+          <time datetime={entry.data.publishedAt.toISOString()}>{formatDate(entry.data.publishedAt)}</time>
+          <span class="row-arrow">↗</span>
+        </a>
+      )) : <p class="empty-state">Aucun writeup publié pour le moment.</p>}
+    </section>
+  </main>
+</BaseLayout>

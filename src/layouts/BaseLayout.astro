@@ -1,20 +1,27 @@
 ---
 import "../styles/global.css";
 import { site } from "../config";
+
 const {
   title = site.name + " — Cybersécurité",
-  description = site.intro
+  description = site.intro,
+  image = null
 } = Astro.props;
+
 const rawBase = import.meta.env.BASE_URL;
 const base = rawBase.endsWith("/") ? rawBase : rawBase + "/";
 const canonical = new URL(Astro.url.pathname, "https://hackus-mans.github.io").toString();
+const socialImage = image
+  ? new URL(base + image.replace(/^\//, ""), "https://hackus-mans.github.io").toString()
+  : new URL(base + "joseph-soc.webp", "https://hackus-mans.github.io").toString();
+
 const personSchema = {
   "@context": "https://schema.org",
   "@type": "Person",
   name: site.name,
   alternateName: site.handle,
   url: "https://hackus-mans.github.io/portofolio/",
-  sameAs: site.social.map(item => item.href),
+  sameAs: site.social.map((item) => item.href),
   jobTitle: "Étudiant en cybersécurité",
   address: {
     "@type": "PostalAddress",
@@ -32,7 +39,7 @@ const personSchema = {
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="theme-color" content="#07111b" />
+    <meta name="theme-color" content="#081018" />
     <meta name="color-scheme" content="dark" />
     <meta name="description" content={description} />
     <meta name="robots" content="index,follow" />
@@ -41,6 +48,11 @@ const personSchema = {
     <meta property="og:type" content="website" />
     <meta property="og:url" content={canonical} />
     <meta property="og:locale" content="fr_FR" />
+    <meta property="og:image" content={socialImage} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={socialImage} />
     <link rel="canonical" href={canonical} />
     <link rel="icon" type="image/svg+xml" href={base + "favicon.svg"} />
     <title>{title}</title>
