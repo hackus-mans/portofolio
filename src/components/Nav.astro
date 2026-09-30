@@ -3,36 +3,32 @@ import { site } from "../config";
 const rawBase = import.meta.env.BASE_URL;
 const base = rawBase.endsWith("/") ? rawBase : rawBase + "/";
 ---
-<header class="site-header">
-  <nav class="site-nav shell" aria-label="Navigation principale">
-    <a class="identity" href={base} aria-label="Accueil — Joseph NAKORE">
-      <span class="identity-mark">JN</span>
-      <span class="identity-copy">
-        <strong>{site.shortName}</strong>
-        <small>Cybersecurity</small>
-      </span>
+<header class="clean-header">
+  <nav class="clean-nav shell" aria-label="Navigation principale">
+    <a class="clean-brand" href={base}>
+      <span class="clean-brand-mark">JN</span>
+      <span>{site.shortName}</span>
     </a>
 
-    <div class="desktop-nav">
+    <div class="clean-nav-links">
       <a href={base + "#projects"}>Projets</a>
       <a href={base + "#skills"}>Compétences</a>
       <a href={base + "#trajectory"}>Parcours</a>
       <a href={base + "roadmap/"}>Roadmap</a>
     </div>
 
-    <a class="nav-cta desktop-cta" href={site.social[1].href} target="_blank" rel="noopener noreferrer">
-      LinkedIn <span>↗</span>
+    <a class="clean-linkedin" href={site.social[1].href} target="_blank" rel="noopener noreferrer">
+      LinkedIn ↗
     </a>
 
-    <details class="mobile-menu">
+    <details class="clean-mobile-menu">
       <summary>Menu</summary>
-      <div class="mobile-menu-panel">
+      <div>
         <a href={base + "#projects"}>Projets</a>
         <a href={base + "#skills"}>Compétences</a>
         <a href={base + "#trajectory"}>Parcours</a>
         <a href={base + "roadmap/"}>Roadmap</a>
         <a href={site.social[1].href} target="_blank" rel="noopener noreferrer">LinkedIn ↗</a>
-        <a href={site.social[0].href} target="_blank" rel="noopener noreferrer">GitHub ↗</a>
       </div>
     </details>
   </nav>

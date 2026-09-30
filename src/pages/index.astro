@@ -5,117 +5,83 @@ import { site } from "../config";
 const rawBase = import.meta.env.BASE_URL;
 const base = rawBase.endsWith("/") ? rawBase : rawBase + "/";
 ---
-<BaseLayout title={site.name + " — Pentest, SOC & sécurité systèmes/réseaux"} description={site.intro}>
+<BaseLayout title={site.name + " — Cybersécurité"} description={site.intro}>
   <Nav />
 
-  <main>
-    <section class="hero shell">
-      <div class="hero-copy">
-        <div class="status-line">
-          <span class="status-dot" aria-hidden="true"></span>
-          <span>{site.location}</span>
-          <span class="separator">/</span>
-          <span>Cybersecurity student</span>
-        </div>
+  <main class="clean-home">
+    <section class="clean-hero shell">
+      <div class="clean-hero-copy">
+        <p class="clean-overline">{site.location} · Cybersécurité</p>
+        <h1>Joseph NAKORE</h1>
+        <h2>Pentest, sécurité systèmes/réseaux et SOC.</h2>
+        <p class="clean-intro">
+          Étudiant en cybersécurité à IPNET Institute of Technology, je construis mes compétences par la pratique :
+          comprendre les systèmes, analyser les mécanismes, tester dans des environnements autorisés et documenter clairement les résultats.
+        </p>
 
-        <h1>{site.headline}</h1>
-        <p class="hero-lead">{site.intro}</p>
-
-        <div class="hero-actions">
-          <a class="btn btn-primary" href="#projects">Voir les projets <span>↓</span></a>
-          <a class="btn btn-secondary" href={base + "roadmap/"}>Explorer la roadmap <span>↗</span></a>
-        </div>
-
-        <div class="hero-links" aria-label="Profils publics">
-          {site.social.map(item => (
-            <a href={item.href} target="_blank" rel="noopener noreferrer">{item.label} ↗</a>
-          ))}
+        <div class="clean-actions">
+          <a class="clean-primary" href="#projects">Voir mes projets</a>
+          <a class="clean-secondary" href={base + "roadmap/"}>Explorer ma roadmap ↗</a>
         </div>
       </div>
 
-      <aside class="profile-card" aria-label="Résumé du profil">
-        <div class="profile-card-top">
-          <div class="monogram">JN</div>
-          <div>
-            <small>PROFIL</small>
-            <strong>{site.shortName}</strong>
-          </div>
+      <aside class="clean-summary" aria-label="Résumé du profil">
+        <div>
+          <span>FORMATION</span>
+          <strong>Licence professionnelle en Cybersécurité</strong>
+          <small>IPNET Institute of Technology · 2024–2027</small>
         </div>
-
-        <dl class="profile-facts">
-          <div><dt>Formation</dt><dd>Licence pro Cybersécurité</dd></div>
-          <div><dt>École</dt><dd>IPNET Institute of Technology</dd></div>
-          <div><dt>Focus</dt><dd>Pentest · SOC · Web/API</dd></div>
-          <div><dt>Systèmes</dt><dd>Linux · Windows · AD</dd></div>
-          <div><dt>Actuellement</dt><dd>CPTS + CAPT en préparation</dd></div>
-        </dl>
-
-        <div class="profile-principle">
-          <span>PRINCIPE</span>
-          <p>Comprendre le mécanisme avant d’automatiser l’outil.</p>
+        <div>
+          <span>FOCUS</span>
+          <strong>Pentest · Web/API · Linux · Windows · SOC</strong>
+        </div>
+        <div>
+          <span>EN COURS</span>
+          <strong>HTB CPTS · Hackviser CAPT</strong>
         </div>
       </aside>
     </section>
 
-    <section class="proof-strip" aria-label="Repères vérifiables">
-      <div class="shell proof-grid">
-        {site.proof.map(item => (
-          <article>
-            <strong>{item.value}</strong>
-            <span>{item.label}</span>
-            <small>{item.detail}</small>
-          </article>
+    <section class="clean-section shell" id="projects">
+      <header class="clean-section-head">
+        <p>01 / PROJETS</p>
+        <h2>Trois preuves concrètes de progression.</h2>
+      </header>
+
+      <div class="clean-project-list">
+        {site.projects.map(project => (
+          <a class="clean-project" href={base + project.href}>
+            <div class="clean-project-number">{project.index}</div>
+            <div class="clean-project-main">
+              <span>{project.type}</span>
+              <h3>{project.name}</h3>
+              <p>{project.summary}</p>
+              <div class="clean-tags">
+                {project.tags.slice(0, 5).map(tag => <span>{tag}</span>)}
+              </div>
+            </div>
+            <div class="clean-project-result">
+              <small>REPÈRE</small>
+              <strong>{project.outcome}</strong>
+            </div>
+            <div class="clean-project-arrow">↗</div>
+          </a>
         ))}
       </div>
     </section>
 
-    <section class="section shell audience-section">
-      <div class="section-heading">
-        <span class="section-index">01</span>
-        <div>
-          <p class="section-kicker">UNE LECTURE ADAPTÉE À CHAQUE VISITEUR</p>
-          <h2>Le site doit répondre vite à la bonne question.</h2>
-        </div>
-      </div>
+    <section class="clean-section shell" id="skills">
+      <header class="clean-section-head">
+        <p>02 / COMPÉTENCES</p>
+        <h2>Ce que je travaille réellement.</h2>
+      </header>
 
-      <div class="audience-grid">
-        <a class="audience-card" href="#trajectory">
-          <span>Recruteur / DSI</span>
-          <h3>Quel profil est-ce que je recrute ?</h3>
-          <p>Formation, domaines de compétence, certifications, objectifs actuels et preuves de progression.</p>
-          <strong>Voir le parcours →</strong>
-        </a>
-        <a class="audience-card" href="#projects">
-          <span>Évaluateur technique</span>
-          <h3>Qu’est-ce qu’il sait réellement faire ?</h3>
-          <p>Projets, architectures, méthodologies, technologies utilisées et résultats obtenus.</p>
-          <strong>Voir les preuves →</strong>
-        </a>
-        <a class="audience-card" href={base + "roadmap/"}>
-          <span>Étudiant / pair</span>
-          <h3>Comment est structuré son apprentissage ?</h3>
-          <p>Une roadmap interactive ouverte aux visiteurs, avec prérequis, spécialisations et projets.</p>
-          <strong>Explorer la roadmap →</strong>
-        </a>
-      </div>
-    </section>
-
-    <section class="section shell" id="skills">
-      <div class="section-heading">
-        <span class="section-index">02</span>
-        <div>
-          <p class="section-kicker">CAPACITÉS</p>
-          <h2>Compétences organisées par ce que je peux analyser et construire.</h2>
-        </div>
-      </div>
-
-      <div class="capability-grid">
-        {site.capabilities.map((capability, i) => (
-          <article class="capability-card">
-            <div class="capability-number">{String(i + 1).padStart(2, "0")}</div>
+      <div class="clean-skill-list">
+        {site.capabilities.map(capability => (
+          <article class="clean-skill">
             <h3>{capability.title}</h3>
             <p>{capability.description}</p>
-            <div class="tag-list">
+            <div class="clean-tags">
               {capability.tools.map(tool => <span>{tool}</span>)}
             </div>
           </article>
@@ -123,77 +89,15 @@ const base = rawBase.endsWith("/") ? rawBase : rawBase + "/";
       </div>
     </section>
 
-    <section class="section projects-section" id="projects">
-      <div class="shell">
-        <div class="section-heading section-heading-light">
-          <span class="section-index">03</span>
-          <div>
-            <p class="section-kicker">PROJETS & PRATIQUE</p>
-            <h2>Des preuves plus utiles qu’une simple liste d’outils.</h2>
-          </div>
-        </div>
+    <section class="clean-section shell" id="trajectory">
+      <header class="clean-section-head">
+        <p>03 / PARCOURS</p>
+        <h2>Formation, validations et objectifs actuels.</h2>
+      </header>
 
-        <div class="project-stack">
-          {site.projects.map(project => (
-            <a class="project-card" href={base + project.href}>
-              <div class="project-index">{project.index}</div>
-              <div class="project-body">
-                <p class="project-type">{project.type}</p>
-                <h3>{project.name}</h3>
-                <p class="project-summary">{project.summary}</p>
-                <div class="tag-list tag-list-dark">
-                  {project.tags.map(tag => <span>{tag}</span>)}
-                </div>
-              </div>
-              <div class="project-outcome">
-                <span>REPÈRE</span>
-                <strong>{project.outcome}</strong>
-              </div>
-              <div class="project-arrow" aria-hidden="true">↗</div>
-            </a>
-          ))}
-        </div>
-      </div>
-    </section>
-
-    <section class="section shell method-section">
-      <div class="section-heading">
-        <span class="section-index">04</span>
-        <div>
-          <p class="section-kicker">MÉTHODOLOGIE</p>
-          <h2>Je veux être capable d’expliquer le chemin, pas seulement le résultat.</h2>
-        </div>
-      </div>
-
-      <div class="method-flow" aria-label="Méthodologie de travail">
-        {[
-          ["01", "Observer", "Contexte, surface d’attaque, télémétrie et contraintes."],
-          ["02", "Énumérer", "Services, versions, permissions, contenus et relations."],
-          ["03", "Formuler", "Hypothèses techniques basées sur les preuves collectées."],
-          ["04", "Valider", "Tests contrôlés, exploitation autorisée ou reproduction."],
-          ["05", "Expliquer", "Cause, impact, traces, mitigation et documentation."]
-        ].map(step => (
-          <article>
-            <span>{step[0]}</span>
-            <h3>{step[1]}</h3>
-            <p>{step[2]}</p>
-          </article>
-        ))}
-      </div>
-    </section>
-
-    <section class="section shell trajectory-section" id="trajectory">
-      <div class="section-heading">
-        <span class="section-index">05</span>
-        <div>
-          <p class="section-kicker">PARCOURS & VALIDATION</p>
-          <h2>Ce qui est acquis, ce qui est en cours, et où je vais.</h2>
-        </div>
-      </div>
-
-      <div class="trajectory-grid">
-        <article class="trajectory-primary">
-          <span class="eyebrow-label">FORMATION</span>
+      <div class="clean-trajectory">
+        <article>
+          <span class="clean-label">FORMATION</span>
           <h3>{site.education.program}</h3>
           <p>{site.education.school}</p>
           <dl>
@@ -203,66 +107,51 @@ const base = rawBase.endsWith("/") ? rawBase : rawBase + "/";
           </dl>
         </article>
 
-        <article class="trajectory-secondary">
-          <div class="trajectory-block">
-            <span class="eyebrow-label">CERTIFICATIONS OBTENUES</span>
-            <ul class="clean-list">
-              {site.certifications.map(cert => <li><span>✓</span>{cert}</li>)}
-            </ul>
-          </div>
-          <div class="trajectory-block targets">
-            <span class="eyebrow-label">OBJECTIFS ACTUELS</span>
-            <div class="target-row">
-              {site.currentTargets.map(target => <strong>{target}</strong>)}
-            </div>
-            <p>Ces éléments sont des objectifs de formation en cours, pas des certifications déjà obtenues.</p>
+        <article>
+          <span class="clean-label">CERTIFICATIONS OBTENUES</span>
+          <ul>
+            {site.certifications.map(cert => <li>{cert}</li>)}
+          </ul>
+          <div class="clean-targets">
+            <span class="clean-label">EN PRÉPARATION</span>
+            <p>{site.currentTargets.join(" · ")}</p>
           </div>
         </article>
       </div>
-    </section>
 
-    <section class="section shell roadmap-feature">
-      <div class="roadmap-copy">
-        <span class="section-index">06</span>
-        <p class="section-kicker">ROADMAP INTERACTIVE</p>
-        <h2>{site.roadmap.name}</h2>
-        <p>{site.roadmap.description}</p>
-        <a class="btn btn-primary" href={base + "roadmap/"}>Ouvrir la roadmap <span>↗</span></a>
-      </div>
-      <div class="roadmap-stats">
-        {site.roadmap.stats.map(stat => (
-          <article><strong>{stat.value}</strong><span>{stat.label}</span></article>
-        ))}
-        <div class="roadmap-note">
-          <span>LIVE</span>
-          <p>La page intégrée charge directement la version publiée de la roadmap. Une mise à jour de la roadmap apparaît automatiquement ici après son déploiement.</p>
-        </div>
+      <div class="clean-results">
+        <span>Résultats</span>
+        <strong>1er Prix JPOPE 2026</strong>
+        <strong>Top 1 ×2 en CTF</strong>
+        <strong>Top 3 Cyberbattle IPNET</strong>
       </div>
     </section>
 
-    <section class="contact-section shell">
+    <section class="clean-roadmap shell">
       <div>
-        <p class="section-kicker">CONTACT & PREUVES PUBLIQUES</p>
-        <h2>Continuer la conversation ou vérifier le travail.</h2>
-        <p>LinkedIn pour le parcours professionnel. GitHub pour le code, les projets et l’activité technique publique.</p>
+        <p class="clean-overline">04 / ROADMAP</p>
+        <h2>Lumina Academy</h2>
+        <p>{site.roadmap.description}</p>
       </div>
-      <div class="contact-actions">
-        <a class="btn btn-primary" href={site.social[1].href} target="_blank" rel="noopener noreferrer">LinkedIn ↗</a>
-        <a class="btn btn-secondary" href={site.social[0].href} target="_blank" rel="noopener noreferrer">GitHub ↗</a>
+      <a class="clean-primary" href={base + "roadmap/"}>Ouvrir la roadmap ↗</a>
+    </section>
+
+    <section class="clean-contact shell">
+      <div>
+        <p class="clean-overline">05 / CONTACT</p>
+        <h2>Voir le travail public ou me contacter.</h2>
+      </div>
+      <div class="clean-actions">
+        <a class="clean-primary" href={site.social[1].href} target="_blank" rel="noopener noreferrer">LinkedIn ↗</a>
+        <a class="clean-secondary" href={site.social[0].href} target="_blank" rel="noopener noreferrer">GitHub ↗</a>
       </div>
     </section>
   </main>
 
-  <footer class="site-footer">
-    <div class="shell footer-inner">
-      <div>
-        <strong>{site.name}</strong>
-        <span>{site.role}</span>
-      </div>
-      <div>
-        <span>{site.location}</span>
-        <span>Portfolio cybersécurité · 2026</span>
-      </div>
+  <footer class="clean-footer">
+    <div class="shell">
+      <span>{site.name}</span>
+      <span>{site.location} · 2026</span>
     </div>
   </footer>
 </BaseLayout>
