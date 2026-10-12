@@ -1,0 +1,25 @@
+---
+const base = import.meta.env.BASE_URL.replace(/\/$/, "") + "/";
+const path = Astro.url.pathname;
+const items = [{label:"Accueil",href:base},{label:"Projets",href:base+"projects/"},{label:"Journal",href:base+"journal/"},{label:"À propos",href:base+"about/"},{label:"Atlas",href:base+"atlas/"}];
+---
+<header class="pf-header">
+  <div class="pf-header-inner">
+    <a class="pf-brand" href={base} aria-label="Joseph NAKORE, accueil"><span class="pf-mark" aria-hidden="true">N<span>↗</span></span><span>NAKORE<span class="pf-brand-dot">.</span></span></a>
+    <button class="pf-menu-toggle" type="button" aria-expanded="false" aria-controls="pf-navigation" data-pf-menu>Menu <span aria-hidden="true">☰</span></button>
+    <nav id="pf-navigation" class="pf-navigation" aria-label="Navigation principale">
+      {items.map(item => <a href={item.href} aria-current={(item.href===base ? path===base : path.startsWith(item.href)) ? "page" : undefined}>{item.label}</a>)}
+      <a class="pf-mobile-contact" href={base+"contact/"}>Contact ↗</a>
+    </nav>
+    <div class="pf-header-actions"><button type="button" data-command-open aria-label="Rechercher une page ou un projet">⌕ <kbd>⌘ K</kbd></button><a href={base+"contact/"}>Échanger <span aria-hidden="true">↗</span></a></div>
+  </div>
+</header>
+<script>
+const toggle=document.querySelector<HTMLButtonElement>("[data-pf-menu]");
+const nav=document.querySelector<HTMLElement>("#pf-navigation");
+const close=()=>{toggle?.setAttribute("aria-expanded","false");nav?.classList.remove("is-open")};
+toggle?.addEventListener("click",()=>{const open=toggle.getAttribute("aria-expanded")!=="true";toggle.setAttribute("aria-expanded",String(open));nav?.classList.toggle("is-open",open)});
+nav?.querySelectorAll("a").forEach(a=>a.addEventListener("click",close));
+document.addEventListener("keydown",event=>{if(event.key==="Escape"&&nav?.classList.contains("is-open")){close();toggle?.focus()}});
+document.addEventListener("click",event=>{if(!(event.target as Element).closest(".pf-header"))close()});
+</script>

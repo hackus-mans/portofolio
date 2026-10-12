@@ -4,7 +4,7 @@ import { site } from "../config";
 import CommandSidebar from "../components/CommandSidebar.astro";
 import CommandPreferences from "../components/CommandPreferences.astro";
 const base=import.meta.env.BASE_URL.endsWith("/")?import.meta.env.BASE_URL:import.meta.env.BASE_URL+"/";
-const title=site.name+" — NAKORE Cyber Intelligence";
+const title="Atlas interactif — "+site.shortName;
 const description="Portfolio interactif de Joseph NAKORE : explorateur de projets cybersécurité, SOC, pentest, recherche et automatisation. Les scénarios présentés sont des simulations pédagogiques.";
 const canonical=new URL(Astro.url.pathname,"https://hackus-mans.github.io").toString();
 ---

@@ -4,6 +4,9 @@ const rawBase=import.meta.env.BASE_URL;
 const base=rawBase.endsWith("/")?rawBase:rawBase+"/";
 const commands=[
   {title:"Accueil",category:"Navigation",href:base},
+  {title:"Journal",category:"Navigation",href:base+"journal/"},
+  {title:"Atlas interactif",category:"Exploration",href:base+"atlas/"},
+  {title:"Contact",category:"Navigation",href:base+"contact/"},
   {title:"Projets",category:"Navigation",href:base+"projects/"},
   ...site.projects.map(p=>({title:p.name,category:"Étude de cas",href:base+p.href})),
   {title:"Writeups",category:"Recherche",href:base+"writeups/"},

@@ -1,0 +1,9 @@
+---
+const base=import.meta.env.BASE_URL.replace(/\/$/, "")+"/";
+---
+<footer class="pf-footer pf-container">
+  <div><a class="pf-brand" href={base}>NAKORE<span class="pf-brand-dot">.</span></a><p>Comprendre les systèmes.<br/>Construire, tester, documenter.</p></div>
+  <nav aria-label="Ressources"><span class="pf-eyebrow">EXPLORER</span><a href={base+"projects/"}>Projets</a><a href={base+"journal/"}>Journal</a><a href={base+"atlas/"}>Atlas interactif</a></nav>
+  <nav aria-label="Réseaux et contact"><span class="pf-eyebrow">RESTER EN LIEN</span><a href="https://github.com/hackus-mans" target="_blank" rel="noopener noreferrer">GitHub ↗</a><a href="https://www.linkedin.com/in/yendoubouame-joseph-nakore/" target="_blank" rel="noopener noreferrer">LinkedIn ↗</a><a href={base+"contact/"}>Contact</a></nav>
+  <div class="pf-footer-bottom"><span>© {new Date().getFullYear()} Joseph NAKORE</span><span>CONSTRUIT À LOMÉ, TOGO <span aria-hidden="true">✦</span></span><a href="#main-content">Retour en haut ↑</a></div>
+</footer>

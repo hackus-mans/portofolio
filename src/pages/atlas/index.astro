@@ -1,0 +1,199 @@
+---
+import CommandLayout from "../../layouts/CommandLayout.astro";
+import CommandGraph from "../../components/CommandGraph.astro";
+import PublicationFeed from "../../components/PublicationFeed.astro";
+import { site } from "../../config";
+import { labSignals } from "../../data/commandData";
+const base=import.meta.env.BASE_URL.endsWith("/")?import.meta.env.BASE_URL:import.meta.env.BASE_URL+"/";
+const projects=site.projects;
+const first=projects[0];
+
+---
+<CommandLayout>
+<header class="cc-topbar">
+  <div class="cc-crumb-left">
+    <button type="button" class="cc-mobile-toggle" aria-label="Ouvrir le menu" aria-expanded="false" data-sidebar-toggle><span></span><span></span><span></span></button>
+    <span class="cc-crumb-icon" aria-hidden="true">◎</span>
+    <span class="cc-crumb">NAKORE <b>/</b> FIELD ATLAS <b>/</b> <strong>Security Overview</strong></span>
+  </div>
+  <div class="cc-topbar-right">
+    <label class="cc-global-search" for="cc-search"><span aria-hidden="true">⌕</span><input id="cc-search" type="search" placeholder="Chercher un projet, un scénario…" autocomplete="off" aria-label="Rechercher dans le portfolio"/><kbd>⌘ K</kbd></label>
+    <span class="cc-top-status">PORTFOLIO · DÉMO</span>
+    <a class="cc-avatar" href={base+"about/"} aria-label="À propos de Joseph NAKORE">N<span></span></a>
+  </div>
+</header>
+<main id="main-content" class="cc-main">
+  <section class="cc-title-strip" aria-labelledby="cc-title">
+    <div class="cc-title-copy">
+      <div class="cc-pretitle"><span class="cc-pretitle-dot"></span> JOSEPH NAKORE / SECURITY ENGINEERING</div>
+      <h1 id="cc-title">Explorer les liens.<br/><em>Comprendre les systèmes.</em></h1>
+      <p>Une carte interactive de mes projets, de leurs outils et de scénarios pédagogiques. Clique sur un nœud pour découvrir ce qui les relie.</p>
+      <nav class="cc-action-tabs" aria-label="Accès rapides">
+        <a class="cc-tab-primary" href="#project-intelligence">Mes projets ↗</a>
+        <a href="#journal">Mon journal</a>
+        <a href="#threat-map">La constellation</a>
+        <a href={base+"about/"}>Mon parcours</a>
+      </nav>
+    </div>
+    <div class="cc-quick-facts" aria-label="Contenu de l'atlas">
+      <a href="#project-intelligence"><strong>{String(projects.length).padStart(2,"0")}</strong><span>Dossiers de projets</span></a>
+      <a href="#detection-signals"><strong>{String(labSignals.length).padStart(2,"0")}</strong><span>Scénarios d'étude</span></a>
+      <p>CARTE SCHÉMATIQUE<br/><b>Pas de surveillance en direct</b></p>
+    </div>
+  </section>
+
+  <CommandGraph />
+
+  <p class="cc-search-status" data-search-count role="status" aria-live="polite"></p>
+  <section class="cc-work-grid" aria-label="Projets et exercices">
+    <div class="cc-widget cc-project-widget" id="project-intelligence">
+      <div class="cc-widget-header"><h2><span aria-hidden="true">▱</span> Mes projets</h2><a href={base+"projects/"}>Tous les dossiers ↗</a></div>
+      <div class="cc-project-body">
+        <div class="cc-project-items" data-project-list>
+          {projects.map((p,i)=><button type="button" class:list={["cc-project-item",{"cc-project-selected":i===0}]} data-project-index={i} aria-label={"Afficher le dossier "+p.name} aria-pressed={i===0?"true":"false"} data-searchable={p.name.toLowerCase()+" "+p.tags.join(" ").toLowerCase()}>
+            <span class={"cc-project-icon cc-project-icon-"+i} aria-hidden="true">{["⌘","✥","◈","⋈","⌖"][i]}</span>
+            <span class="cc-project-info"><strong>{p.name}</strong><small>{p.type}</small></span>
+            <span class="cc-project-open" aria-hidden="true">↗</span>
+          </button>)}
+        </div>
+        <article class="cc-selected-project" aria-live="polite">
+          <div class="cc-case-kicker">DOSSIER SÉLECTIONNÉ <span>ÉTUDE DE CAS</span></div>
+          <h3 data-case-title>{first.name}</h3>
+          <p data-case-description>{first.summary}</p>
+          <p class="cc-case-result" data-case-result>{first.outcome} · {first.status}</p>
+          <div class="cc-case-tags" data-case-tags>{first.tags.slice(0,3).map(tag=><span>{tag}</span>)}</div>
+          <a class="cc-case-link" href={base+first.href} data-case-link>Lire l'étude de cas <span aria-hidden="true">↗</span></a>
+        </article>
+      </div>
+    </div>
+    <div class="cc-widget cc-signals-widget" id="detection-signals">
+      <div class="cc-widget-header"><h2><span aria-hidden="true">⌁</span> Exercices d'investigation</h2><span class="cc-simulation-label">5 scénarios simulés</span></div>
+      <div class="cc-signal-list">
+        {labSignals.map((s,i)=><button type="button" class="cc-signal-item" data-signal-index={i} data-searchable={(s.name+" "+s.reference+" "+s.source).toLowerCase()}>
+          <span class="cc-signal-time">{s.time}</span>
+          <span class:list={["cc-signal-icon","cc-signal-"+s.severity]} aria-hidden="true">{s.severity==="high"?"!":s.severity==="medium"?"△":"◎"}</span>
+          <span class="cc-signal-name"><strong>{s.name}</strong><small>{s.source}</small></span>
+          
+        </button>)}
+      </div>
+      <div class="cc-widget-note">Sélectionne un exercice pour voir ses hypothèses, traces et mesures défensives.</div>
+    </div>
+  </section>
+  <PublicationFeed />
+  <footer class="cc-bottom"><span>NAKORE · SECURITY ENGINEERING</span><span>Projets réels · scénarios de laboratoire simulés</span><a href={base+"about/"}>À PROPOS ↗</a></footer>
+</main>
+<dialog class="cc-dialog" id="cc-signal-dialog" aria-labelledby="cc-dialog-title">
+  <div class="cc-dialog-head"><span>SECURITY LAB / EVENT EXPLANATION</span><button type="button" data-dialog-close aria-label="Fermer">×</button></div>
+  <div class="cc-dialog-body">
+  <small class="cc-dialog-kicker">EXERCICE GUIDÉ · ÉVÉNEMENT FICTIF</small>
+  <h2 id="cc-dialog-title" data-dialog-title></h2>
+  <p data-dialog-text></p>
+  <div class="cc-guide-goal"><span>OBJECTIF D’APPRENTISSAGE</span><p data-dialog-goal></p></div>
+  <h3>Hypothèse à tester</h3><p data-dialog-hypothesis></p>
+  <h3>Indices à rechercher</h3><ul data-dialog-observables></ul>
+  <h3>Méthode d’investigation</h3><ol data-dialog-steps></ol>
+  <h3>Mesures défensives</h3><p data-dialog-mitigation></p>
+  <dl><div><dt>Référence</dt><dd data-dialog-technique></dd></div><div><dt>Source de lab</dt><dd data-dialog-source></dd></div></dl>
+  <div class="cc-dialog-actions">
+    <button type="button" data-dialog-locate>Localiser dans la carte ◎</button>
+    <a data-dialog-project href={base+"projects/cybermind-x/"}>Lire le dossier relié ↗</a>
+  </div>
+</div>
+</dialog>
+
+</CommandLayout>
+<script>
+import {site} from "../../config";
+import {labSignals} from "../../data/commandData";
+const base=import.meta.env.BASE_URL.endsWith("/")?import.meta.env.BASE_URL:import.meta.env.BASE_URL+"/";
+const root=document.querySelector<HTMLElement>("#cc-app");
+if(root){
+  const projects=Array.from(root.querySelectorAll<HTMLButtonElement>("[data-project-index]"));
+  const set=(selector:string,value:string)=>{const el=root.querySelector<HTMLElement>(selector);if(el)el.textContent=value};
+  const link=root.querySelector<HTMLAnchorElement>("[data-case-link]");
+  const tags=root.querySelector<HTMLElement>("[data-case-tags]");
+  const activate=(i:number)=>{
+    const p=site.projects[i];if(!p)return;
+    projects.forEach((el,j)=>{const selected=i===j;el.classList.toggle("cc-project-selected",selected);el.setAttribute("aria-pressed",String(selected))});
+    set("[data-case-title]",p.name);
+    set("[data-case-description]",p.summary);
+    set("[data-case-result]",p.outcome+" · "+p.status);
+    if(link)link.href=base+p.href;
+    if(tags){tags.replaceChildren();p.tags.slice(0,3).forEach(t=>{const span=document.createElement("span");span.textContent=t;tags.append(span)})}
+  };
+  const ids=["cybermind","honeyshield","lumina","mcp","ctf"];
+  projects.forEach((el,i)=>el.addEventListener("click",()=>{
+    activate(i);
+    window.dispatchEvent(new CustomEvent("atlas:inspect",{detail:{nodeId:ids[i]}}));
+  }));
+  window.addEventListener("atlas:project",(event)=>{
+    const slug=(event as CustomEvent<{slug:string}>).detail?.slug;
+    const i=site.projects.findIndex(p=>p.slug===slug);
+    if(i>=0)activate(i);
+  });
+
+  const dialog=document.querySelector<HTMLDialogElement>("#cc-signal-dialog");
+  const populate=(selector:string,items:string[])=>{
+    const target=root.querySelector<HTMLElement>(selector);
+    if(!target)return;
+    target.replaceChildren();
+    items.forEach(item=>{const li=document.createElement("li");li.textContent=item;target.append(li)});
+  };
+  const showSignal=(i:number)=>{
+    const s=labSignals[i];if(!s||!dialog)return;
+    set("[data-dialog-title]",s.name);set("[data-dialog-text]",s.detail);
+    set("[data-dialog-technique]",s.reference);set("[data-dialog-source]",s.source);
+    set("[data-dialog-goal]",s.learningGoal);set("[data-dialog-hypothesis]",s.hypothesis);
+    set("[data-dialog-mitigation]",s.mitigation);
+    populate("[data-dialog-observables]",s.observables);
+    populate("[data-dialog-steps]",s.investigation);
+    const related=site.projects.find(p=>p.slug===s.projectSlug);
+    const relatedLink=root.querySelector<HTMLAnchorElement>("[data-dialog-project]");
+    if(relatedLink&&related)relatedLink.href=base+related.href;
+    const locate=root.querySelector<HTMLButtonElement>("[data-dialog-locate]");
+    if(locate)locate.onclick=()=>{
+      dialog.close();
+      window.dispatchEvent(new CustomEvent("atlas:inspect",{detail:{nodeId:s.nodeId}}));
+      document.getElementById("threat-map")?.scrollIntoView({behavior:"smooth",block:"start"});
+    };
+    dialog.showModal();
+  };
+  root.querySelectorAll<HTMLButtonElement>("[data-signal-index]").forEach((button,i)=>button.addEventListener("click",()=>showSignal(i)));
+  window.addEventListener("atlas:scenario",(event)=>{
+    const i=(event as CustomEvent<{index:number}>).detail?.index;
+    if(typeof i==="number")showSignal(i);
+  });
+  dialog?.querySelector("[data-dialog-close]")?.addEventListener("click",()=>dialog.close());
+  dialog?.addEventListener("click",event=>{if(event.target===dialog)dialog.close()});
+
+  const field=root.querySelector<HTMLInputElement>("#cc-search");
+  const searchable=Array.from(root.querySelectorAll<HTMLElement>("[data-searchable]"));
+  const searchStatus=root.querySelector<HTMLElement>("[data-search-count]");
+  const normalize=(s:string)=>s.normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase().trim();
+  field?.addEventListener("input",()=>{
+    const query=normalize(field.value);
+    let visible=0;
+    searchable.forEach(el=>{const matches=!query||normalize(el.dataset.searchable||"").includes(query);el.hidden=!matches;if(matches)visible++});
+    if(searchStatus)searchStatus.textContent=query
+      ? visible+" résultat(s) pour « "+field.value+" » — Entrée pour sélectionner le premier."
+      : "";
+  });
+  field?.addEventListener("keydown",event=>{
+    if(event.key==="Enter"){
+      const first=searchable.find(el=>!el.hidden);
+      if(first){event.preventDefault();first.click();first.scrollIntoView({behavior:"smooth",block:"center"})}
+    }
+    if(event.key==="Escape"){field.value="";field.dispatchEvent(new Event("input"));field.blur()}
+  });
+  document.addEventListener("keydown",event=>{
+    if((event.ctrlKey||event.metaKey)&&event.key.toLowerCase()==="k"){
+      event.preventDefault();field?.focus();field?.select();
+    }
+  });
+  const toggle=root.querySelector<HTMLButtonElement>("[data-sidebar-toggle]");
+  const closeSidebar=()=>{document.body.classList.remove("cc-sidebar-open");toggle?.setAttribute("aria-expanded","false")};
+  toggle?.addEventListener("click",()=>{const isOpen=document.body.classList.toggle("cc-sidebar-open");toggle.setAttribute("aria-expanded",String(isOpen))});
+  root.querySelectorAll("[data-sidebar-close]").forEach(el=>el.addEventListener("click",closeSidebar));
+  root.querySelectorAll(".cc-primary-nav a").forEach(el=>el.addEventListener("click",closeSidebar));
+}
+</script>

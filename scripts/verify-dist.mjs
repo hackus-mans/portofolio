@@ -7,7 +7,7 @@ const required=[
  "projects/cybermind-x/index.html","projects/honeyshield/index.html",
  "projects/lumina-academy/index.html","projects/mcp-automation/index.html",
  "projects/labs-ctf/index.html","writeups/index.html","labs/index.html",
- "notes/index.html","roadmap/index.html","journal/index.html"
+ "notes/index.html","roadmap/index.html","journal/index.html","atlas/index.html","contact/index.html"
 ];
 const bad=[];
 for(const rel of required){if(!fs.existsSync(path.join(root,rel)))bad.push("Route missing: "+rel)}
@@ -27,7 +27,7 @@ for(const file of htmls){
  }
 }
 const home=fs.readFileSync(path.join(root,"index.html"),"utf8");
-for(const marker of ["Security Constellation","CyberMind X","Ce que j’explore.","Exercices","NAKORE"]){
+for(const marker of ["Joseph","CyberMind X","NOTES DE TERRAIN","Explorer l’Atlas","NAKORE"]){
  if(!home.includes(marker))bad.push("Homepage marker missing: "+marker);
 }
 if(bad.length){console.error("Site checks failed:\n"+bad.join("\n"));process.exit(1)}

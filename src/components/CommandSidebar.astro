@@ -3,7 +3,7 @@ const base=import.meta.env.BASE_URL.endsWith("/")?import.meta.env.BASE_URL:impor
 const here=Astro.url.pathname;
 const links=[
  {label:"Vue générale",href:base,icon:"grid"},
- {label:"Atlas de sécurité",href:base+"#threat-map",icon:"radar"},
+ {label:"Atlas de sécurité",href:base+"atlas/#threat-map",icon:"radar"},
  {label:"Projets",href:base+"projects/",icon:"folder"},
  {label:"Labs",href:base+"labs/",icon:"flask"},
  {label:"Writeups",href:base+"writeups/",icon:"file"},
@@ -22,7 +22,7 @@ const links=[
   </div>
   <div class="cc-sidebar-label">NAVIGATION</div>
   <nav class="cc-primary-nav" aria-label="Sections du portfolio">
-  {links.map((link,i)=><a class:list={["cc-nav-link",{"cc-nav-current":(i===0&&here===base)||(i===2&&here.startsWith(base+"projects/"))||(i===3&&here.startsWith(base+"labs/"))||(i===4&&here.startsWith(base+"writeups/"))||(i===5&&here.startsWith(base+"notes/"))||(i===6&&here.startsWith(base+"journal/"))||(i===7&&here.startsWith(base+"roadmap/"))}]} href={link.href}>
+  {links.map((link,i)=><a class:list={["cc-nav-link",{"cc-nav-current":(i===0&&here===base)||(i===1&&here===base+"atlas/")||(i===2&&here.startsWith(base+"projects/"))||(i===3&&here.startsWith(base+"labs/"))||(i===4&&here.startsWith(base+"writeups/"))||(i===5&&here.startsWith(base+"notes/"))||(i===6&&here.startsWith(base+"journal/"))||(i===7&&here.startsWith(base+"roadmap/"))}]} href={link.href}>
     <span class="cc-nav-ico" aria-hidden="true">
       {link.icon==="grid"&&<svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>}
       {link.icon==="radar"&&<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4"/><path d="m12 12 7-7"/><circle cx="12" cy="12" r="1"/></svg>}
@@ -53,9 +53,9 @@ const links=[
 const navigation=document.querySelector<HTMLElement>(".cc-primary-nav");
 if(navigation){
   const update=()=>{
-    const home=location.pathname.replace(/\/+$/,"/")==="/portofolio/";
+    const home=location.pathname.replace(/\/+$/,"/")==="/portofolio/atlas/";
     if(!home)return;
-    const onMap=location.hash==="#threat-map";
+    const onMap=true;
     const links=Array.from(navigation.querySelectorAll<HTMLAnchorElement>("a"));
     links.forEach((link,i)=>{
       const active=onMap?i===1:i===0;

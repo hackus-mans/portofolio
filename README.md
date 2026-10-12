@@ -2,7 +2,7 @@
 
 **Site :** https://hackus-mans.github.io/portofolio/
 
-Une constellation interactive pour explorer mes projets, et un journal pour documenter mes apprentissages. Astro génère un site statique ; le contenu est conservé dans Git, sans base de données à administrer.
+Un portfolio personnel pour présenter mes projets, un journal pour documenter mes apprentissages, et un Atlas interactif pour explorer leurs relations. Astro génère un site statique ; le contenu est conservé dans Git, sans base de données à administrer.
 
 ## Publier au quotidien, depuis GitHub
 
@@ -11,7 +11,7 @@ Une constellation interactive pour explorer mes projets, et un journal pour docu
 3. Choisir `notes`, `labs` ou `writeups`, puis remplir le titre, le résumé, le texte Markdown et les sujets.
 4. Cliquer **Run workflow** et attendre la réussite de la publication et du déploiement.
 
-Le contenu apparaît automatiquement dans sa rubrique, dans le **Journal**, et parmi les trois publications les plus récentes sur l’accueil. Le compteur de publications se recalcule. Il n’y a pas de fichier d’accueil à modifier.
+Le contenu apparaît automatiquement dans sa rubrique, dans le **Journal**, et parmi les six publications les plus récentes sur l’accueil. Le compteur de publications se recalcule. Il n’y a pas de fichier d’accueil à modifier.
 
 **Pour un long texte :** créer un fichier `.md` dans `src/content/notes/`, `src/content/labs/` ou `src/content/writeups/` avec l’éditeur GitHub, puis le committer sur `main`. Le champ texte du formulaire Actions est un champ chaîne ; pour conserver confortablement les paragraphes, préférer l’éditeur de fichiers. Voir [le guide et les modèles](docs/PUBLICATION.md).
 
@@ -50,3 +50,13 @@ La carte et les scénarios sont pédagogiques : aucun flux SOC réel ni commande
 Le Command Center a été épuré : les trois espaces centraux sont la carte de relations, les dossiers de projets et les scénarios d'investigation. Le journal reste accessible sur l'accueil et sur sa page dédiée. La carte est **déplaçable au doigt sur téléphone**, avec centrage sur le nœud actif. Les présentations, études de cas, notes, labs et articles restent conservés.
 
 Tests : `npm run build`, `node scripts/verify-dist.mjs` et la vérification Chromium sur 14 largeurs de 320 à 2560 pixels via la PR GitHub.
+
+## Présentation et navigation
+
+- Accueil : identité, projets sélectionnés, six publications récentes, démarche et contact.
+- `/atlas/` : constellation et scénarios pédagogiques conservés.
+- `/contact/` : liens LinkedIn et GitHub.
+- Style du portfolio : `src/styles/portfolio.css`. Le style de l’Atlas reste dans `src/styles/command.css`.
+- Navigation et pied de page : `PortfolioHeader.astro` et `PortfolioFooter.astro`.
+
+Les publications quotidiennes conservent le même fonctionnement Markdown / Actions. Aucun résultat CTF, témoignage ou chiffre d’expérience n’a été ajouté pour décorer le site.
