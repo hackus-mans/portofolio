@@ -52,6 +52,7 @@ await page.locator("[data-preferences-close]").click();
 await page.locator("#cc-search").fill("Honey");
 check(!(await page.locator('[data-project-index="0"]').isVisible()),"Search did not filter projects");
 await page.locator("#cc-search").fill("");
+await page.locator('[data-ws-view="orbit"]').click();
 const widths=[320,360,375,390,430,600,650,768,820,1024,1280,1440,1920,2560];
 const failures=[];
 for(const width of widths){
