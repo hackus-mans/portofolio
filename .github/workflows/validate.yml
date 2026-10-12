@@ -18,3 +18,34 @@ jobs:
       - run: npm ci
       - run: npm run build
       - run: node scripts/verify-dist.mjs
+
+  public-website-check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Verify live rebuilt website and stylesheet
+        shell: bash
+        run: |
+          set -euo pipefail
+          URL="https://hackus-mans.github.io/portofolio/?v=full-rebuild-20261012"
+          curl -L --fail --silent --show-error --max-time 30 -H "Cache-Control: no-cache" -o live.html -D response.headers "$URL"
+          echo "PAGE TITLE:"
+          grep -oE '<title>[^<]*</title>' live.html | head -1
+          if ! grep -Fq 'TO DEFEND.' live.html; then
+            echo "ERROR: New hero missing from public HTML"
+            exit 1
+          fi
+          if ! grep -Fq 'Security Engineering' live.html; then
+            echo "ERROR: Site identity missing"
+            exit 1
+          fi
+          CSS=$(grep -oE '/portofolio/_astro/[^" ]+\.css' live.html | head -1)
+          test -n "$CSS"
+          echo "CSS LINK: $CSS"
+          curl -L --fail --silent --show-error --max-time 30 -o live.css "https://hackus-mans.github.io$CSS"
+          grep -Fq '.home-hero' live.css || { echo "ERROR: New stylesheet marker not found";exit 1; }
+          for page in about/ projects/ projects/mcp-automation/ roadmap/ writeups/ labs/ notes/; do
+            CODE=$(curl -L -s -o /dev/null -w '%{http_code}' "https://hackus-mans.github.io/portofolio/$page")
+            echo "$page -> $CODE"
+            test "$CODE" = "200"
+          done
+          echo "SUCCESS: rebuilt homepage, CSS and 7 internal routes all accessible."
