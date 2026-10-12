@@ -3,6 +3,7 @@ import "../styles/global.css";
 import { site } from "../config";
 import Nav from "../components/Nav.astro";
 import Footer from "../components/Footer.astro";
+import CommandPalette from "../components/CommandPalette.astro";
 
 const {
   title = site.name + " — Security Engineer in Progress",
@@ -53,6 +54,7 @@ const schema = {
   <body class="studio">
     <a class="skip-link" href="#main-content">Aller au contenu</a>
     <Nav />
+    <CommandPalette />
     <slot />
     <Footer />
   </body>

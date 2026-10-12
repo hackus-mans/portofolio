@@ -11,7 +11,7 @@ const base = rawBase.endsWith("/") ? rawBase : rawBase + "/";
       <a class="footer-action" href={site.social[1].href} target="_blank" rel="noopener noreferrer">Entrer en contact <span aria-hidden="true">↗</span></a>
     </div>
     <div class="footer-directory">
-      <div><span>NAVIGUER</span><a href={base}>Accueil</a><a href={base+"projects/"}>Projets</a><a href={base+"writeups/"}>Writeups</a><a href={base+"labs/"}>Labs</a><a href={base+"notes/"}>Notes</a><a href={base+"roadmap/"}>Roadmap</a></div>
+      <div><span>NAVIGUER</span><a href={base}>Accueil</a><a href={base+"about/"}>À propos</a><a href={base+"projects/"}>Projets</a><a href={base+"writeups/"}>Writeups</a><a href={base+"labs/"}>Labs</a><a href={base+"notes/"}>Notes</a><a href={base+"roadmap/"}>Roadmap</a></div>
       <div><span>RETROUVER</span>{site.social.map(link=><a href={link.href} target="_blank" rel="noopener noreferrer">{link.label} ↗</a>)}<small>{site.location}</small></div>
     </div>
   </div>

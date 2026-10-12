@@ -19,6 +19,7 @@ const sections = [
     <div class="nav-items">
       {sections.map(item=><a href={item.href}>{item.label}</a>)}
     </div>
+    <button class="command-button" type="button" data-command-open aria-label="Ouvrir la recherche rapide">⌕ <span>Explorer</span><kbd>CTRL K</kbd></button>
     <a class="header-cta" href={base+"#contact"}>Travaillons ensemble <span aria-hidden="true">↗</span></a>
     <details class="mobile-nav">
       <summary aria-label="Ouvrir le menu principal">
