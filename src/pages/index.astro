@@ -6,12 +6,7 @@ import { labSignals } from "../data/commandData";
 const base=import.meta.env.BASE_URL.endsWith("/")?import.meta.env.BASE_URL:import.meta.env.BASE_URL+"/";
 const projects=site.projects;
 const first=projects[0];
-const groups=[
-{value:String(projects.length).padStart(2,"0"),label:"Dossiers publiés",icon:"layers",tone:"blue"},
-{value:String(site.capabilities.length).padStart(2,"0"),label:"Domaines de pratique",icon:"globe",tone:"blue"},
-{value:String(labSignals.length).padStart(2,"0"),label:"Parcours pédagogiques",icon:"pulse",tone:"red"},
-{value:"00",label:"Flux SOC connectés",icon:"db",tone:"muted"}
-];
+
 ---
 <CommandLayout>
 <header class="cc-topbar">
@@ -21,49 +16,57 @@ const groups=[
     <span class="cc-crumb">NAKORE <b>/</b> FIELD ATLAS <b>/</b> <strong>Security Overview</strong></span>
   </div>
   <div class="cc-topbar-right">
-    <label class="cc-global-search" for="cc-search"><span aria-hidden="true">⌕</span><input id="cc-search" type="search" placeholder="Rechercher un projet ou un signal…" autocomplete="off"/><kbd>⌘ K</kbd></label>
-    <span class="cc-top-status"><i></i> PORTFOLIO / DEMO</span>
+    <label class="cc-global-search" for="cc-search"><span aria-hidden="true">⌕</span><input id="cc-search" type="search" placeholder="Chercher un projet, un scénario…" autocomplete="off" aria-label="Rechercher dans le portfolio"/><kbd>⌘ K</kbd></label>
+    <span class="cc-top-status">PORTFOLIO · DÉMO</span>
     <a class="cc-avatar" href={base+"about/"} aria-label="À propos de Joseph NAKORE">N<span></span></a>
   </div>
 </header>
 <main id="main-content" class="cc-main">
   <section class="cc-title-strip" aria-labelledby="cc-title">
     <div class="cc-title-copy">
-      <div class="cc-pretitle"><span class="cc-pretitle-dot"></span> SECURITY RESEARCH WORKSPACE <span class="cc-split">/</span> LOMÉ, TOGO</div>
-      <h1 id="cc-title">Global Security <em>Constellation</em></h1>
-      <p>Explore mes projets, leurs outils et cinq scénarios d’investigation. Les liens décrivent des relations pédagogiques explicites, et non des attaques réelles.</p>
-      <div class="cc-action-tabs" role="group" aria-label="Navigation rapide">
-        <a class="cc-tab-primary" href="#threat-map">◉ &nbsp; Cartographie</a>
-        <a href="#project-intelligence">Projets</a>
-        <a href="#detection-signals">Signaux de lab</a>
-        <a href={base+"projects/"}>Études de cas ↗</a>
-      </div>
+      <div class="cc-pretitle"><span class="cc-pretitle-dot"></span> JOSEPH NAKORE / SECURITY ENGINEERING</div>
+      <h1 id="cc-title">Security <em>Constellation</em></h1>
+      <p>Une cartographie de mes travaux en cybersécurité : projets, composants et exercices. Choisis un nœud pour comprendre son rôle et accéder à une démonstration documentée.</p>
+      <nav class="cc-action-tabs" aria-label="Accès rapides">
+        <a class="cc-tab-primary" href="#threat-map">Explorer la carte ↗</a>
+        <a href="#project-intelligence">Mes projets</a>
+        <a href="#detection-signals">Exercices de sécurité</a>
+        <a href={base+"about/"}>Mon parcours</a>
+      </nav>
     </div>
-    <div class="cc-metric-grid" aria-label="Repères réels et simulations">
-      {groups.map(item=><div class:list={["cc-metric","cc-metric-"+item.tone]}>
-        <div class="cc-metric-top"><span class="cc-metric-icon" aria-hidden="true">{item.icon==="layers"?"⬡":item.icon==="globe"?"◎":item.icon==="pulse"?"〽":"▤"}</span><strong>{item.value}</strong></div>
-        <small>{item.label}</small><button type="button" class="cc-metric-info" data-metric-info={item.icon} aria-label={"Comprendre l’indicateur : "+item.label}>i</button>
-      </div>)}
+    <div class="cc-quick-facts" aria-label="Contenu de l'atlas">
+      <a href="#project-intelligence"><strong>{String(projects.length).padStart(2,"0")}</strong><span>Dossiers de projets</span></a>
+      <a href="#detection-signals"><strong>{String(labSignals.length).padStart(2,"0")}</strong><span>Scénarios d'étude</span></a>
+      <p>CARTE SCHÉMATIQUE<br/><b>Pas de surveillance en direct</b></p>
     </div>
   </section>
 
   <CommandGraph />
 
   <p class="cc-search-status" data-search-count role="status" aria-live="polite"></p>
-  <section class="cc-work-grid" aria-label="Panels des projets et signaux">
+  <section class="cc-work-grid" aria-label="Projets et exercices">
     <div class="cc-widget cc-project-widget" id="project-intelligence">
-      <div class="cc-widget-header"><h2><span aria-hidden="true">▱</span> Project Intelligence</h2><a href={base+"projects/"}>View all ↗</a></div>
-      <div class="cc-project-items" data-project-list>
-        {projects.map((p,i)=><button type="button" class:list={["cc-project-item",{"cc-project-selected":i===0}]} data-project-index={i} aria-label={"Afficher le dossier "+p.name} aria-pressed={i===0?"true":"false"} data-searchable={p.name.toLowerCase()+" "+p.tags.join(" ").toLowerCase()}>
-          <span class={"cc-project-icon cc-project-icon-"+i} aria-hidden="true">{["⌘","✥","◈","⋈","⌖"][i]}</span>
-          <span class="cc-project-info"><strong>{p.name}</strong><small>{p.type}</small></span>
-          <span class="cc-project-state">{p.status}</span>
-          <span class="cc-project-open" aria-hidden="true">◉</span>
-        </button>)}
+      <div class="cc-widget-header"><h2><span aria-hidden="true">▱</span> Mes projets</h2><a href={base+"projects/"}>Tous les dossiers ↗</a></div>
+      <div class="cc-project-body">
+        <div class="cc-project-items" data-project-list>
+          {projects.map((p,i)=><button type="button" class:list={["cc-project-item",{"cc-project-selected":i===0}]} data-project-index={i} aria-label={"Afficher le dossier "+p.name} aria-pressed={i===0?"true":"false"} data-searchable={p.name.toLowerCase()+" "+p.tags.join(" ").toLowerCase()}>
+            <span class={"cc-project-icon cc-project-icon-"+i} aria-hidden="true">{["⌘","✥","◈","⋈","⌖"][i]}</span>
+            <span class="cc-project-info"><strong>{p.name}</strong><small>{p.type}</small></span>
+            <span class="cc-project-open" aria-hidden="true">↗</span>
+          </button>)}
+        </div>
+        <article class="cc-selected-project" aria-live="polite">
+          <div class="cc-case-kicker">DOSSIER SÉLECTIONNÉ <span>ÉTUDE DE CAS</span></div>
+          <h3 data-case-title>{first.name}</h3>
+          <p data-case-description>{first.summary}</p>
+          <p class="cc-case-result" data-case-result>{first.outcome} · {first.status}</p>
+          <div class="cc-case-tags" data-case-tags>{first.tags.slice(0,3).map(tag=><span>{tag}</span>)}</div>
+          <a class="cc-case-link" href={base+first.href} data-case-link>Lire l'étude de cas <span aria-hidden="true">↗</span></a>
+        </article>
       </div>
     </div>
     <div class="cc-widget cc-signals-widget" id="detection-signals">
-      <div class="cc-widget-header"><h2><span aria-hidden="true">⌁</span> Detection Signals</h2><span class="cc-simulation-label"><i></i> Simulated events</span></div>
+      <div class="cc-widget-header"><h2><span aria-hidden="true">⌁</span> Exercices d'investigation</h2><span class="cc-simulation-label">5 scénarios simulés</span></div>
       <div class="cc-signal-list">
         {labSignals.map((s,i)=><button type="button" class="cc-signal-item" data-signal-index={i} data-searchable={(s.name+" "+s.reference+" "+s.source).toLowerCase()}>
           <span class="cc-signal-time">{s.time}</span>
@@ -72,33 +75,10 @@ const groups=[
           <span class="cc-signal-tactic">{s.reference}</span>
         </button>)}
       </div>
-      <div class="cc-widget-note">Cliquer pour découvrir une méthode d’enquête reproductible · aucun événement réel.</div>
-    </div>
-    <div class="cc-widget cc-case-widget" id="case-study">
-      <div class="cc-widget-header"><h2><span aria-hidden="true">▣</span> Case Study Overview</h2><a href={base+"projects/"}>Browse all ↗</a></div>
-      <div class="cc-case-preview">
-        <div class="cc-case-art" aria-hidden="true">
-          <svg viewBox="0 0 400 135" preserveAspectRatio="xMidYMid slice">
-            <defs><pattern id="cc-case-grid" width="24" height="24" patternUnits="userSpaceOnUse"><path d="M24 0H0V24" fill="none" stroke="#8a9fe1" stroke-opacity=".24"/></pattern></defs>
-            <rect width="400" height="135" fill="#100e30"/><rect width="400" height="135" fill="url(#cc-case-grid)"/>
-            <path d="M-5 105 39 78 78 96 112 32 140 86 180 68 211 20 260 90 290 30 327 88 360 60 405 100" fill="none" stroke="#e84671" stroke-width="1.4"/>
-            <path d="M-5 115 39 88 78 106 112 42 140 96 180 78 211 30 260 100 290 40 327 98 360 70 405 110V140H-5Z" fill="#601143" opacity=".65"/>
-            <path d="M0 130 120 30 200 85 290 16 400 130" fill="none" stroke="#7d62f4" stroke-opacity=".55"/>
-            <g fill="#f54b77"><circle cx="112" cy="32" r="4"/><circle cx="211" cy="20" r="4"/><circle cx="290" cy="30" r="4"/></g>
-            <text x="18" y="21" fill="#eeb5f0" font-family="monospace" font-size="10">CASE STUDY / ARCHITECTURE</text>
-          </svg>
-        </div>
-      </div>
-      <div class="cc-case-content">
-        <div class="cc-case-kicker">DOSSIER SÉLECTIONNÉ <span>◉ RECHERCHE</span></div>
-        <h3 data-case-title>{first.name}</h3>
-        <p data-case-description>{first.summary}</p><p class="cc-case-result" data-case-result>Repère : {first.outcome} · {first.status}</p>
-        <div class="cc-case-tags" data-case-tags>{first.tags.slice(0,3).map(tag=><span>{tag}</span>)}</div>
-        <a class="cc-case-link" href={base+first.href} data-case-link>Ouvrir l'étude de cas <span aria-hidden="true">↗</span></a>
-      </div>
+      <div class="cc-widget-note">Sélectionne un exercice pour voir ses hypothèses, traces et mesures défensives.</div>
     </div>
   </section>
-  <footer class="cc-bottom"><div><span class="cc-status-dot"></span> FIELD ATLAS V5 / STATIC DEMONSTRATION</div><div>NAKORE · OFFENSE / DEFENSE / ENGINEERING</div><a href={base+"about/"}>À PROPOS ↗</a></footer>
+  <footer class="cc-bottom"><span>NAKORE · SECURITY ENGINEERING</span><span>Projets réels · scénarios de laboratoire simulés</span><a href={base+"about/"}>À PROPOS ↗</a></footer>
 </main>
 <dialog class="cc-dialog" id="cc-signal-dialog" aria-labelledby="cc-dialog-title">
   <div class="cc-dialog-head"><span>SECURITY LAB / EVENT EXPLANATION</span><button type="button" data-dialog-close aria-label="Fermer">×</button></div>
@@ -118,14 +98,7 @@ const groups=[
   </div>
 </div>
 </dialog>
-<dialog class="cc-dialog cc-metric-dialog" id="cc-metric-dialog" aria-labelledby="metric-dialog-title">
-  <div class="cc-dialog-head"><span>COMPRENDRE LES INDICATEURS</span><button type="button" data-metric-close aria-label="Fermer">×</button></div>
-  <div class="cc-dialog-body">
-    <h2 id="metric-dialog-title" data-metric-title></h2>
-    <p data-metric-description></p>
-    <p class="cc-data-provenance">SOURCE : données du portfolio ou scénarios intégrés. Ces chiffres ne sont pas des mesures SOC réelles.</p>
-  </div>
-</dialog>
+
 </CommandLayout>
 <script>
 import {site} from "../config";
@@ -142,7 +115,7 @@ if(root){
     projects.forEach((el,j)=>{const selected=i===j;el.classList.toggle("cc-project-selected",selected);el.setAttribute("aria-pressed",String(selected))});
     set("[data-case-title]",p.name);
     set("[data-case-description]",p.summary);
-    set("[data-case-result]","Repère : "+p.outcome+" · "+p.status);
+    set("[data-case-result]",p.outcome+" · "+p.status);
     if(link)link.href=base+p.href;
     if(tags){tags.replaceChildren();p.tags.slice(0,3).forEach(t=>{const span=document.createElement("span");span.textContent=t;tags.append(span)})}
   };
@@ -190,22 +163,6 @@ if(root){
   });
   dialog?.querySelector("[data-dialog-close]")?.addEventListener("click",()=>dialog.close());
   dialog?.addEventListener("click",event=>{if(event.target===dialog)dialog.close()});
-
-  const metricDialog=document.querySelector<HTMLDialogElement>("#cc-metric-dialog");
-  const metrics:Record<string,{title:string;description:string}>={
-    layers:{title:"Dossiers de projets",description:"Nombre de projets présentés dans le portfolio. Chaque dossier est accessible depuis Project Intelligence ou la liste des projets."},
-    globe:{title:"Domaines de pratique",description:"Les domaines décrits dans le parcours : sécurité offensive, détection et SOC, systèmes et réseaux, ingénierie / IA et automatisation."},
-    pulse:{title:"Parcours pédagogiques",description:"Nombre de scénarios guidés disponibles avec hypothèses, indices à recueillir, procédure de vérification et mesures défensives."},
-    db:{title:"Flux SOC connectés",description:"Aucune source SIEM ou API de renseignement sur les menaces n'est connectée au site public. Les événements visibles sont des simulations."}
-  };
-  root.querySelectorAll<HTMLButtonElement>("[data-metric-info]").forEach(button=>button.addEventListener("click",()=>{
-    const metric=metrics[button.dataset.metricInfo||""];
-    if(!metric||!metricDialog)return;
-    set("[data-metric-title]",metric.title);set("[data-metric-description]",metric.description);
-    metricDialog.showModal();
-  }));
-  metricDialog?.querySelector("[data-metric-close]")?.addEventListener("click",()=>metricDialog.close());
-  metricDialog?.addEventListener("click",event=>{if(event.target===metricDialog)metricDialog.close()});
 
   const field=root.querySelector<HTMLInputElement>("#cc-search");
   const searchable=Array.from(root.querySelectorAll<HTMLElement>("[data-searchable]"));
