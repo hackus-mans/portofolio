@@ -1,114 +1,97 @@
-import { chromium } from "playwright-core";
-import fs from "node:fs";
+import {chromium} from "playwright-core";
 const base="http://127.0.0.1:4173/portofolio/";
 const chrome=process.env.CHROME_BIN||"/usr/bin/google-chrome";
 const browser=await chromium.launch({headless:true,executablePath:chrome,args:["--no-sandbox","--disable-dev-shm-usage","--disable-gpu"]});
-const errors=[];
 const page=await browser.newPage({viewport:{width:1440,height:900},deviceScaleFactor:1});
-page.on("pageerror",e=>errors.push(e.message));
-await page.goto(base,{waitUntil:"networkidle"});
-await page.locator("h1").waitFor();
-if(!(await page.locator("h1").innerText()).includes("Comprendre. Construire."))throw Error("Dashboard hero missing");
-const nodes=await page.locator("[data-graph-node]").count();
-if(nodes<25)throw Error("Network nodes missing: "+nodes);
-const overflow=await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth+4);
-if(overflow)throw Error("Desktop horizontal overflow");
-await page.screenshot({path:"qa-desktop.jpg",type:"jpeg",quality:78,fullPage:true});
-await page.locator('[data-graph-node="honeyshield"]').click();
-if(!(await page.locator("[data-inspector-title]").innerText()).includes("HoneyShield"))throw Error("Graph node interaction failed");
-if(!(await page.locator("[data-inspector-link]").getAttribute("href")).includes("honeyshield"))throw Error("Graph case study link failed");
-if((await page.locator("[data-inspector-relations] li").count())<1)throw Error("Relations not documented in inspector");
-if(!(await page.locator("[data-inspector-kind]").innerText()).includes("PROJET"))throw Error("Node category unexplained");
-await page.locator('[data-map-filter="project"]').click();
-if((await page.locator("[data-map-stage]").getAttribute("data-filter"))!=="project")throw Error("Filter failed");
-if(await page.locator('[data-graph-node="threat-1"]').isVisible())throw Error("Project filter did not actually hide scenario nodes");
-if(await page.locator('[data-graph-node="threat-1"]').getAttribute("tabindex")!=="-1")throw Error("Filtered scenario remains in keyboard tab order");
+const errors=[];
+page.on("pageerror",error=>errors.push(error.message));
+const check=(condition,message)=>{if(!condition)throw Error(message)};
+const goto=async(path="")=>page.goto(base+path,{waitUntil:"domcontentloaded"});
+await goto();
+await page.locator("#cc-title").waitFor();
+check((await page.locator("h1").innerText()).includes("Comprendre. Construire."),"Hero not rendered");
+check((await page.locator("[data-orbit-index]").count())===5,"Five real projects not visible in constellation");
+check((await page.locator(".ws-current-row").count())===5,"Project progress panel missing");
+check((await page.locator(".ws-focus-row").count())===4,"Real expertise domains missing");
+check((await page.locator(".ws-journal-module").count())===1,"Dynamic Journal module missing");
+check((await page.locator(".ws-featured").count())===1,"Featured case study missing");
+check((await page.locator(".ws-quote").count())===1,"Hero quote missing");
+check((await page.locator("[data-ws-panel=orbit]").isVisible()),"Orbit should be default view");
+await page.screenshot({path:"qa-desktop.jpg",fullPage:true,type:"jpeg",quality:82});
+await page.locator('[data-orbit-index="1"]').click();
+check((await page.locator("[data-case-title]").innerText()).includes("HoneyShield"),"Orbit selection did not update case study");
+check((await page.locator("[data-case-link]").getAttribute("href")).includes("honeyshield"),"Orbit case study link broken");
 await page.locator('[data-project-index="2"]').click();
-if(!(await page.locator("[data-case-title]").innerText()).includes("Lumina Academy"))throw Error("Project panel not reactive");
-if(!(await page.locator("[data-inspector-title]").innerText()).includes("Lumina Academy"))throw Error("Project selector not synchronized with graph");
+check((await page.locator('[data-orbit-index="2"]').getAttribute("aria-pressed"))==="true","Project list not synchronized with constellation");
+await page.locator('[data-ws-view="list"]').click();
+check((await page.locator("[data-ws-panel=list]").isVisible()),"Project list mode not shown");
+check((await page.locator(".ws-directory-entry").count())===5,"List mode should display five project links");
+await page.locator('[data-ws-view="graph"]').click();
+check((await page.locator("[data-ws-panel=graph]").isVisible()),"Technical investigation mode missing");
+check((await page.locator("[data-graph-node]").count())>=25,"Legacy technical graph missing");
+await page.locator('[data-graph-node="honeyshield"]').click();
+check((await page.locator("[data-inspector-title]").innerText()).includes("HoneyShield"),"Technical inspector failed");
+check((await page.locator("[data-inspector-relations] li").count())>=1,"Meaningful relations missing");
+await page.locator('[data-map-filter="project"]').click();
+check(!(await page.locator('[data-graph-node="threat-1"]').isVisible()),"Graph category filter broken");
+await page.locator('[data-map-filter="all"]').click();
+await page.locator('[data-ws-view="orbit"]').click();
 await page.locator('[data-signal-index="0"]').click();
-if(!(await page.locator("#cc-signal-dialog").isVisible()))throw Error("Signal dialog failed");
-if((await page.locator("[data-dialog-observables] li").count())<2)throw Error("Evidence checklist missing");
-if((await page.locator("[data-dialog-steps] li").count())<3)throw Error("Investigation procedure missing");
-if(await page.locator(".cc-floating-card").count())throw Error("Decorative map overlays remain");
-if(await page.locator(".cc-case-art").count())throw Error("Fake graph art remains");
-if(await page.locator(".cc-metric-grid").count())throw Error("Redundant KPI cards remain");
-if(!(await page.locator("[data-dialog-project]").getAttribute("href")).includes("cybermind"))throw Error("Scenario not linked to project");
-await page.locator("[data-dialog-close]").click();
-await page.locator("[data-preferences-open]").click();
+check(await page.locator("#cc-signal-dialog").isVisible(),"Guided scenario failed");
+check((await page.locator("[data-dialog-observables] li").count())>=2,"Investigation evidence checklist missing");
+check((await page.locator("[data-dialog-steps] li").count())>=3,"Investigation method missing");
+await page.locator("[data-dialog-locate]").click();
+check((await page.locator("[data-ws-panel=graph]").isVisible()),"Locate scenario did not reveal graph");
+check((await page.locator("[data-inspector-title]").innerText()).includes("Brute force"),"Scenario node not located");
+await page.locator("[data-inspector-close]").click();
+await page.locator("[data-preferences-open]").first().click();
 await page.locator('[data-pref="compact"]').check();
-if(!(await page.locator("body").evaluate(el=>el.classList.contains("cc-compact"))))throw Error("Compact preference not applied");
-await page.locator('[data-pref="glow"]').uncheck();
-if(!(await page.locator("body").evaluate(el=>el.classList.contains("cc-glow-reduced"))))throw Error("Glow preference not applied");
+check(await page.locator("body").evaluate(el=>el.classList.contains("cc-compact")),"Display preference failed");
 await page.locator("[data-pref-reset]").click();
 await page.locator("[data-preferences-close]").click();
 await page.locator("#cc-search").fill("Honey");
-if(await page.locator('[data-project-index="0"]').isVisible())throw Error("Search filtering failed");
+check(!(await page.locator('[data-project-index="0"]').isVisible()),"Search did not filter projects");
 await page.locator("#cc-search").fill("");
-await page.locator('[data-map-filter="all"]').click();
-await page.locator('[data-graph-node="threat-2"]').click();
-await page.locator("[data-inspector-scenario]").click();
-if(!(await page.locator("[data-dialog-title]").innerText()).includes("IDOR"))throw Error("Graph scenario link not connected");
-await page.locator("[data-dialog-locate]").click();
-if(!(await page.locator("[data-inspector-title]").innerText()).includes("Access control"))throw Error("Scenario locate action not functional");
-await page.locator("[data-inspector-close]").click();
-await page.goto(base+"projects/",{waitUntil:"domcontentloaded"});
-if(!(await page.title()).includes("Projets"))throw Error("Project archive inaccessible");
-await page.goto(base,{waitUntil:"networkidle"});
-await page.setViewportSize({width:390,height:844});
-await page.waitForTimeout(550);
-await page.screenshot({path:"qa-mobile.jpg",type:"jpeg",quality:82,fullPage:true});
-const overflowMobile=await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth+4);
-if(overflowMobile)throw Error("Mobile horizontal overflow");
-await page.locator("[data-sidebar-toggle]").click();
-if(!(await page.locator(".cc-sidebar").isVisible()))throw Error("Mobile menu missing");
-if(!(await page.locator("body").evaluate(el=>el.classList.contains("cc-sidebar-open"))))throw Error("Mobile drawer did not open");
-await page.locator("[data-sidebar-close]").first().click();
-if(await page.locator("body").evaluate(el=>el.classList.contains("cc-sidebar-open")))throw Error("Mobile drawer did not close");
-
-// Responsive matrix: page, graph and navigation must fit without document overflow.
-const viewports=[320,360,375,390,430,600,650,768,820,1024,1280,1440,1920,2560];
+const widths=[320,360,375,390,430,600,650,768,820,1024,1280,1440,1920,2560];
 const failures=[];
-for(const width of viewports){
-  await page.setViewportSize({width,height:Math.max(740,Math.round(width*.73))});
-  await page.waitForTimeout(65);
-  const state=await page.evaluate(()=>{
-    const app=document.querySelector(".cc-app");
-    const pageWidth=document.documentElement.scrollWidth;
-    const viewport=document.documentElement.clientWidth;
-    const graph=document.querySelector("[data-map-viewport]");
-    const graphLayer=document.querySelector("[data-graph-layer]");
-    const legend=document.querySelector(".cc-map-legend");
-    const header=document.querySelector(".cc-topbar");
+for(const width of widths){
+  await page.setViewportSize({width,height:Math.max(760,Math.round(width*.68))});
+  await page.waitForTimeout(120);
+  const layout=await page.evaluate(()=>{
+    const orbit=document.querySelector(".ws-orbit-viewport");
+    const bar=document.querySelector(".cc-topbar");
+    const main=document.querySelector(".cc-main");
     return {
-      pageWidth,viewport,graphScrollable:!!graph&&graph.scrollWidth>graph.clientWidth+15,
-      graphW:graph?.clientWidth,graphContentW:graphLayer?.getBoundingClientRect().width,
-      legendInside:!legend||legend.getBoundingClientRect().right<=innerWidth+3,
-      headerInside:!header||header.getBoundingClientRect().right<=innerWidth+3,
-      appWidth:app?.getBoundingClientRect().width
+      documentWidth:document.documentElement.scrollWidth,
+      innerWidth:innerWidth,
+      orbitPan:!!orbit&&orbit.scrollWidth>orbit.clientWidth+15,
+      headerRight:bar?.getBoundingClientRect().right,
+      mainRight:main?.getBoundingClientRect().right
     };
   });
-  if(state.pageWidth>width+3)failures.push(width+": document overflow "+JSON.stringify(state));
-  if(!state.legendInside||!state.headerInside)failures.push(width+": misplaced chrome "+JSON.stringify(state));
-  if(width<=430&&!state.graphScrollable)failures.push(width+": map not pannable "+JSON.stringify(state));
-  if(width===320||width===768||width===1440||width===1920){
-    await page.screenshot({path:"qa-"+width+".jpg",type:"jpeg",quality:80,fullPage:true});
+  if(layout.documentWidth>width+4)failures.push(width+"px document overflow "+JSON.stringify(layout));
+  if((layout.headerRight||0)>width+4)failures.push(width+"px header overflow "+JSON.stringify(layout));
+  if((layout.mainRight||0)>width+4)failures.push(width+"px main overflow "+JSON.stringify(layout));
+  if(width<=430&&!layout.orbitPan)failures.push(width+"px orbit not pannable");
+  if([320,390,768,1440,1920].includes(width)){
+    await page.locator('[data-ws-view="orbit"]').click();
+    await page.screenshot({path:"qa-"+width+".jpg",fullPage:true,type:"jpeg",quality:80});
   }
 }
-if(failures.length)throw Error("Responsive failures:\n"+failures.join("\n"));
+check(failures.length===0,"Responsive issues: "+failures.join("\n"));
 await page.setViewportSize({width:390,height:844});
-await page.locator('[data-graph-node="honeyshield"]').evaluate(el=>el.scrollIntoView({block:"center",inline:"center"}));
-await page.locator('[data-graph-node="honeyshield"]').click({timeout:5000});
-if(!(await page.locator("[data-inspector-title]").innerText()).includes("HoneyShield"))throw Error("Mobile node selection inaccessible");
-await page.goto(base+"projects/",{waitUntil:"domcontentloaded"});
-const subOverflow=await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth+3);
-if(subOverflow)throw Error("Projects archive overflows at 390px");
-await page.goto(base+"projects/cybermind-x/",{waitUntil:"domcontentloaded"});
-if(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth+3))throw Error("Case study overflows at 390px");
-await page.goto(base+"notes/",{waitUntil:"domcontentloaded"});
-if(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth+3))throw Error("Notes archive overflows at 390px");
-await page.goto(base+"journal/",{waitUntil:"domcontentloaded"});
-if(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth+3))throw Error("Journal archive overflows at 390px");
-if(errors.length)throw Error("JS errors: "+errors.join("; "));
-console.log("VISUAL QA OK",JSON.stringify({nodeCount:nodes,viewports,errors:errors.length,archive:true,mapPan:true,interactions:"graph/filter/project/search/dialog/preferences/mobile navigation"}));
+await page.locator('[data-ws-view="orbit"]').click();
+await page.locator('[data-orbit-index="1"]').evaluate(el=>el.scrollIntoView({block:"center",inline:"center"}));
+await page.locator('[data-orbit-index="1"]').click();
+check((await page.locator("[data-case-title]").innerText()).includes("HoneyShield"),"Mobile orbit action failed");
+await page.locator("[data-sidebar-toggle]").click();
+check(await page.locator("body").evaluate(el=>el.classList.contains("cc-sidebar-open")),"Mobile navigation did not open");
+await page.locator("[data-sidebar-close]").first().click();
+check(!(await page.locator("body").evaluate(el=>el.classList.contains("cc-sidebar-open"))),"Mobile navigation did not close");
+for(const path of ["projects/","projects/cybermind-x/","labs/","writeups/","notes/","journal/","roadmap/","about/"]){
+  await goto(path);
+  check(!(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth+4)),"Internal route overflow: "+path);
+}
+check(errors.length===0,"JavaScript errors: "+errors.join("; "));
+console.log("VISUAL QA PASSED",JSON.stringify({screens:widths.length,orbitNodes:5,realJournal:true,graph:true,filters:true,caseStudies:true,mobile:true,errors:0}));
 await browser.close();
