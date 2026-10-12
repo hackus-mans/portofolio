@@ -1,5 +1,6 @@
 ---
 const base=import.meta.env.BASE_URL.endsWith("/")?import.meta.env.BASE_URL:import.meta.env.BASE_URL+"/";
+const here=Astro.url.pathname;
 const links=[
  {label:"Vue générale",href:base,icon:"grid"},
  {label:"Threat Map",href:base+"#threat-map",icon:"radar"},
@@ -21,7 +22,7 @@ const links=[
   </div>
   <div class="cc-sidebar-label">WORKSPACE / 01</div>
   <nav class="cc-primary-nav" aria-label="Sections du portfolio">
-  {links.map((link,i)=><a class:list={["cc-nav-link",{"cc-nav-current":i===0}]} href={link.href}>
+  {links.map((link,i)=><a class:list={["cc-nav-link",{"cc-nav-current":(i===1&&here===base)||(i===2&&here.startsWith(base+"projects/"))||(i===3&&here.startsWith(base+"labs/"))||(i===4&&here.startsWith(base+"writeups/"))||(i===5&&here.startsWith(base+"notes/"))||(i===7&&here.startsWith(base+"roadmap/"))}]} href={link.href}>
     <span class="cc-nav-ico" aria-hidden="true">
       {link.icon==="grid"&&<svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>}
       {link.icon==="radar"&&<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4"/><path d="m12 12 7-7"/><circle cx="12" cy="12" r="1"/></svg>}
