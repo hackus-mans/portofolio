@@ -1,0 +1,53 @@
+---
+const base=import.meta.env.BASE_URL.endsWith("/")?import.meta.env.BASE_URL:import.meta.env.BASE_URL+"/";
+const here=Astro.url.pathname;
+const links=[
+ {label:"Vue générale",href:base,icon:"grid"},
+ {label:"Threat Map",href:base+"#threat-map",icon:"radar"},
+ {label:"Projets",href:base+"projects/",icon:"folder"},
+ {label:"Labs",href:base+"labs/",icon:"flask"},
+ {label:"Writeups",href:base+"writeups/",icon:"file"},
+ {label:"Notes techniques",href:base+"notes/",icon:"book"},
+ {label:"Études de cas",href:base+"projects/",icon:"layers"},
+ {label:"Lumina Academy",href:base+"roadmap/",icon:"route"},
+];
+---
+<aside class="cc-sidebar" id="cc-sidebar" aria-label="Navigation du portfolio">
+  <div class="cc-sidebar-top">
+    <a class="cc-identity" href={base} aria-label="NAKORE, retour à l'accueil">
+      <span class="cc-monogram" aria-hidden="true">N<span>✦</span></span>
+      <span><strong>NAKORE</strong><small>// CYBER INTELLIGENCE</small></span>
+    </a>
+    <button class="cc-sidebar-close" type="button" aria-label="Fermer le menu" data-sidebar-close>×</button>
+  </div>
+  <div class="cc-sidebar-label">WORKSPACE / 01</div>
+  <nav class="cc-primary-nav" aria-label="Sections du portfolio">
+  {links.map((link,i)=><a class:list={["cc-nav-link",{"cc-nav-current":(i===1&&here===base)||(i===2&&here.startsWith(base+"projects/"))||(i===3&&here.startsWith(base+"labs/"))||(i===4&&here.startsWith(base+"writeups/"))||(i===5&&here.startsWith(base+"notes/"))||(i===7&&here.startsWith(base+"roadmap/"))}]} href={link.href}>
+    <span class="cc-nav-ico" aria-hidden="true">
+      {link.icon==="grid"&&<svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>}
+      {link.icon==="radar"&&<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4"/><path d="m12 12 7-7"/><circle cx="12" cy="12" r="1"/></svg>}
+      {link.icon==="folder"&&<svg viewBox="0 0 24 24"><path d="M2.5 7V5a2 2 0 0 1 2-2H10l2 3h7.5a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2h-15a2 2 0 0 1-2-2Z"/></svg>}
+      {link.icon==="flask"&&<svg viewBox="0 0 24 24"><path d="M9 2h6m-5 0v8L4 20a1 1 0 0 0 1 2h14a1 1 0 0 0 1-2l-6-10V2M7 17h10"/></svg>}
+      {link.icon==="file"&&<svg viewBox="0 0 24 24"><path d="M6 2h9l5 5v15H6a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2zm9 0v6h5M8 13h8m-8 4h8"/></svg>}
+      {link.icon==="book"&&<svg viewBox="0 0 24 24"><path d="M12 5c-3-2-6-2-10-2v16c4 0 7 0 10 2 3-2 6-2 10-2V3c-4 0-7 0-10 2Zm0 0v16"/></svg>}
+      {link.icon==="layers"&&<svg viewBox="0 0 24 24"><path d="m12 2 9 5-9 5-9-5Zm-9 10 9 5 9-5M3 17l9 5 9-5"/></svg>}
+      {link.icon==="route"&&<svg viewBox="0 0 24 24"><circle cx="5" cy="5" r="2"/><circle cx="19" cy="19" r="2"/><path d="M7 5h6a4 4 0 0 1 0 8h-2a3 3 0 0 0 0 6h6"/></svg>}
+    </span>
+    <span>{link.label}</span>
+    {i===1&&<i class="cc-nav-live" aria-hidden="true"></i>}
+  </a>)}
+  </nav>
+  <div class="cc-sidebar-separator"></div>
+  <div class="cc-sidebar-label">PERSONNEL / LAB</div>
+  <div class="cc-sidebar-mini">
+    <a href={base+"about/"}><span>◎</span> Mon parcours <span aria-hidden="true">↗</span></a>
+    <a href="https://github.com/hackus-mans" target="_blank" rel="noopener noreferrer"><span>⌘</span> GitHub <span aria-hidden="true">↗</span></a>
+    <a href="https://www.linkedin.com/in/yendoubouame-joseph-nakore/" target="_blank" rel="noopener noreferrer"><span>◌</span> LinkedIn <span aria-hidden="true">↗</span></a>
+  </div>
+  <div class="cc-side-bottom">
+    <div class="cc-side-orbit" aria-hidden="true"><span></span><i></i></div>
+    <strong>EXPLORE.<br/>ANALYZE.<br/>DEFEND.</strong>
+    <small>Joseph NAKORE • Lomé, Togo</small>
+  </div>
+</aside>
+<div class="cc-mobile-shade" data-sidebar-close></div>
