@@ -67,3 +67,7 @@ La zone Interactive Field Lab est une **simulation uniquement dans le navigateur
 - Vérification des routes et des ressources via \`scripts/verify-dist.mjs\`
 
 Voir \`docs/REBUILD.md\` pour la philosophie, la migration et les éléments à compléter.
+
+## Interface responsive
+
+L’atlas reste exploratoire sur mobile : la zone de carte défile horizontalement au doigt ou au clavier. Les détails de nœuds et les exercices sont consultables sans défilement horizontal du document. Le site conserve un rendu unifié sur téléphone, tablette et ordinateur. Les métriques de cybersécurité qui ne seraient pas liées à une source vérifiée ne sont pas affichées.

@@ -129,7 +129,12 @@ if(root){
     const position=viewport.scrollWidth*node.x/1080-viewport.clientWidth/2;
     viewport.scrollTo({left:Math.max(0,position),behavior});
   };
-  requestAnimationFrame(()=>panTo("core","instant"));
+  let selectedNode="core";
+  requestAnimationFrame(()=>panTo("core","auto"));
+  window.addEventListener("load",()=>panTo(selectedNode,"auto"),{once:true});
+  window.addEventListener("resize",()=>{
+    if(viewport && viewport.scrollWidth>viewport.clientWidth+12)panTo(selectedNode,"auto");
+  });
   const setZoom=(value:number)=>{zoom=Math.max(.8,Math.min(1.65,value));graph?.style.setProperty("--cc-zoom",zoom.toString())};
   root.querySelector("[data-zoom-in]")?.addEventListener("click",()=>setZoom(zoom+.15));
   root.querySelector("[data-zoom-out]")?.addEventListener("click",()=>setZoom(zoom-.15));
@@ -156,6 +161,7 @@ if(root){
     if(link){link.hidden=!project;if(project)link.href=base+project.href;}
     const scenario=labSignals.find(s=>s.nodeId===id);
     if(scenarioAction)scenarioAction.hidden=!scenario;
+    selectedNode=id;
     panTo(id);
     if(node.project){
       window.dispatchEvent(new CustomEvent("atlas:project",{detail:{slug:node.project}}));
