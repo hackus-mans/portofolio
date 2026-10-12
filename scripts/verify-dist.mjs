@@ -27,7 +27,7 @@ for(const file of htmls){
  }
 }
 const home=fs.readFileSync(path.join(root,"index.html"),"utf8");
-for(const marker of ["Security Constellation","CyberMind X","Ce que j’explore.","Scénarios de lab","NAKORE"]){
+for(const marker of ["Security Constellation","CyberMind X","Ce que j’explore.","Exercices","NAKORE"]){
  if(!home.includes(marker))bad.push("Homepage marker missing: "+marker);
 }
 if(bad.length){console.error("Site checks failed:\n"+bad.join("\n"));process.exit(1)}

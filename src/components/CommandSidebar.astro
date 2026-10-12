@@ -20,7 +20,7 @@ const links=[
     </a>
     <button class="cc-sidebar-close" type="button" aria-label="Fermer le menu" data-sidebar-close>×</button>
   </div>
-  <div class="cc-sidebar-label">WORKSPACE / 01</div>
+  <div class="cc-sidebar-label">NAVIGATION</div>
   <nav class="cc-primary-nav" aria-label="Sections du portfolio">
   {links.map((link,i)=><a class:list={["cc-nav-link",{"cc-nav-current":(i===0&&here===base)||(i===2&&here.startsWith(base+"projects/"))||(i===3&&here.startsWith(base+"labs/"))||(i===4&&here.startsWith(base+"writeups/"))||(i===5&&here.startsWith(base+"notes/"))||(i===6&&here.startsWith(base+"journal/"))||(i===7&&here.startsWith(base+"roadmap/"))}]} href={link.href}>
     <span class="cc-nav-ico" aria-hidden="true">
@@ -38,18 +38,14 @@ const links=[
   </a>)}
   </nav>
   <div class="cc-sidebar-separator"></div>
-  <div class="cc-sidebar-label">PERSONNEL / LAB</div>
+  <div class="cc-sidebar-label">PROFIL & OPTIONS</div>
   <div class="cc-sidebar-mini">
-    <button type="button" class="cc-sidebar-preferences" data-preferences-open><span>⚙</span> Paramètres d’affichage <span aria-hidden="true">↗</span></button>
+    <button type="button" class="cc-sidebar-preferences" data-preferences-open><span>⚙</span> Préférences visuelles <span aria-hidden="true">↗</span></button>
     <a href={base+"about/"}><span>◎</span> Mon parcours <span aria-hidden="true">↗</span></a>
     <a href="https://github.com/hackus-mans" target="_blank" rel="noopener noreferrer"><span>⌘</span> GitHub <span aria-hidden="true">↗</span></a>
     <a href="https://www.linkedin.com/in/yendoubouame-joseph-nakore/" target="_blank" rel="noopener noreferrer"><span>◌</span> LinkedIn <span aria-hidden="true">↗</span></a>
   </div>
-  <div class="cc-side-bottom">
-    <div class="cc-side-orbit" aria-hidden="true"><span></span><i></i></div>
-    <strong>EXPLORE.<br/>ANALYZE.<br/>DEFEND.</strong>
-    <small>Joseph NAKORE • Lomé, Togo</small>
-  </div>
+  <p class="cc-side-credit">JOSEPH NAKORE<br/>LOMÉ · TOGO</p>
 </aside>
 <div class="cc-mobile-shade" data-sidebar-close></div>
 

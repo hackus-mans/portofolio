@@ -16,18 +16,18 @@ const continents=[
 <section class="cc-map-panel" id="threat-map" aria-labelledby="graph-title" data-map-panel>
   <div class="cc-map-top">
     <div>
-      <div class="cc-section-eyebrow"><span class="cc-pulse-blue"></span> PROJETS · OUTILS · EXPÉRIMENTATIONS</div>
-      <h2 id="graph-title">Security Constellation <span class="cc-heading-suffix">/ Topologie pédagogique</span></h2><p class="cc-map-explainer">Explore un nœud pour découvrir un projet, ses outils et leurs relations. Carte illustrative, scénarios simulés.</p>
+      <div class="cc-section-eyebrow"><span class="cc-pulse-blue"></span> EXPLORATEUR DE PROJETS ET DE SCÉNARIOS</div>
+      <h2 id="graph-title">Security Constellation <span class="cc-heading-suffix">/ Topologie pédagogique</span></h2><p class="cc-map-explainer">Chaque lien a une explication. Cette carte est schématique : aucune attaque en direct, aucune géolocalisation.</p>
     </div>
     <div class="cc-map-controls" aria-label="Contrôles de la carte">
-      <button type="button" class="cc-map-control active" data-map-filter="all" aria-pressed="true">Tout</button>
+      <button type="button" class="cc-map-control active" data-map-filter="all" aria-pressed="true">Tous</button>
       <button type="button" class="cc-map-control" data-map-filter="project" aria-pressed="false">Projets</button>
       <button type="button" class="cc-map-control" data-map-filter="threat" aria-pressed="false">Scénarios</button>
     </div>
   </div>
   <div class="cc-map-stage" data-map-stage data-filter="all">
-    <div class="cc-map-scanline" aria-hidden="true"></div>
-    <div class="cc-graph-layer" data-graph-layer>
+    <div class="cc-map-viewport" data-map-viewport tabindex="0" role="region" aria-label="Carte des projets. Sur mobile, faire glisser horizontalement pour explorer.">
+      <div class="cc-graph-layer" data-graph-layer>
       <svg class="cc-network" viewBox="0 0 1080 485" role="group" aria-label="Cartographie interactive de projets et scénarios de sécurité simulés">
         <defs>
           <pattern id="cc-world-dots" width="7" height="7" patternUnits="userSpaceOnUse"><circle cx="3.3" cy="3.3" r="1.13" fill="#3167a8" opacity=".78"/></pattern>
@@ -75,9 +75,8 @@ const continents=[
         </g>
       </svg>
     </div>
-    <div class="cc-floating-card cc-float-left"><span class="cc-alert-glyph">!</span><div><b>Authentification SSH</b><small>Scénario simulé · T1110</small></div><button type="button" aria-label="Examiner le scénario SSH" data-select-node="threat-1">↗</button></div>
-    <div class="cc-floating-card cc-float-right"><span class="cc-defense-glyph">◇</span><div><b>Télémétrie défensive</b><small>Wazuh · Suricata · SOC lab</small></div><button type="button" aria-label="Examiner le système SOC" data-select-node="cybermind">↗</button></div>
-    <div class="cc-map-legend"><span><i class="blue"></i> Projets / Outils</span><span><i class="red"></i> Scénarios simulés</span><span><i class="small"></i> Traces et concepts</span></div>
+    </div>
+    <div class="cc-map-legend"><span><i class="blue"></i> Projets et outils</span><span><i class="red"></i> Exercices simulés</span><span><i class="small"></i> Traces</span></div>
     <div class="cc-map-zoom" aria-label="Zoom de la carte"><button type="button" data-zoom-in aria-label="Zoom avant">+</button><button type="button" data-zoom-out aria-label="Zoom arrière">−</button><button type="button" data-zoom-reset aria-label="Réinitialiser le zoom">◎</button></div>
     <div class="cc-map-inspector" data-inspector hidden>
       <div class="cc-inspector-top"><span>EXPLORATEUR / CONTEXTE</span><button type="button" data-inspector-close aria-label="Fermer les détails">×</button></div>
@@ -91,7 +90,7 @@ const continents=[
   </div>
   <div class="cc-map-statusbar">
     <span><span class="cc-status-dot"></span> TOPOLOGIE SCHÉMATIQUE · AUCUN FLUX NI POSITION GÉOGRAPHIQUE RÉELS</span>
-    <span>+/- POUR ZOOMER · CLIQUER LES NŒUDS POUR EXPLORER</span>
+    <span class="cc-desktop-map-tip">CLIQUER UN NŒUD POUR VOIR SON RÔLE</span><span class="cc-mobile-map-tip">← FAIRE GLISSER LA CARTE →</span>
   </div>
 </section>
 <script>
@@ -103,6 +102,7 @@ if(root){
   const edges=Array.from(root.querySelectorAll<SVGPathElement>("[data-edge-nodes]"));
   const stage=root.querySelector<HTMLElement>("[data-map-stage]");
   const graph=root.querySelector<HTMLElement>("[data-graph-layer]");
+  const viewport=root.querySelector<HTMLElement>("[data-map-viewport]");
   const inspector=root.querySelector<HTMLElement>("[data-inspector]");
   const title=root.querySelector<HTMLElement>("[data-inspector-title]");
   const detail=root.querySelector<HTMLElement>("[data-inspector-detail]");
@@ -123,6 +123,18 @@ if(root){
   };
   const base=import.meta.env.BASE_URL.endsWith("/")?import.meta.env.BASE_URL:import.meta.env.BASE_URL+"/";
   let zoom=1;
+  const panTo=(id:string,behavior:ScrollBehavior="smooth")=>{
+    if(!viewport||viewport.scrollWidth<=viewport.clientWidth+4)return;
+    const node=atlasNodes.find(item=>item.id===id);if(!node)return;
+    const position=viewport.scrollWidth*node.x/1080-viewport.clientWidth/2;
+    viewport.scrollTo({left:Math.max(0,position),behavior});
+  };
+  let selectedNode="core";
+  requestAnimationFrame(()=>panTo("core","auto"));
+  window.addEventListener("load",()=>panTo(selectedNode,"auto"),{once:true});
+  window.addEventListener("resize",()=>{
+    if(viewport && viewport.scrollWidth>viewport.clientWidth+12)panTo(selectedNode,"auto");
+  });
   const setZoom=(value:number)=>{zoom=Math.max(.8,Math.min(1.65,value));graph?.style.setProperty("--cc-zoom",zoom.toString())};
   root.querySelector("[data-zoom-in]")?.addEventListener("click",()=>setZoom(zoom+.15));
   root.querySelector("[data-zoom-out]")?.addEventListener("click",()=>setZoom(zoom-.15));
@@ -149,6 +161,8 @@ if(root){
     if(link){link.hidden=!project;if(project)link.href=base+project.href;}
     const scenario=labSignals.find(s=>s.nodeId===id);
     if(scenarioAction)scenarioAction.hidden=!scenario;
+    selectedNode=id;
+    panTo(id);
     if(node.project){
       window.dispatchEvent(new CustomEvent("atlas:project",{detail:{slug:node.project}}));
     }
@@ -161,7 +175,6 @@ if(root){
     node.addEventListener("click",()=>inspect(node.dataset.graphNode||""));
     node.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();inspect(node.dataset.graphNode||"")}});
   });
-  root.querySelectorAll<HTMLElement>("[data-select-node]").forEach(el=>el.addEventListener("click",()=>inspect(el.dataset.selectNode||"")));
   const close=()=>{if(inspector)inspector.hidden=true;nodeElements.forEach(el=>{el.classList.remove("cc-node-selected");el.setAttribute("aria-pressed","false")});edges.forEach(e=>e.classList.remove("cc-edge-selected"))};
   root.querySelector("[data-inspector-close]")?.addEventListener("click",close);
   const applyFilter=(filter:string)=>{
