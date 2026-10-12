@@ -366,3 +366,25 @@ body.studio{margin:0;background:var(--paper);color:var(--ink);font:400 16px/1.65
  .roadmap-embed iframe{height:660px}
 }
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.studio *, .studio *::before,.studio *::after{animation:none!important;transition:none!important}}
+
+/* Global command navigator */
+.command-button{display:inline-flex;align-items:center;gap:8px;margin-left:3px;flex-shrink:0;background:transparent;color:var(--ink);border:1px solid #aeb8a8;padding:9px 11px;cursor:pointer;font:700 11px var(--text)}
+.command-button:hover{background:#e0e8c9}
+.command-button kbd{font:500 9px var(--mono);background:#e3e6db;color:#4e6050;border:1px solid #c8d0c3;padding:3px 5px;margin-left:6px}
+.command-dialog{width:min(610px,calc(100vw - 24px));max-height:min(650px,calc(100dvh - 35px));padding:0;border:1px solid #aabbb0;background:#f6f7f0;color:var(--ink);box-shadow:0 45px 120px #0009;overflow:hidden}
+.command-dialog::backdrop{background:#070e09c9;backdrop-filter:blur(7px)}
+.command-top{display:flex;align-items:center;gap:12px;padding:16px;border-bottom:1px solid #cbd2c7}
+.command-top>span{font-size:25px;color:#607b44}
+.command-top input{border:0;outline:0;min-width:0;flex:1;background:transparent;color:#102016;font-size:15px}
+.command-top input:focus-visible{outline:0}
+.command-top button{background:var(--carbon);border:0;color:var(--paper);padding:8px;cursor:pointer;font:500 10px var(--mono);white-space:nowrap}
+.command-results{overflow:auto;max-height:440px;padding:10px}
+.command-results a{padding:13px;display:grid;grid-template-columns:100px minmax(0,1fr) 19px;gap:10px;align-items:center;border-bottom:1px solid #e0e5dc}
+.command-results a:hover,.command-results a:focus-visible{background:#dcebad}
+.command-results a[hidden]{display:none}
+.command-results a span:first-child{font:500 10px var(--mono);color:#537039}
+.command-results a strong{font:700 15px var(--display);letter-spacing:-.025em}
+.command-results a span:last-child{text-align:right}
+.command-foot{display:flex;justify-content:space-between;gap:14px;border-top:1px solid #cbd2c7;padding:12px 18px;color:#626e64;font:500 10px var(--mono)}
+@media(max-width:900px){.command-button{margin-left:auto}.mobile-nav{margin-left:0}}
+@media(max-width:500px){.command-button span,.command-button kbd{display:none}.command-button{font-size:20px;padding:1px 12px;min-height:39px}.command-top{padding:12px}.command-top input{font-size:13px}.command-results a{grid-template-columns:78px 1fr 15px}.command-results a strong{font-size:13px}.command-foot{font-size:8px}}
