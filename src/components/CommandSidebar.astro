@@ -2,27 +2,27 @@
 const base=import.meta.env.BASE_URL.endsWith("/")?import.meta.env.BASE_URL:import.meta.env.BASE_URL+"/";
 const here=Astro.url.pathname;
 const links=[
- {label:"Vue générale",href:base,icon:"grid"},
- {label:"Atlas de sécurité",href:base+"#threat-map",icon:"radar"},
+ {label:"Accueil",href:base,icon:"grid"},
  {label:"Projets",href:base+"projects/",icon:"folder"},
- {label:"Labs",href:base+"labs/",icon:"flask"},
- {label:"Writeups",href:base+"writeups/",icon:"file"},
- {label:"Notes techniques",href:base+"notes/",icon:"book"},
  {label:"Journal",href:base+"journal/",icon:"layers"},
+ {label:"Labs & CTF",href:base+"labs/",icon:"flask"},
+ {label:"Writeups",href:base+"writeups/",icon:"file"},
  {label:"Lumina Academy",href:base+"roadmap/",icon:"route"},
+ {label:"À propos",href:base+"about/",icon:"book"},
+ {label:"Notes",href:base+"notes/",icon:"radar"}
 ];
 ---
 <aside class="cc-sidebar" id="cc-sidebar" aria-label="Navigation du portfolio">
   <div class="cc-sidebar-top">
     <a class="cc-identity" href={base} aria-label="NAKORE, retour à l'accueil">
       <span class="cc-monogram" aria-hidden="true">N<span>✦</span></span>
-      <span><strong>NAKORE</strong><small>// CYBER INTELLIGENCE</small></span>
+      <span><strong>NAKORE</strong><small>// SECURITY WORKSPACE</small></span>
     </a>
     <button class="cc-sidebar-close" type="button" aria-label="Fermer le menu" data-sidebar-close>×</button>
   </div>
   <div class="cc-sidebar-label">NAVIGATION</div>
   <nav class="cc-primary-nav" aria-label="Sections du portfolio">
-  {links.map((link,i)=><a class:list={["cc-nav-link",{"cc-nav-current":(i===0&&here===base)||(i===2&&here.startsWith(base+"projects/"))||(i===3&&here.startsWith(base+"labs/"))||(i===4&&here.startsWith(base+"writeups/"))||(i===5&&here.startsWith(base+"notes/"))||(i===6&&here.startsWith(base+"journal/"))||(i===7&&here.startsWith(base+"roadmap/"))}]} href={link.href}>
+  {links.map((link,i)=><a class:list={["cc-nav-link",{"cc-nav-current":link.href===base?here===base:here.startsWith(link.href)}]} href={link.href}
     <span class="cc-nav-ico" aria-hidden="true">
       {link.icon==="grid"&&<svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>}
       {link.icon==="radar"&&<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4"/><path d="m12 12 7-7"/><circle cx="12" cy="12" r="1"/></svg>}
@@ -34,11 +34,11 @@ const links=[
       {link.icon==="route"&&<svg viewBox="0 0 24 24"><circle cx="5" cy="5" r="2"/><circle cx="19" cy="19" r="2"/><path d="M7 5h6a4 4 0 0 1 0 8h-2a3 3 0 0 0 0 6h6"/></svg>}
     </span>
     <span>{link.label}</span>
-    {i===1&&<small class="cc-nav-schematic">schéma</small>}
+
   </a>)}
   </nav>
   <div class="cc-sidebar-separator"></div>
-  <div class="cc-sidebar-label">PROFIL & OPTIONS</div>
+  <div class="cc-sidebar-label">SE RETROUVER</div>
   <div class="cc-sidebar-mini">
     <button type="button" class="cc-sidebar-preferences" data-preferences-open><span>⚙</span> Préférences visuelles <span aria-hidden="true">↗</span></button>
     <a href={base+"about/"}><span>◎</span> Mon parcours <span aria-hidden="true">↗</span></a>
@@ -55,10 +55,10 @@ if(navigation){
   const update=()=>{
     const home=location.pathname.replace(/\/+$/,"/")==="/portofolio/";
     if(!home)return;
-    const onMap=location.hash==="#threat-map";
+    const onMap=false;
     const links=Array.from(navigation.querySelectorAll<HTMLAnchorElement>("a"));
     links.forEach((link,i)=>{
-      const active=onMap?i===1:i===0;
+      const active=i===0;
       link.classList.toggle("cc-nav-current",active);
       if(active)link.setAttribute("aria-current","location");else link.removeAttribute("aria-current");
     });
