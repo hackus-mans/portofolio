@@ -1,41 +1,31 @@
 ---
 import BaseLayout from "../../layouts/BaseLayout.astro";
-import Nav from "../../components/Nav.astro";
-import { site } from "../../config";
-
-const roadmapUrl = "https://hackus-mans.github.io/roadmap/";
-const rawBase = import.meta.env.BASE_URL;
-const base = rawBase.endsWith("/") ? rawBase : rawBase + "/";
+import {site} from "../../config";
+const roadmapUrl="https://hackus-mans.github.io/roadmap/";
+const rawBase=import.meta.env.BASE_URL;
+const base=rawBase.endsWith("/")?rawBase:rawBase+"/";
 ---
-<BaseLayout title={"Roadmap — " + site.name} description={site.roadmap.description}>
-  <Nav />
-  <main>
-    <section class="archive-hero shell roadmap-header">
-      <a class="back-link" href={base}>← Portfolio</a>
-      <p class="overline">LUMINA ACADEMY / ROADMAP LIVE</p>
-      <h1>Ma roadmap, utilisable par les visiteurs.</h1>
-      <p>{site.roadmap.description}</p>
-
-      <div class="roadmap-header-bottom">
-        <div class="roadmap-stats">
-          {site.roadmap.stats.map((stat) => <div><strong>{stat.value}</strong><span>{stat.label}</span></div>)}
-        </div>
-        <a class="button secondary" href={roadmapUrl} target="_blank" rel="noopener noreferrer">Plein écran ↗</a>
+<BaseLayout title="Lumina Academy — Joseph NAKORE" description={site.roadmap.description}>
+  <main id="main-content">
+    <header class="page-hero">
+      <div class="container">
+        <a class="back-link" href={base}>← Retour à l'accueil</a>
+        <p class="label-dark">LEARNING ENGINEERING / PROJECT 03</p>
+        <h1>Lumina<br />Academy<span style="color:var(--volt)">.</span></h1>
+        <p class="lead">{site.roadmap.description}</p>
+        <div class="hero-foot">{site.roadmap.stats.map(s=><span>{s.value} / {s.label}</span>)}</div>
       </div>
-    </section>
-
-    <section class="roadmap-embed">
-      <div class="roadmap-live-bar shell">
-        <span><i></i> Version publiée de Lumina Academy</span>
-        <span>Les mises à jour du repo roadmap apparaissent ici après déploiement</span>
+    </header>
+    <section class="container section-pad">
+      <div class="section-head">
+        <div><p class="mono-kicker">01 / LIVE ROADMAP</p><h2>Explorer<br />les connexions.</h2></div>
+        <div><p>La roadmap est un projet autonome. Tu peux l'explorer ci-dessous ou l'ouvrir dans un nouvel onglet si l'intégration ne se charge pas.</p><a class="button" href={roadmapUrl} target="_blank" rel="noopener noreferrer">Ouvrir en plein écran <span class="arrow" aria-hidden="true">↗</span></a></div>
       </div>
-      <iframe
-        class="roadmap-frame"
-        src={roadmapUrl}
-        title="Lumina Academy — roadmap cybersécurité"
-        loading="eager"
-        referrerpolicy="strict-origin-when-cross-origin"
-      ></iframe>
+      <div class="roadmap-embed">
+        <div class="roadmap-embed-header"><span>EXTERNAL APP / LUMINA ACADEMY</span><span>INTEGRATION</span></div>
+        <iframe src={roadmapUrl} loading="lazy" title="Roadmap interactive Lumina Academy" referrerpolicy="strict-origin-when-cross-origin"></iframe>
+      </div>
+      <a class="inline-link" href={base+"projects/lumina-academy/"}>Lire l'étude de cas Lumina Academy <span aria-hidden="true">↗</span></a>
     </section>
   </main>
 </BaseLayout>
