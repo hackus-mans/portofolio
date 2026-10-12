@@ -8,7 +8,7 @@ const page=await browser.newPage({viewport:{width:1440,height:900},deviceScaleFa
 page.on("pageerror",e=>errors.push(e.message));
 await page.goto(base,{waitUntil:"networkidle"});
 await page.locator("h1").waitFor();
-if(!(await page.locator("h1").innerText()).includes("Global Security"))throw Error("Dashboard hero missing");
+if(!(await page.locator("h1").innerText()).includes("Security Constellation"))throw Error("Dashboard hero missing");
 const nodes=await page.locator("[data-graph-node]").count();
 if(nodes<25)throw Error("Network nodes missing: "+nodes);
 const overflow=await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth+4);
