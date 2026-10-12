@@ -1,0 +1,8 @@
+---
+import ArchiveCollection from "../../components/ArchiveCollection.astro";
+import { getPublications } from "../../lib/publications";
+const entries = await getPublications();
+---
+<ArchiveCollection title="Journal" overline="APPRENDRE / EXPÉRIMENTER / DOCUMENTER"
+  description="Mes notes, labs et writeups au fil du temps. Ce que je teste, ce que je comprends et les méthodes que je peux réutiliser."
+  entries={entries} kind="publications" />

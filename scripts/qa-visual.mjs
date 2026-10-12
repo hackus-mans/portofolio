@@ -8,7 +8,7 @@ const page=await browser.newPage({viewport:{width:1440,height:900},deviceScaleFa
 page.on("pageerror",e=>errors.push(e.message));
 await page.goto(base,{waitUntil:"networkidle"});
 await page.locator("h1").waitFor();
-if(!(await page.locator("h1").innerText()).includes("Global Security"))throw Error("Dashboard hero missing");
+if(!(await page.locator("h1").innerText()).includes("Comprendre. Construire."))throw Error("Dashboard hero missing");
 const nodes=await page.locator("[data-graph-node]").count();
 if(nodes<25)throw Error("Network nodes missing: "+nodes);
 const overflow=await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth+4);
@@ -33,7 +33,7 @@ if((await page.locator("[data-dialog-steps] li").count())<3)throw Error("Investi
 if(!(await page.locator("[data-dialog-project]").getAttribute("href")).includes("cybermind"))throw Error("Scenario not linked to project");
 await page.locator("[data-dialog-close]").click();
 await page.locator('[data-metric-info="db"]').click();
-if(!(await page.locator("[data-metric-description]").innerText()).includes("Aucune source SIEM"))throw Error("Metric provenance missing");
+if(!(await page.locator("[data-metric-description]").innerText()).includes("Total des notes"))throw Error("Metric provenance missing");
 await page.locator("[data-metric-close]").click();
 await page.locator("[data-preferences-open]").click();
 await page.locator('[data-pref="compact"]').check();

@@ -16,13 +16,13 @@ const continents=[
 <section class="cc-map-panel" id="threat-map" aria-labelledby="graph-title" data-map-panel>
   <div class="cc-map-top">
     <div>
-      <div class="cc-section-eyebrow"><span class="cc-pulse-blue"></span> INTERACTIVE RELATIONSHIP MAP</div>
-      <h2 id="graph-title">Security Constellation <span class="cc-heading-suffix">/ Topologie pédagogique</span></h2><p class="cc-map-explainer">Chaque trait représente une relation expliquée, pas une communication réseau réelle. La silhouette du monde est illustrative : les positions ne sont pas géolocalisées.</p>
+      <div class="cc-section-eyebrow"><span class="cc-pulse-blue"></span> PROJETS · OUTILS · EXPÉRIMENTATIONS</div>
+      <h2 id="graph-title">Security Constellation <span class="cc-heading-suffix">/ Topologie pédagogique</span></h2><p class="cc-map-explainer">Explore un nœud pour découvrir un projet, ses outils et leurs relations. Carte illustrative, scénarios simulés.</p>
     </div>
     <div class="cc-map-controls" aria-label="Contrôles de la carte">
-      <button type="button" class="cc-map-control active" data-map-filter="all" aria-pressed="true">All nodes</button>
-      <button type="button" class="cc-map-control" data-map-filter="project" aria-pressed="false">Projects</button>
-      <button type="button" class="cc-map-control" data-map-filter="threat" aria-pressed="false">Threat scenarios</button>
+      <button type="button" class="cc-map-control active" data-map-filter="all" aria-pressed="true">Tout</button>
+      <button type="button" class="cc-map-control" data-map-filter="project" aria-pressed="false">Projets</button>
+      <button type="button" class="cc-map-control" data-map-filter="threat" aria-pressed="false">Scénarios</button>
     </div>
   </div>
   <div class="cc-map-stage" data-map-stage data-filter="all">
@@ -75,8 +75,8 @@ const continents=[
         </g>
       </svg>
     </div>
-    <div class="cc-floating-card cc-float-left"><span class="cc-alert-glyph">!</span><div><b>SSH authentication scenario</b><small>Simulated detection · T1110</small></div><button type="button" aria-label="Examiner le scénario SSH" data-select-node="threat-1">↗</button></div>
-    <div class="cc-floating-card cc-float-right"><span class="cc-defense-glyph">◇</span><div><b>Defensive telemetry</b><small>Wazuh · Suricata · SOC lab</small></div><button type="button" aria-label="Examiner le système SOC" data-select-node="cybermind">↗</button></div>
+    <div class="cc-floating-card cc-float-left"><span class="cc-alert-glyph">!</span><div><b>Authentification SSH</b><small>Scénario simulé · T1110</small></div><button type="button" aria-label="Examiner le scénario SSH" data-select-node="threat-1">↗</button></div>
+    <div class="cc-floating-card cc-float-right"><span class="cc-defense-glyph">◇</span><div><b>Télémétrie défensive</b><small>Wazuh · Suricata · SOC lab</small></div><button type="button" aria-label="Examiner le système SOC" data-select-node="cybermind">↗</button></div>
     <div class="cc-map-legend"><span><i class="blue"></i> Projets / Outils</span><span><i class="red"></i> Scénarios simulés</span><span><i class="small"></i> Traces et concepts</span></div>
     <div class="cc-map-zoom" aria-label="Zoom de la carte"><button type="button" data-zoom-in aria-label="Zoom avant">+</button><button type="button" data-zoom-out aria-label="Zoom arrière">−</button><button type="button" data-zoom-reset aria-label="Réinitialiser le zoom">◎</button></div>
     <div class="cc-map-inspector" data-inspector hidden>

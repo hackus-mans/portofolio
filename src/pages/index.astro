@@ -1,16 +1,19 @@
 ---
 import CommandLayout from "../layouts/CommandLayout.astro";
 import CommandGraph from "../components/CommandGraph.astro";
+import PublicationFeed from "../components/PublicationFeed.astro";
+import { getPublications } from "../lib/publications";
 import { site } from "../config";
 import { labSignals } from "../data/commandData";
 const base=import.meta.env.BASE_URL.endsWith("/")?import.meta.env.BASE_URL:import.meta.env.BASE_URL+"/";
 const projects=site.projects;
 const first=projects[0];
+const publications=await getPublications();
 const groups=[
 {value:String(projects.length).padStart(2,"0"),label:"Dossiers publiés",icon:"layers",tone:"blue"},
 {value:String(site.capabilities.length).padStart(2,"0"),label:"Domaines de pratique",icon:"globe",tone:"blue"},
 {value:String(labSignals.length).padStart(2,"0"),label:"Parcours pédagogiques",icon:"pulse",tone:"red"},
-{value:"00",label:"Flux SOC connectés",icon:"db",tone:"muted"}
+{value:String(publications.length).padStart(2,"0"),label:"Publications",icon:"db",tone:"muted"}
 ];
 ---
 <CommandLayout>
@@ -18,25 +21,24 @@ const groups=[
   <div class="cc-crumb-left">
     <button type="button" class="cc-mobile-toggle" aria-label="Ouvrir le menu" aria-expanded="false" data-sidebar-toggle><span></span><span></span><span></span></button>
     <span class="cc-crumb-icon" aria-hidden="true">◎</span>
-    <span class="cc-crumb">NAKORE <b>/</b> FIELD ATLAS <b>/</b> <strong>Security Overview</strong></span>
+    <span class="cc-crumb">NAKORE <b>/</b> FIELD ATLAS <b>/</b> <strong>Portfolio</strong></span>
   </div>
   <div class="cc-topbar-right">
-    <label class="cc-global-search" for="cc-search"><span aria-hidden="true">⌕</span><input id="cc-search" type="search" placeholder="Rechercher un projet ou un signal…" autocomplete="off"/><kbd>⌘ K</kbd></label>
-    <span class="cc-top-status"><i></i> PORTFOLIO / DEMO</span>
+    <label class="cc-global-search" for="cc-search"><span aria-hidden="true">⌕</span><input id="cc-search" type="search" placeholder="Rechercher dans cette page…" autocomplete="off"/><kbd>⌘ K</kbd></label>
+    <span class="cc-top-status"><i></i> PENTEST · SOC · IA</span>
     <a class="cc-avatar" href={base+"about/"} aria-label="À propos de Joseph NAKORE">N<span></span></a>
   </div>
 </header>
 <main id="main-content" class="cc-main">
   <section class="cc-title-strip" aria-labelledby="cc-title">
     <div class="cc-title-copy">
-      <div class="cc-pretitle"><span class="cc-pretitle-dot"></span> SECURITY RESEARCH WORKSPACE <span class="cc-split">/</span> LOMÉ, TOGO</div>
-      <h1 id="cc-title">Global Security <em>Constellation</em></h1>
-      <p>Explore mes projets, leurs outils et cinq scénarios d’investigation. Les liens décrivent des relations pédagogiques explicites, et non des attaques réelles.</p>
+      <div class="cc-pretitle"><span class="cc-pretitle-dot"></span> JOSEPH NAKORE · CYBERSÉCURITÉ <span class="cc-split">/</span> LOMÉ, TOGO</div>
+      <h1 id="cc-title">Comprendre. Construire.<br/><em>Sécuriser.</em></h1>
+      <p>Étudiant en cybersécurité, je documente les systèmes que j’explore, les outils que je construis et ce que mes labs m’apprennent.</p>
       <div class="cc-action-tabs" role="group" aria-label="Navigation rapide">
-        <a class="cc-tab-primary" href="#threat-map">◉ &nbsp; Cartographie</a>
-        <a href="#project-intelligence">Projets</a>
-        <a href="#detection-signals">Signaux de lab</a>
-        <a href={base+"projects/"}>Études de cas ↗</a>
+        <a class="cc-tab-primary" href="#project-intelligence">Explorer mes projets ↗</a>
+        <a href="#journal">Lire mon journal</a>
+        <a href="#threat-map">◎ La constellation</a>
       </div>
     </div>
     <div class="cc-metric-grid" aria-label="Repères réels et simulations">
@@ -49,10 +51,12 @@ const groups=[
 
   <CommandGraph />
 
+  <PublicationFeed />
+
   <p class="cc-search-status" data-search-count role="status" aria-live="polite"></p>
   <section class="cc-work-grid" aria-label="Panels des projets et signaux">
     <div class="cc-widget cc-project-widget" id="project-intelligence">
-      <div class="cc-widget-header"><h2><span aria-hidden="true">▱</span> Project Intelligence</h2><a href={base+"projects/"}>View all ↗</a></div>
+      <div class="cc-widget-header"><h2><span aria-hidden="true">▱</span> Projets</h2><a href={base+"projects/"}>Tous les projets ↗</a></div>
       <div class="cc-project-items" data-project-list>
         {projects.map((p,i)=><button type="button" class:list={["cc-project-item",{"cc-project-selected":i===0}]} data-project-index={i} aria-label={"Afficher le dossier "+p.name} aria-pressed={i===0?"true":"false"} data-searchable={p.name.toLowerCase()+" "+p.tags.join(" ").toLowerCase()}>
           <span class={"cc-project-icon cc-project-icon-"+i} aria-hidden="true">{["⌘","✥","◈","⋈","⌖"][i]}</span>
@@ -63,7 +67,7 @@ const groups=[
       </div>
     </div>
     <div class="cc-widget cc-signals-widget" id="detection-signals">
-      <div class="cc-widget-header"><h2><span aria-hidden="true">⌁</span> Detection Signals</h2><span class="cc-simulation-label"><i></i> Simulated events</span></div>
+      <div class="cc-widget-header"><h2><span aria-hidden="true">⌁</span> Scénarios de lab</h2><span class="cc-simulation-label"><i></i> Simulations</span></div>
       <div class="cc-signal-list">
         {labSignals.map((s,i)=><button type="button" class="cc-signal-item" data-signal-index={i} data-searchable={(s.name+" "+s.reference+" "+s.source).toLowerCase()}>
           <span class="cc-signal-time">{s.time}</span>
@@ -75,7 +79,7 @@ const groups=[
       <div class="cc-widget-note">Cliquer pour découvrir une méthode d’enquête reproductible · aucun événement réel.</div>
     </div>
     <div class="cc-widget cc-case-widget" id="case-study">
-      <div class="cc-widget-header"><h2><span aria-hidden="true">▣</span> Case Study Overview</h2><a href={base+"projects/"}>Browse all ↗</a></div>
+      <div class="cc-widget-header"><h2><span aria-hidden="true">▣</span> Dans les coulisses</h2><a href={base+"projects/"}>Les dossiers ↗</a></div>
       <div class="cc-case-preview">
         <div class="cc-case-art" aria-hidden="true">
           <svg viewBox="0 0 400 135" preserveAspectRatio="xMidYMid slice">
@@ -98,7 +102,7 @@ const groups=[
       </div>
     </div>
   </section>
-  <footer class="cc-bottom"><div><span class="cc-status-dot"></span> FIELD ATLAS V5 / STATIC DEMONSTRATION</div><div>NAKORE · OFFENSE / DEFENSE / ENGINEERING</div><a href={base+"about/"}>À PROPOS ↗</a></footer>
+  <footer class="cc-bottom"><div><span class="cc-status-dot"></span> NAKORE / FIELD ATLAS</div><div>NAKORE · OFFENSE / DEFENSE / ENGINEERING</div><a href={base+"about/"}>À PROPOS ↗</a></footer>
 </main>
 <dialog class="cc-dialog" id="cc-signal-dialog" aria-labelledby="cc-dialog-title">
   <div class="cc-dialog-head"><span>SECURITY LAB / EVENT EXPLANATION</span><button type="button" data-dialog-close aria-label="Fermer">×</button></div>
@@ -193,10 +197,10 @@ if(root){
 
   const metricDialog=document.querySelector<HTMLDialogElement>("#cc-metric-dialog");
   const metrics:Record<string,{title:string;description:string}>={
-    layers:{title:"Dossiers de projets",description:"Nombre de projets présentés dans le portfolio. Chaque dossier est accessible depuis Project Intelligence ou la liste des projets."},
+    layers:{title:"Dossiers de projets",description:"Nombre de projets présentés dans le portfolio. Chaque dossier est accessible depuis Projets ou la liste des projets."},
     globe:{title:"Domaines de pratique",description:"Les domaines décrits dans le parcours : sécurité offensive, détection et SOC, systèmes et réseaux, ingénierie / IA et automatisation."},
     pulse:{title:"Parcours pédagogiques",description:"Nombre de scénarios guidés disponibles avec hypothèses, indices à recueillir, procédure de vérification et mesures défensives."},
-    db:{title:"Flux SOC connectés",description:"Aucune source SIEM ou API de renseignement sur les menaces n'est connectée au site public. Les événements visibles sont des simulations."}
+    db:{title:"Publications",description:"Total des notes, labs et writeups publiés. Le journal les rassemble du plus récent au plus ancien. Les brouillons ne sont pas affichés sur le site."}
   };
   root.querySelectorAll<HTMLButtonElement>("[data-metric-info]").forEach(button=>button.addEventListener("click",()=>{
     const metric=metrics[button.dataset.metricInfo||""];
