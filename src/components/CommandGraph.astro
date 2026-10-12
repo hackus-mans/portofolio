@@ -1,7 +1,7 @@
 ---
 import { atlasNodes, atlasEdges } from "../data/commandData";
 const nodeLookup=new Map(atlasNodes.map(n=>[n.id,n]));
-const links=atlasEdges.map(([a,b])=>({a:nodeLookup.get(a),b:nodeLookup.get(b)})).filter(l=>l.a&&l.b);
+const links=atlasEdges.map(edge=>({...edge,a:nodeLookup.get(edge.from),b:nodeLookup.get(edge.to)})).filter(edge=>edge.a&&edge.b);
 const continents=[
 "M83 95 139 61 203 53 220 79 194 92 178 110 155 116 157 148 143 161 115 157 92 132 74 125Z",
 "M181 161 208 168 223 190 221 213 245 232 237 269 222 299 204 336 193 312 194 283 178 261 172 237 154 220 155 195Z",
@@ -17,7 +17,7 @@ const continents=[
   <div class="cc-map-top">
     <div>
       <div class="cc-section-eyebrow"><span class="cc-pulse-blue"></span> INTERACTIVE RELATIONSHIP MAP</div>
-      <h2 id="graph-title">Security Constellation <span class="cc-heading-suffix">/ Explore & Investigate</span></h2>
+      <h2 id="graph-title">Security Constellation <span class="cc-heading-suffix">/ Topologie pédagogique</span></h2><p class="cc-map-explainer">Chaque trait représente une relation expliquée, pas une communication réseau réelle. La silhouette du monde est illustrative : les positions ne sont pas géolocalisées.</p>
     </div>
     <div class="cc-map-controls" aria-label="Contrôles de la carte">
       <button type="button" class="cc-map-control active" data-map-filter="all" aria-pressed="true">All nodes</button>
@@ -49,7 +49,7 @@ const continents=[
         <g class="cc-network-lines">
           {links.map((edge,i)=>{
             const a=edge.a!,b=edge.b!,mx=(a.x+b.x)/2,my=Math.min(a.y,b.y)-Math.min(Math.abs(a.x-b.x)*.075,40);
-            return <path class:list={["cc-edge",{"cc-edge-hot":a.kind==="threat"||b.kind==="threat"}]} d={"M"+a.x+" "+a.y+" Q"+mx+" "+my+" "+b.x+" "+b.y} data-edge-nodes={a.id+" "+b.id} style={"--edge-delay:"+((i%8)*.14)+"s"}/>;
+            return <path class:list={["cc-edge",{"cc-edge-hot":a.kind==="threat"||b.kind==="threat"}]} d={"M"+a.x+" "+a.y+" Q"+mx+" "+my+" "+b.x+" "+b.y} data-edge-nodes={a.id+" "+b.id} data-relation={edge.relation} aria-label={edge.reason} style={"--edge-delay:"+((i%8)*.14)+"s"}/>;
           })}
         </g>
         <g class="cc-network-nodes">
@@ -77,22 +77,25 @@ const continents=[
     </div>
     <div class="cc-floating-card cc-float-left"><span class="cc-alert-glyph">!</span><div><b>SSH authentication scenario</b><small>Simulated detection · T1110</small></div><button type="button" aria-label="Examiner le scénario SSH" data-select-node="threat-1">↗</button></div>
     <div class="cc-floating-card cc-float-right"><span class="cc-defense-glyph">◇</span><div><b>Defensive telemetry</b><small>Wazuh · Suricata · SOC lab</small></div><button type="button" aria-label="Examiner le système SOC" data-select-node="cybermind">↗</button></div>
-    <div class="cc-map-legend"><span><i class="blue"></i> Defense & Projects</span><span><i class="red"></i> Lab Threat Scenarios</span><span><i class="small"></i> Connected Artifacts</span></div>
+    <div class="cc-map-legend"><span><i class="blue"></i> Projets / Outils</span><span><i class="red"></i> Scénarios simulés</span><span><i class="small"></i> Traces et concepts</span></div>
     <div class="cc-map-zoom" aria-label="Zoom de la carte"><button type="button" data-zoom-in aria-label="Zoom avant">+</button><button type="button" data-zoom-out aria-label="Zoom arrière">−</button><button type="button" data-zoom-reset aria-label="Réinitialiser le zoom">◎</button></div>
     <div class="cc-map-inspector" data-inspector hidden>
-      <div class="cc-inspector-top"><span>NODE INSPECTOR / DEMO</span><button type="button" data-inspector-close aria-label="Fermer les détails">×</button></div>
+      <div class="cc-inspector-top"><span>EXPLORATEUR / CONTEXTE</span><button type="button" data-inspector-close aria-label="Fermer les détails">×</button></div>
+      <span class="cc-inspector-kind" data-inspector-kind>PROJET</span>
       <strong data-inspector-title>NAKORE CORE</strong>
       <p data-inspector-detail>Relations de projets</p>
+      <div class="cc-inspector-relations"><b>RELATIONS DOCUMENTÉES</b><ul data-inspector-relations></ul></div>
       <a data-inspector-link href="#" hidden>Voir l'étude de cas ↗</a>
+      <button type="button" class="cc-inspector-action" data-inspector-scenario hidden>Étudier ce scénario ↗</button>
     </div>
   </div>
   <div class="cc-map-statusbar">
-    <span><span class="cc-status-dot"></span> MODÈLE PÉDAGOGIQUE · AUCUN FLUX TEMPS RÉEL</span>
+    <span><span class="cc-status-dot"></span> TOPOLOGIE SCHÉMATIQUE · AUCUN FLUX NI POSITION GÉOGRAPHIQUE RÉELS</span>
     <span>+/- POUR ZOOMER · CLIQUER LES NŒUDS POUR EXPLORER</span>
   </div>
 </section>
 <script>
-import { atlasNodes } from "../data/commandData";
+import { atlasNodes,atlasEdges,labSignals } from "../data/commandData";
 import {site} from "../config";
 const root=document.querySelector<HTMLElement>("[data-map-panel]");
 if(root){
@@ -104,6 +107,20 @@ if(root){
   const title=root.querySelector<HTMLElement>("[data-inspector-title]");
   const detail=root.querySelector<HTMLElement>("[data-inspector-detail]");
   const link=root.querySelector<HTMLAnchorElement>("[data-inspector-link]");
+  const nodeKind=root.querySelector<HTMLElement>("[data-inspector-kind]");
+  const relationList=root.querySelector<HTMLElement>("[data-inspector-relations]");
+  const scenarioAction=root.querySelector<HTMLButtonElement>("[data-inspector-scenario]");
+  const kinds:Record<string,string>={core:"PORTFOLIO",project:"PROJET",defense:"COMPOSANT / OUTIL",threat:"SCÉNARIO SIMULÉ",signal:"TRACE / CONCEPT"};
+  const connectedProjects=(id:string)=>{
+    const slugs=new Set<string>();
+    const direct=atlasNodes.find(n=>n.id===id)?.project;
+    if(direct)slugs.add(direct);
+    atlasEdges.filter(e=>e.from===id||e.to===id).forEach(e=>{
+      const neighbor=atlasNodes.find(n=>n.id===(e.from===id?e.to:e.from));
+      if(neighbor?.project)slugs.add(neighbor.project);
+    });
+    return Array.from(slugs);
+  };
   const base=import.meta.env.BASE_URL.endsWith("/")?import.meta.env.BASE_URL:import.meta.env.BASE_URL+"/";
   let zoom=1;
   const setZoom=(value:number)=>{zoom=Math.max(.8,Math.min(1.65,value));graph?.style.setProperty("--cc-zoom",zoom.toString())};
@@ -114,11 +131,32 @@ if(root){
     const node=atlasNodes.find(n=>n.id===id);
     if(!node||!inspector)return;
     inspector.hidden=false;if(title)title.textContent=node.label;if(detail)detail.textContent=node.detail;
-    const project=site.projects.find(p=>p.slug===node.project);
+    if(nodeKind)nodeKind.textContent=kinds[node.kind]||"CONCEPT";
+    const relevant=atlasEdges.filter(e=>e.from===id||e.to===id);
+    if(relationList){
+      relationList.replaceChildren();
+      relevant.slice(0,4).forEach(e=>{
+        const li=document.createElement("li");
+        li.textContent=e.reason;
+        relationList.append(li);
+      });
+      if(relevant.length>4){
+        const li=document.createElement("li");li.textContent="+ "+(relevant.length-4)+" autres relations sur la carte";relationList.append(li);
+      }
+    }
+    const candidates=connectedProjects(id);
+    const project=site.projects.find(p=>p.slug===candidates[0]);
     if(link){link.hidden=!project;if(project)link.href=base+project.href;}
+    const scenario=labSignals.find(s=>s.nodeId===id);
+    if(scenarioAction)scenarioAction.hidden=!scenario;
+    if(node.project){
+      window.dispatchEvent(new CustomEvent("atlas:project",{detail:{slug:node.project}}));
+    }
     nodeElements.forEach(el=>{const active=el.dataset.graphNode===id;el.classList.toggle("cc-node-selected",active);el.setAttribute("aria-pressed",String(active))});
     edges.forEach(edge=>edge.classList.toggle("cc-edge-selected",(edge.dataset.edgeNodes||"").split(" ").includes(id)));
   };
+  scenarioAction?.addEventListener("click",()=>{const active=nodeElements.find(e=>e.classList.contains("cc-node-selected"))?.dataset.graphNode;const i=labSignals.findIndex(s=>s.nodeId===active);if(i>=0)window.dispatchEvent(new CustomEvent("atlas:scenario",{detail:{index:i}}))});
+  window.addEventListener("atlas:inspect",(event)=>{const id=(event as CustomEvent<{nodeId:string}>).detail?.nodeId;if(id)inspect(id)});
   nodeElements.forEach(node=>{
     node.addEventListener("click",()=>inspect(node.dataset.graphNode||""));
     node.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();inspect(node.dataset.graphNode||"")}});
@@ -126,13 +164,25 @@ if(root){
   root.querySelectorAll<HTMLElement>("[data-select-node]").forEach(el=>el.addEventListener("click",()=>inspect(el.dataset.selectNode||"")));
   const close=()=>{if(inspector)inspector.hidden=true;nodeElements.forEach(el=>{el.classList.remove("cc-node-selected");el.setAttribute("aria-pressed","false")});edges.forEach(e=>e.classList.remove("cc-edge-selected"))};
   root.querySelector("[data-inspector-close]")?.addEventListener("click",close);
+  const applyFilter=(filter:string)=>{
+    if(stage)stage.dataset.filter=filter;
+    const shown=new Set<string>();
+    nodeElements.forEach(el=>{
+      const kind=el.dataset.nodeKind||"";
+      const show=filter==="all" || (filter==="project" && (kind==="core"||kind==="project")) || (filter==="threat" && (kind==="threat"||kind==="signal"));
+      el.toggleAttribute("hidden",!show);el.setAttribute("aria-hidden",String(!show));el.setAttribute("tabindex",show?"0":"-1");
+      if(show && el.dataset.graphNode)shown.add(el.dataset.graphNode);
+    });
+    edges.forEach(el=>{const [a,b]=(el.dataset.edgeNodes||"").split(" ");el.toggleAttribute("hidden",!shown.has(a)||!shown.has(b))});
+  };
   root.querySelectorAll<HTMLButtonElement>("[data-map-filter]").forEach(button=>{
     button.addEventListener("click",()=>{
       const filter=button.dataset.mapFilter||"all";
-      if(stage)stage.dataset.filter=filter;
+      applyFilter(filter);
       root.querySelectorAll<HTMLButtonElement>("[data-map-filter]").forEach(b=>{const active=b===button;b.classList.toggle("active",active);b.setAttribute("aria-pressed",String(active))});
       close();
     });
   });
+  applyFilter("all");
 }
 </script>
