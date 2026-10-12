@@ -3,6 +3,7 @@ import "../styles/global.css";
 import "../styles/command.css";
 import { site } from "../config";
 import CommandSidebar from "../components/CommandSidebar.astro";
+import CommandPreferences from "../components/CommandPreferences.astro";
 import CommandPalette from "../components/CommandPalette.astro";
 
 const {
@@ -74,6 +75,7 @@ const schema = {
       </div>
     </div>
     <div class="cc-mobile-shade" data-sidebar-close></div>
+    <CommandPreferences />
     <script>
       const button=document.querySelector<HTMLButtonElement>("[data-sidebar-toggle]");
       const close=()=>{document.body.classList.remove("cc-sidebar-open");button?.setAttribute("aria-expanded","false")};

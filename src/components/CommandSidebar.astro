@@ -3,12 +3,12 @@ const base=import.meta.env.BASE_URL.endsWith("/")?import.meta.env.BASE_URL:impor
 const here=Astro.url.pathname;
 const links=[
  {label:"Vue générale",href:base,icon:"grid"},
- {label:"Threat Map",href:base+"#threat-map",icon:"radar"},
+ {label:"Atlas de sécurité",href:base+"#threat-map",icon:"radar"},
  {label:"Projets",href:base+"projects/",icon:"folder"},
  {label:"Labs",href:base+"labs/",icon:"flask"},
  {label:"Writeups",href:base+"writeups/",icon:"file"},
  {label:"Notes techniques",href:base+"notes/",icon:"book"},
- {label:"Études de cas",href:base+"projects/",icon:"layers"},
+ {label:"Étude de cas SOC",href:base+"projects/cybermind-x/",icon:"layers"},
  {label:"Lumina Academy",href:base+"roadmap/",icon:"route"},
 ];
 ---
@@ -22,7 +22,7 @@ const links=[
   </div>
   <div class="cc-sidebar-label">WORKSPACE / 01</div>
   <nav class="cc-primary-nav" aria-label="Sections du portfolio">
-  {links.map((link,i)=><a class:list={["cc-nav-link",{"cc-nav-current":(i===1&&here===base)||(i===2&&here.startsWith(base+"projects/"))||(i===3&&here.startsWith(base+"labs/"))||(i===4&&here.startsWith(base+"writeups/"))||(i===5&&here.startsWith(base+"notes/"))||(i===7&&here.startsWith(base+"roadmap/"))}]} href={link.href}>
+  {links.map((link,i)=><a class:list={["cc-nav-link",{"cc-nav-current":(i===0&&here===base)||(i===2&&here.startsWith(base+"projects/"))||(i===3&&here.startsWith(base+"labs/"))||(i===4&&here.startsWith(base+"writeups/"))||(i===5&&here.startsWith(base+"notes/"))||(i===7&&here.startsWith(base+"roadmap/"))}]} href={link.href}>
     <span class="cc-nav-ico" aria-hidden="true">
       {link.icon==="grid"&&<svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>}
       {link.icon==="radar"&&<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4"/><path d="m12 12 7-7"/><circle cx="12" cy="12" r="1"/></svg>}
@@ -40,6 +40,7 @@ const links=[
   <div class="cc-sidebar-separator"></div>
   <div class="cc-sidebar-label">PERSONNEL / LAB</div>
   <div class="cc-sidebar-mini">
+    <button type="button" class="cc-sidebar-preferences" data-preferences-open><span>⚙</span> Paramètres d’affichage <span aria-hidden="true">↗</span></button>
     <a href={base+"about/"}><span>◎</span> Mon parcours <span aria-hidden="true">↗</span></a>
     <a href="https://github.com/hackus-mans" target="_blank" rel="noopener noreferrer"><span>⌘</span> GitHub <span aria-hidden="true">↗</span></a>
     <a href="https://www.linkedin.com/in/yendoubouame-joseph-nakore/" target="_blank" rel="noopener noreferrer"><span>◌</span> LinkedIn <span aria-hidden="true">↗</span></a>

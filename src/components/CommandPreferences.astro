@@ -1,0 +1,41 @@
+<dialog id="cc-preferences" class="cc-preferences" aria-labelledby="cc-pref-title">
+  <div class="cc-dialog-head"><span>FIELD ATLAS / AFFICHAGE</span><button type="button" data-preferences-close aria-label="Fermer les préférences">×</button></div>
+  <div class="cc-preferences-body">
+    <h2 id="cc-pref-title">Personnaliser la lecture</h2>
+    <p>Ces options modifient uniquement l'affichage dans ton navigateur. Elles ne changent aucun paramètre de sécurité ni aucune donnée des projets.</p>
+    <label class="cc-pref-row"><span><strong>Effets lumineux</strong><small>Réduire le halo des nœuds sur les écrans modestes</small></span><input type="checkbox" data-pref="glow" checked/></label>
+    <label class="cc-pref-row"><span><strong>Affichage compact</strong><small>Réduire les espaces dans les listes et les panneaux</small></span><input type="checkbox" data-pref="compact"/></label>
+    <label class="cc-pref-row"><span><strong>Annotations de la carte</strong><small>Afficher les noms des nœuds et leurs repères</small></span><input type="checkbox" data-pref="labels" checked/></label>
+    <label class="cc-pref-row"><span><strong>Contraste renforcé</strong><small>Améliorer la visibilité des textes secondaires</small></span><input type="checkbox" data-pref="contrast"/></label>
+    <button type="button" class="cc-pref-reset" data-pref-reset>Rétablir les options par défaut</button>
+  </div>
+</dialog>
+<script>
+  const preferences=document.querySelector<HTMLDialogElement>("#cc-preferences");
+  if(preferences){
+    type Prefs={glow:boolean;compact:boolean;labels:boolean;contrast:boolean};
+    const defaults:Prefs={glow:true,compact:false,labels:true,contrast:false};
+    const fields=Object.fromEntries(Array.from(preferences.querySelectorAll<HTMLInputElement>("[data-pref]")).map(f=>[f.dataset.pref!,f])) as Record<keyof Prefs,HTMLInputElement>;
+    let current:Prefs={...defaults};
+    try {
+      const saved=JSON.parse(localStorage.getItem("nakore-view-v1")||"null");
+      if(saved&&typeof saved==="object"){
+        (Object.keys(defaults) as (keyof Prefs)[]).forEach(key=>{if(typeof saved[key]==="boolean")current[key]=saved[key]});
+      }
+    }catch{/* Storage can be blocked; preserve in-session display controls. */}
+    const apply=()=>{
+      document.body.classList.toggle("cc-glow-reduced",!current.glow);
+      document.body.classList.toggle("cc-compact",current.compact);
+      document.body.classList.toggle("cc-labels-hidden",!current.labels);
+      document.body.classList.toggle("cc-contrast",current.contrast);
+      (Object.keys(defaults) as (keyof Prefs)[]).forEach(key=>{if(fields[key])fields[key].checked=current[key]});
+      try{localStorage.setItem("nakore-view-v1",JSON.stringify(current))}catch{/* Optional persistence. */}
+    };
+    apply();
+    (Object.keys(defaults) as (keyof Prefs)[]).forEach(key=>fields[key]?.addEventListener("change",()=>{current[key]=fields[key].checked;apply()}));
+    document.querySelectorAll<HTMLElement>("[data-preferences-open]").forEach(button=>button.addEventListener("click",()=>preferences.showModal()));
+    preferences.querySelector("[data-preferences-close]")?.addEventListener("click",()=>preferences.close());
+    preferences.querySelector("[data-pref-reset]")?.addEventListener("click",()=>{current={...defaults};apply()});
+    preferences.addEventListener("click",event=>{if(event.target===preferences)preferences.close()});
+  }
+</script>
