@@ -1,69 +1,46 @@
-# Joseph NAKORE — Cybersecurity Engineering portfolio
+# Joseph NAKORE — Portfolio cybersécurité
 
-**Site officiel :** https://hackus-mans.github.io/portofolio/
+**Site :** https://hackus-mans.github.io/portofolio/
 
-Portfolio Astro statique construit comme une archive professionnelle et technique : travaux de sécurité offensive/défensive, architecture de projets, méthodologies, labs, articles, IA et automatisation.
+Une constellation interactive pour explorer mes projets, et un journal pour documenter mes apprentissages. Astro génère un site statique ; le contenu est conservé dans Git, sans base de données à administrer.
 
-## Structure
+## Publier au quotidien, depuis GitHub
 
-- \`/\` — présentation, sélection de projets, compétences et laboratoire simulé
-- \`/about/\` — parcours et approche
-- \`/projects/\` — cinq dossiers de projets documentés
-- \`/writeups/\` — writeups Markdown
-- \`/labs/\` — labs Markdown
-- \`/notes/\` — documentation technique Markdown
-- \`/roadmap/\` — intégration de Lumina Academy
+1. Ouvrir [Publier dans mon journal](https://github.com/hackus-mans/portofolio/actions/workflows/publish-content.yml).
+2. Cliquer **Run workflow**, conserver la branche **main**.
+3. Choisir `notes`, `labs` ou `writeups`, puis remplir le titre, le résumé, le texte Markdown et les sujets.
+4. Cliquer **Run workflow** et attendre la réussite de la publication et du déploiement.
 
-Le code des études de cas se trouve dans \`src/data/caseStudies.ts\`. Les données synthétiques du portfolio se trouvent dans \`src/config.ts\`.
+Le contenu apparaît automatiquement dans sa rubrique, dans le **Journal**, et parmi les trois publications les plus récentes sur l’accueil. Le compteur de publications se recalcule. Il n’y a pas de fichier d’accueil à modifier.
 
-## Démarrage local
+**Pour un long texte :** créer un fichier `.md` dans `src/content/notes/`, `src/content/labs/` ou `src/content/writeups/` avec l’éditeur GitHub, puis le committer sur `main`. Le champ texte du formulaire Actions est un champ chaîne ; pour conserver confortablement les paragraphes, préférer l’éditeur de fichiers. Voir [le guide et les modèles](docs/PUBLICATION.md).
 
-\`\`\`bash
+## Publier depuis son ordinateur
+
+```bash
 npm ci
+npm run new -- notes "Comprendre les permissions Linux" "Ce que le bit setgid change sur un dossier."
 npm run dev
+```
+
+`npm run new` crée un brouillon daté avec un plan à compléter et indique son chemin. Remplacer `status: "draft"` par `status: "published"` quand le contenu est prêt, puis committer et pousser sur `main`.
+
+```bash
 npm run build
 node scripts/verify-dist.mjs
-\`\`\`
+node --test scripts/new-entry.test.mjs
+```
 
-## Publier du contenu
+## Où modifier quoi ?
 
-Le site utilise Astro Content Collections. Pour publier un nouveau writeup :
+| Contenu | Fichier ou dossier |
+| --- | --- |
+| Notes, labs, writeups | `src/content/` |
+| Présentation, compétences, liste des projets | `src/config.ts` |
+| Études de cas détaillées | `src/data/caseStudies.ts` |
+| Relations de la constellation et scénarios | `src/data/commandData.ts` |
+| Apparence de l’accueil | `src/styles/command.css` |
 
-\`src/content/writeups/mon-article.md\`
+Les brouillons sont absents du **site**, mais leurs fichiers restent visibles dans ce dépôt public. Ne jamais y écrire de secrets ou de données confidentielles.
 
-\`\`\`yaml
----
-title: "Titre"
-summary: "Résumé court"
-publishedAt: 2026-10-12
-tags: ["Web", "Linux"]
-platform: "HTB"
-difficulty: "Fondation"
-featured: false
-status: "published"
----
-\`\`\`
-
-Les labs se placent dans \`src/content/labs/\` avec \`domain\` et \`state\`. Les notes se placent dans \`src/content/notes/\` avec \`topic\`.
-
-Les collections créent automatiquement les pages individuelles et alimentent les index du site. Les archives disposent d'une recherche locale sans backend.
-
-## Navigation rapide
-
-Cliquer sur **Explorer** ou utiliser \`Ctrl/⌘ + K\` (ou \`/\` hors d'un champ texte) pour naviguer vers les projets et ressources.
-
-## Démonstrations
-
-La zone Interactive Field Lab est une **simulation uniquement dans le navigateur**. Elle ne lance aucune commande et ne touche aucune cible. Les conclusions sur les projets sont présentées avec leurs limites et leur niveau réel de preuve.
-
-## Architecture et maintenance
-
-- Astro et TypeScript
-- CSS partagé dans \`src/styles/global.css\`
-- Layout commun : \`src/layouts/BaseLayout.astro\`
-- Navigation et pied de page communs : \`src/components/Nav.astro\` et \`src/components/Footer.astro\`
-- Publications gérées avec Content Collections dans \`src/content/\`
-- Publication GitHub Pages via \`.github/workflows/deploy-astro.yml\`
-- Vérification des routes et des ressources via \`scripts/verify-dist.mjs\`
-
-Voir \`docs/REBUILD.md\` pour la philosophie, la migration et les éléments à compléter.
+La carte et les scénarios sont pédagogiques : aucun flux SOC réel ni commande exécutée sur une cible. Les positions sont illustratives.
