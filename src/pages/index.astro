@@ -7,10 +7,10 @@ const base=import.meta.env.BASE_URL.endsWith("/")?import.meta.env.BASE_URL:impor
 const projects=site.projects;
 const first=projects[0];
 const groups=[
-{value:String(projects.length).padStart(2,"0"),label:"Projects mapped",icon:"layers",tone:"blue"},
-{value:"04",label:"Research domains",icon:"globe",tone:"blue"},
-{value:String(labSignals.length).padStart(2,"0"),label:"Lab signal examples",icon:"pulse",tone:"red"},
-{value:"00",label:"Live feeds connected",icon:"db",tone:"muted"}
+{value:String(projects.length).padStart(2,"0"),label:"Dossiers publiés",icon:"layers",tone:"blue"},
+{value:String(site.capabilities.length).padStart(2,"0"),label:"Domaines de pratique",icon:"globe",tone:"blue"},
+{value:String(labSignals.length).padStart(2,"0"),label:"Parcours pédagogiques",icon:"pulse",tone:"red"},
+{value:"00",label:"Flux SOC connectés",icon:"db",tone:"muted"}
 ];
 ---
 <CommandLayout>
@@ -31,7 +31,7 @@ const groups=[
     <div class="cc-title-copy">
       <div class="cc-pretitle"><span class="cc-pretitle-dot"></span> SECURITY RESEARCH WORKSPACE <span class="cc-split">/</span> LOMÉ, TOGO</div>
       <h1 id="cc-title">Global Security <em>Constellation</em></h1>
-      <p>Explore mes projets en cybersécurité comme un système interconnecté : attaque, détection, investigation et ingénierie.</p>
+      <p>Explore mes projets, leurs outils et cinq scénarios d’investigation. Les liens décrivent des relations pédagogiques explicites, et non des attaques réelles.</p>
       <div class="cc-action-tabs" role="group" aria-label="Navigation rapide">
         <a class="cc-tab-primary" href="#threat-map">◉ &nbsp; Cartographie</a>
         <a href="#project-intelligence">Projets</a>
@@ -42,36 +42,37 @@ const groups=[
     <div class="cc-metric-grid" aria-label="Repères réels et simulations">
       {groups.map(item=><div class:list={["cc-metric","cc-metric-"+item.tone]}>
         <div class="cc-metric-top"><span class="cc-metric-icon" aria-hidden="true">{item.icon==="layers"?"⬡":item.icon==="globe"?"◎":item.icon==="pulse"?"〽":"▤"}</span><strong>{item.value}</strong></div>
-        <small>{item.label}</small>
+        <small>{item.label}</small><button type="button" class="cc-metric-info" data-metric-info={item.icon} aria-label={"Comprendre l’indicateur : "+item.label}>i</button>
       </div>)}
     </div>
   </section>
 
   <CommandGraph />
 
+  <p class="cc-search-status" data-search-count role="status" aria-live="polite"></p>
   <section class="cc-work-grid" aria-label="Panels des projets et signaux">
     <div class="cc-widget cc-project-widget" id="project-intelligence">
       <div class="cc-widget-header"><h2><span aria-hidden="true">▱</span> Project Intelligence</h2><a href={base+"projects/"}>View all ↗</a></div>
       <div class="cc-project-items" data-project-list>
-        {projects.map((p,i)=><button type="button" class:list={["cc-project-item",{"cc-project-selected":i===0}]} data-project-index={i} aria-pressed={i===0?"true":"false"} data-searchable={p.name.toLowerCase()+" "+p.tags.join(" ").toLowerCase()}>
+        {projects.map((p,i)=><button type="button" class:list={["cc-project-item",{"cc-project-selected":i===0}]} data-project-index={i} aria-label={"Afficher le dossier "+p.name} aria-pressed={i===0?"true":"false"} data-searchable={p.name.toLowerCase()+" "+p.tags.join(" ").toLowerCase()}>
           <span class={"cc-project-icon cc-project-icon-"+i} aria-hidden="true">{["⌘","✥","◈","⋈","⌖"][i]}</span>
           <span class="cc-project-info"><strong>{p.name}</strong><small>{p.type}</small></span>
           <span class="cc-project-state">{p.status}</span>
-          <span class="cc-project-open" aria-hidden="true">↗</span>
+          <span class="cc-project-open" aria-hidden="true">◉</span>
         </button>)}
       </div>
     </div>
     <div class="cc-widget cc-signals-widget" id="detection-signals">
       <div class="cc-widget-header"><h2><span aria-hidden="true">⌁</span> Detection Signals</h2><span class="cc-simulation-label"><i></i> Simulated events</span></div>
       <div class="cc-signal-list">
-        {labSignals.map((s,i)=><button type="button" class="cc-signal-item" data-signal-index={i} data-searchable={s.name.toLowerCase()+" "+s.technique.toLowerCase()+" "+s.source.toLowerCase()}>
+        {labSignals.map((s,i)=><button type="button" class="cc-signal-item" data-signal-index={i} data-searchable={(s.name+" "+s.reference+" "+s.source).toLowerCase()}>
           <span class="cc-signal-time">{s.time}</span>
           <span class:list={["cc-signal-icon","cc-signal-"+s.severity]} aria-hidden="true">{s.severity==="high"?"!":s.severity==="medium"?"△":"◎"}</span>
           <span class="cc-signal-name"><strong>{s.name}</strong><small>{s.source}</small></span>
-          <span class="cc-signal-tactic">{s.technique}</span>
+          <span class="cc-signal-tactic">{s.reference}</span>
         </button>)}
       </div>
-      <div class="cc-widget-note">Scénarios pédagogiques fictifs · pas de données en temps réel.</div>
+      <div class="cc-widget-note">Cliquer pour découvrir une méthode d’enquête reproductible · aucun événement réel.</div>
     </div>
     <div class="cc-widget cc-case-widget" id="case-study">
       <div class="cc-widget-header"><h2><span aria-hidden="true">▣</span> Case Study Overview</h2><a href={base+"projects/"}>Browse all ↗</a></div>
@@ -89,9 +90,9 @@ const groups=[
         </div>
       </div>
       <div class="cc-case-content">
-        <div class="cc-case-kicker">FEATURED PROJECT <span>◉ RESEARCH</span></div>
+        <div class="cc-case-kicker">DOSSIER SÉLECTIONNÉ <span>◉ RECHERCHE</span></div>
         <h3 data-case-title>{first.name}</h3>
-        <p data-case-description>{first.summary}</p>
+        <p data-case-description>{first.summary}</p><p class="cc-case-result" data-case-result>Repère : {first.outcome} · {first.status}</p>
         <div class="cc-case-tags" data-case-tags>{first.tags.slice(0,3).map(tag=><span>{tag}</span>)}</div>
         <a class="cc-case-link" href={base+first.href} data-case-link>Ouvrir l'étude de cas <span aria-hidden="true">↗</span></a>
       </div>
@@ -101,7 +102,29 @@ const groups=[
 </main>
 <dialog class="cc-dialog" id="cc-signal-dialog" aria-labelledby="cc-dialog-title">
   <div class="cc-dialog-head"><span>SECURITY LAB / EVENT EXPLANATION</span><button type="button" data-dialog-close aria-label="Fermer">×</button></div>
-  <div class="cc-dialog-body"><small class="cc-dialog-kicker">SIMULATION · AUCUNE DONNÉE RÉELLE</small><h2 id="cc-dialog-title" data-dialog-title></h2><p data-dialog-text></p><dl><div><dt>Technique de référence</dt><dd data-dialog-technique></dd></div><div><dt>Source</dt><dd data-dialog-source></dd></div></dl></div>
+  <div class="cc-dialog-body">
+  <small class="cc-dialog-kicker">EXERCICE GUIDÉ · ÉVÉNEMENT FICTIF</small>
+  <h2 id="cc-dialog-title" data-dialog-title></h2>
+  <p data-dialog-text></p>
+  <div class="cc-guide-goal"><span>OBJECTIF D’APPRENTISSAGE</span><p data-dialog-goal></p></div>
+  <h3>Hypothèse à tester</h3><p data-dialog-hypothesis></p>
+  <h3>Indices à rechercher</h3><ul data-dialog-observables></ul>
+  <h3>Méthode d’investigation</h3><ol data-dialog-steps></ol>
+  <h3>Mesures défensives</h3><p data-dialog-mitigation></p>
+  <dl><div><dt>Référence</dt><dd data-dialog-technique></dd></div><div><dt>Source de lab</dt><dd data-dialog-source></dd></div></dl>
+  <div class="cc-dialog-actions">
+    <button type="button" data-dialog-locate>Localiser dans la carte ◎</button>
+    <a data-dialog-project href={base+"projects/cybermind-x/"}>Lire le dossier relié ↗</a>
+  </div>
+</div>
+</dialog>
+<dialog class="cc-dialog cc-metric-dialog" id="cc-metric-dialog" aria-labelledby="metric-dialog-title">
+  <div class="cc-dialog-head"><span>COMPRENDRE LES INDICATEURS</span><button type="button" data-metric-close aria-label="Fermer">×</button></div>
+  <div class="cc-dialog-body">
+    <h2 id="metric-dialog-title" data-metric-title></h2>
+    <p data-metric-description></p>
+    <p class="cc-data-provenance">SOURCE : données du portfolio ou scénarios intégrés. Ces chiffres ne sont pas des mesures SOC réelles.</p>
+  </div>
 </dialog>
 </CommandLayout>
 <script>
