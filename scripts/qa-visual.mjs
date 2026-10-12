@@ -21,7 +21,11 @@ if(!(await page.locator("h1").innerText()).includes("Journal"))throw Error("Jour
 await page.goto(base,{waitUntil:"networkidle"});
 for(const width of [320,360,390,520,768,820,1024,1440,1920,2560]){
   await page.setViewportSize({width,height:900});
-  if(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth+3))throw Error("Portfolio overflow at "+width);
+  if(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth+3)){
+    await page.screenshot({path:"qa-mobile.jpg",type:"jpeg",quality:85,fullPage:true});
+    const offenders=await page.evaluate(()=>Array.from(document.querySelectorAll("body *")).filter(el=>{const r=el.getBoundingClientRect();return r.width>0&&r.right>innerWidth+3}).map(el=>({tag:el.tagName,cls:el.className,right:el.getBoundingClientRect().right})).slice(0,15));
+    throw Error("Portfolio overflow at "+width+" "+JSON.stringify(offenders));
+  }
   if(width===390||width===1440)await page.screenshot({path:width===390?"qa-mobile.jpg":"qa-desktop.jpg",type:"jpeg",quality:85,fullPage:true});
 }
 await page.setViewportSize({width:390,height:844});
