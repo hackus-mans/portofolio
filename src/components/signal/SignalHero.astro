@@ -1,0 +1,50 @@
+---
+import { site } from "../../config";
+const rawBase = import.meta.env.BASE_URL;
+const base = rawBase.endsWith("/") ? rawBase : rawBase + "/";
+---
+<section class="sg-hero sg-shell" id="overview" aria-labelledby="sg-hero-title">
+  <div class="sg-hero-glow" aria-hidden="true"></div>
+  <div class="sg-hero-copy">
+    <p class="sg-eyebrow"><span class="sg-led" aria-hidden="true"></span> LOMÉ, TOGO / SECURITY ENGINEERING</p>
+    <h1 id="sg-hero-title">Understand.<br />Break.<br /><em>Defend.</em></h1>
+    <p class="sg-hero-tagline">Comprendre les systèmes. Tester leurs limites. Construire leur défense.</p>
+    <p class="sg-hero-description">Je suis <strong>{site.shortName}</strong>, étudiant en cybersécurité et créateur de laboratoires techniques. Je relie pentest, SOC, ingénierie systèmes, IA et automatisation pour transformer mes explorations en preuves concrètes.</p>
+    <div class="sg-actions">
+      <a class="sg-button sg-button-primary" href="#projects">Explorer mes projets <span aria-hidden="true">↗</span></a>
+      <a class="sg-button sg-button-outline" href={base + "projects/cybermind-x/"}>Étude de cas CyberMind X <span aria-hidden="true">↗</span></a>
+    </div>
+    <div class="sg-hero-micro">
+      <span>OFFENSIVE SECURITY</span>
+      <span class="sg-micro-dot" aria-hidden="true"></span>
+      <span>DEFENSIVE SECURITY</span>
+      <span class="sg-micro-dot" aria-hidden="true"></span>
+      <span>AI ENGINEERING</span>
+    </div>
+  </div>
+  <div class="sg-hero-visual" aria-label="Illustration de l'approche de travail et du projet CyberMind X">
+    <div class="sg-visual-halo" aria-hidden="true"></div>
+    <div class="sg-portrait-card">
+      <img src={base + "joseph-soc-v2.webp"} width="720" height="900" alt="Portrait de Joseph NAKORE dans un décor de centre opérationnel de sécurité" loading="eager" fetchpriority="high" decoding="async" />
+      <div class="sg-portrait-label"><span>JOSEPH NAKORE</span><strong>Cybersecurity · Engineering</strong></div>
+    </div>
+    <div class="sg-signal-console">
+      <div class="sg-console-top"><span class="sg-console-lights" aria-hidden="true"><i></i><i></i><i></i></span><span>signal-lab / pipeline</span></div>
+      <div class="sg-console-body">
+        <p class="sg-console-eyebrow">DETECTION PIPELINE / SIMULATION</p>
+        <h2>From threat<br />to insight<span>.</span></h2>
+        <div class="sg-pipeline" aria-label="Télémétrie vers détection vers réponse">
+          <span>Telemetry</span><b aria-hidden="true">→</b><span>Detection</span><b aria-hidden="true">→</b><span>Response</span>
+        </div>
+        <div class="sg-event-row"><span>NETWORK EVENT</span><strong>Suricata</strong><i>OBSERVED</i></div>
+        <div class="sg-event-row"><span>ENDPOINT SIGNAL</span><strong>Wazuh</strong><i>ANALYZED</i></div>
+        <div class="sg-event-row"><span>SOAR WORKFLOW</span><strong>Shuffle</strong><i>MODELED</i></div>
+        <small>Flux illustratif — aucune donnée réelle.</small>
+      </div>
+    </div>
+    <a class="sg-hero-floating" href={base + "projects/cybermind-x/"}>
+      <span>FEATURED PROJECT</span>
+      <strong>CyberMind X <span aria-hidden="true">↗</span></strong>
+    </a>
+  </div>
+</section>

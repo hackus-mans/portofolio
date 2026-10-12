@@ -1,0 +1,72 @@
+---
+<div class="sg-lab" data-signal-lab>
+  <div class="sg-lab-topbar">
+    <div class="sg-lab-window-dots" aria-hidden="true"><i></i><i></i><i></i></div>
+    <span>interactive-security-lab / browser simulation</span>
+    <span class="sg-lab-sim-indicator">SIMULATED</span>
+  </div>
+  <div class="sg-lab-tabs" role="tablist" aria-label="Choix du scénario pédagogique">
+    <button id="sg-tab-soc" type="button" role="tab" aria-controls="sg-lab-panel" aria-selected="true" tabindex="0" data-scenario="soc">01 / SOC</button>
+    <button id="sg-tab-web" type="button" role="tab" aria-controls="sg-lab-panel" aria-selected="false" tabindex="-1" data-scenario="web">02 / WEB SECURITY</button>
+    <button id="sg-tab-linux" type="button" role="tab" aria-controls="sg-lab-panel" aria-selected="false" tabindex="-1" data-scenario="linux">03 / LINUX</button>
+  </div>
+  <div id="sg-lab-panel" class="sg-lab-code-wrap" role="tabpanel" aria-labelledby="sg-tab-soc" tabindex="0">
+    <div class="sg-lab-prompt">nakore@signal-lab:~$ <span>inspect --scenario ssh-auth</span></div>
+    <pre><code id="sg-lab-output">[SOURCE]  SSH authentication telemetry
+[EVENT]   Repeated authentication failures
+[ANALYZE] Compare source, user and time window
+[RESULT]  Pattern flagged for investigation
+[NEXT]    Validate context and review mitigations</code></pre>
+  </div>
+  <div class="sg-lab-foot"><span>OBSERVATION → HYPOTHÈSE → TEST → RÉSULTAT</span><span>Aucune commande exécutée</span></div>
+</div>
+<script>
+  const root = document.querySelector<HTMLElement>("[data-signal-lab]");
+  if (root) {
+    const samples: Record<string, { command: string; output: string }> = {
+      soc: {
+        command: "inspect --scenario ssh-auth",
+        output: "[SOURCE]  SSH authentication telemetry\n[EVENT]   Repeated authentication failures\n[ANALYZE] Compare source, user and time window\n[RESULT]  Pattern flagged for investigation\n[NEXT]    Validate context and review mitigations"
+      },
+      web: {
+        command: "inspect --scenario object-access",
+        output: "[SOURCE]  GET /api/resources/42\n[INPUT]   Object identifier from request\n[CHECK]   Is authorization enforced per object?\n[TEST]    Compare two authorized test accounts\n[NEXT]    Investigate any access mismatch"
+      },
+      linux: {
+        command: "inspect --scenario permissions",
+        output: "[OBJECT]  /srv/application/config\n[OWNER]   root:app\n[MODE]    0640 (rw-r-----)\n[CHECK]   Evaluate effective UID and group membership\n[NEXT]    Confirm access from a test account"
+      }
+    };
+    const tabs = Array.from(root.querySelectorAll<HTMLButtonElement>('[role="tab"]'));
+    const prompt = root.querySelector<HTMLElement>(".sg-lab-prompt span");
+    const output = root.querySelector<HTMLElement>("#sg-lab-output");
+    const panel = root.querySelector<HTMLElement>("#sg-lab-panel");
+    const activate = (button: HTMLButtonElement, focus = false) => {
+      const key = button.dataset.scenario || "soc";
+      const sample = samples[key];
+      if (!sample) return;
+      tabs.forEach((tab) => {
+        const active = tab === button;
+        tab.setAttribute("aria-selected", String(active));
+        tab.tabIndex = active ? 0 : -1;
+      });
+      if (prompt) prompt.textContent = sample.command;
+      if (output) output.textContent = sample.output;
+      if (panel) panel.setAttribute("aria-labelledby", button.id);
+      if (focus) button.focus();
+    };
+    tabs.forEach((button, index) => {
+      button.addEventListener("click", () => activate(button));
+      button.addEventListener("keydown", (event) => {
+        let target = index;
+        if (event.key === "ArrowRight") target = (index + 1) % tabs.length;
+        else if (event.key === "ArrowLeft") target = (index - 1 + tabs.length) % tabs.length;
+        else if (event.key === "Home") target = 0;
+        else if (event.key === "End") target = tabs.length - 1;
+        else return;
+        event.preventDefault();
+        activate(tabs[target], true);
+      });
+    });
+  }
+</script>
