@@ -52,3 +52,27 @@ jobs:
             qa-desktop.jpg
             qa-mobile.jpg
           if-no-files-found: warn
+
+  verify-atlas-v6-public:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check the meaning-first production dashboard
+        shell: bash
+        run: |
+          set -euo pipefail
+          url="https://hackus-mans.github.io/portofolio/?v=meaningful-atlas-v6"
+          curl --fail --location --silent --show-error --max-time 30 -H "Cache-Control: no-cache" "$url" -o /tmp/atlas.html
+          grep -Fq "Security Constellation" /tmp/atlas.html
+          grep -Fq "data-inspector-relations" /tmp/atlas.html
+          grep -Fq "data-dialog-observables" /tmp/atlas.html
+          grep -Fq "data-metric-info" /tmp/atlas.html
+          css="$(grep -oE '/portofolio/_astro/[^" ]+\.css' /tmp/atlas.html | head -1)"
+          test -n "$css"
+          curl --fail --location --silent --show-error --max-time 30 "https://hackus-mans.github.io$css" -o /tmp/atlas.css
+          grep -Fq ".cc-inspector-relations" /tmp/atlas.css
+          echo "SUCCESS: meaningful Atlas interface and stylesheet are live."
+          for urlpath in projects/ projects/cybermind-x/ labs/ writeups/ notes/ roadmap/; do
+            status="$(curl -L -s -o /dev/null -w '%{http_code}' "https://hackus-mans.github.io/portofolio/$urlpath")"
+            echo "$urlpath -> $status"
+            test "$status" = 200
+          done
