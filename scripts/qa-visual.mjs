@@ -31,6 +31,7 @@ await page.goto(base+"projects/",{waitUntil:"domcontentloaded"});
 if(!(await page.title()).includes("Projets"))throw Error("Project archive inaccessible");
 await page.goto(base,{waitUntil:"networkidle"});
 await page.setViewportSize({width:390,height:844});
+await page.waitForTimeout(550);
 await page.screenshot({path:"qa-mobile.jpg",type:"jpeg",quality:82,fullPage:true});
 const overflowMobile=await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth+4);
 if(overflowMobile)throw Error("Mobile horizontal overflow");
