@@ -6,14 +6,42 @@ const browser=await chromium.launch({headless:true,executablePath:chrome,args:["
 const errors=[];
 const page=await browser.newPage({viewport:{width:1440,height:900},deviceScaleFactor:1});
 page.on("pageerror",e=>errors.push(e.message));
+// Visitor-facing portfolio and editorial routes.
 await page.goto(base,{waitUntil:"networkidle"});
+if(!(await page.locator("h1").innerText()).includes("NAKORE"))throw Error("Personal hero missing");
+await page.locator('[data-domain="defense"]').click();
+if(!await page.locator("#panel-defense").isVisible())throw Error("Domain switch failed");
+await page.locator('[data-domain="defense"]').press("ArrowRight");
+if(!await page.locator("#panel-engineering").isVisible())throw Error("Keyboard domain navigation failed");
+await page.locator('[data-domain="offense"]').click();
+await page.locator('[data-command-open]').click();
+await page.locator('[data-command-query]').fill("journal");
+await page.locator('[data-command-item]:visible').click();
+if(!(await page.locator("h1").innerText()).includes("Journal"))throw Error("Journal navigation failed");
+await page.goto(base,{waitUntil:"networkidle"});
+for(const width of [320,360,390,520,768,820,1024,1440,1920,2560]){
+  await page.setViewportSize({width,height:900});
+  if(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth+3))throw Error("Portfolio overflow at "+width);
+  if(width===390||width===1440)await page.screenshot({path:width===390?"qa-mobile.jpg":"qa-desktop.jpg",type:"jpeg",quality:85,fullPage:true});
+}
+await page.setViewportSize({width:390,height:844});
+await page.locator('[data-pf-menu]').click();
+if(!await page.locator('#pf-navigation').isVisible())throw Error("Portfolio mobile menu missing");
+await page.locator('#pf-navigation a').filter({hasText:"Projets"}).click();
+if(!(await page.locator("h1").innerText()).includes("Projets"))throw Error("Mobile project navigation failed");
+for(const path of ["about/","contact/","journal/","notes/workflow-pentest/"]){
+ await page.goto(base+path,{waitUntil:"domcontentloaded"});
+ if(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth+3))throw Error("Portfolio subpage overflow: "+path);
+}
+await page.setViewportSize({width:1440,height:900});
+await page.goto(base+"atlas/",{waitUntil:"networkidle"});
 await page.locator("h1").waitFor();
-if(!(await page.locator("h1").innerText()).includes("Comprendre. Construire."))throw Error("Dashboard hero missing");
+if(!(await page.locator("h1").innerText()).includes("Explorer les liens."))throw Error("Dashboard hero missing");
 const nodes=await page.locator("[data-graph-node]").count();
 if(nodes<25)throw Error("Network nodes missing: "+nodes);
 const overflow=await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth+4);
 if(overflow)throw Error("Desktop horizontal overflow");
-await page.screenshot({path:"qa-desktop.jpg",type:"jpeg",quality:78,fullPage:true});
+await page.screenshot({path:"qa-atlas-desktop.jpg",type:"jpeg",quality:78,fullPage:true});
 await page.locator('[data-graph-node="honeyshield"]').click();
 if(!(await page.locator("[data-inspector-title]").innerText()).includes("HoneyShield"))throw Error("Graph node interaction failed");
 if(!(await page.locator("[data-inspector-link]").getAttribute("href")).includes("honeyshield"))throw Error("Graph case study link failed");
@@ -54,10 +82,10 @@ if(!(await page.locator("[data-inspector-title]").innerText()).includes("Access 
 await page.locator("[data-inspector-close]").click();
 await page.goto(base+"projects/",{waitUntil:"domcontentloaded"});
 if(!(await page.title()).includes("Projets"))throw Error("Project archive inaccessible");
-await page.goto(base,{waitUntil:"networkidle"});
+await page.goto(base+"atlas/",{waitUntil:"networkidle"});
 await page.setViewportSize({width:390,height:844});
 await page.waitForTimeout(550);
-await page.screenshot({path:"qa-mobile.jpg",type:"jpeg",quality:82,fullPage:true});
+await page.screenshot({path:"qa-atlas-mobile.jpg",type:"jpeg",quality:82,fullPage:true});
 const overflowMobile=await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth+4);
 if(overflowMobile)throw Error("Mobile horizontal overflow");
 await page.locator("[data-sidebar-toggle]").click();

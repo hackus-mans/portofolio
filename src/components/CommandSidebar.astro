@@ -3,7 +3,7 @@ const base=import.meta.env.BASE_URL.endsWith("/")?import.meta.env.BASE_URL:impor
 const here=Astro.url.pathname;
 const links=[
  {label:"Vue générale",href:base,icon:"grid"},
- {label:"Atlas de sécurité",href:base+"#threat-map",icon:"radar"},
+ {label:"Atlas de sécurité",href:base+"atlas/#threat-map",icon:"radar"},
  {label:"Projets",href:base+"projects/",icon:"folder"},
  {label:"Labs",href:base+"labs/",icon:"flask"},
  {label:"Writeups",href:base+"writeups/",icon:"file"},
@@ -53,7 +53,7 @@ const links=[
 const navigation=document.querySelector<HTMLElement>(".cc-primary-nav");
 if(navigation){
   const update=()=>{
-    const home=location.pathname.replace(/\/+$/,"/")==="/portofolio/";
+    const home=location.pathname.replace(/\/+$/,"/")==="/portofolio/atlas/";
     if(!home)return;
     const onMap=location.hash==="#threat-map";
     const links=Array.from(navigation.querySelectorAll<HTMLAnchorElement>("a"));

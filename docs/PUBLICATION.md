@@ -1,6 +1,6 @@
 # Une publication utile, même courte
 
-Le journal regroupe automatiquement les notes, labs et writeups, classés par date de publication décroissante. L’accueil montre les trois plus récents. Une égalité de date est départagée par l’identifiant du fichier.
+Le journal regroupe automatiquement les notes, labs et writeups, classés par date de publication décroissante. L’accueil montre les six plus récents. Une égalité de date est départagée par l’identifiant du fichier.
 
 ## Routine simple
 

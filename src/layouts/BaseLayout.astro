@@ -1,9 +1,12 @@
 ---
 import "../styles/global.css";
 import "../styles/command.css";
+import "../styles/portfolio.css";
+import PortfolioHeader from "../components/PortfolioHeader.astro";
+import PortfolioFooter from "../components/PortfolioFooter.astro";
 import { site } from "../config";
-import CommandSidebar from "../components/CommandSidebar.astro";
-import CommandPreferences from "../components/CommandPreferences.astro";
+
+
 import CommandPalette from "../components/CommandPalette.astro";
 
 const {
@@ -52,36 +55,11 @@ const schema = {
     <title>{title}</title>
     <script type="application/ld+json" set:html={JSON.stringify(schema)} />
   </head>
-  <body class="cc-body cc-inner-page studio">
+  <body class="cc-body cc-inner-page studio portfolio-site">
     <a class="cc-skip" href="#main-content">Aller au contenu</a>
-    <div class="cc-app">
-      <CommandSidebar />
-      <div class="cc-shell">
-        <header class="cc-topbar cc-route-topbar">
-          <div class="cc-crumb-left">
-            <button type="button" class="cc-mobile-toggle" data-sidebar-toggle aria-label="Ouvrir le menu" aria-expanded="false"><span></span><span></span><span></span></button>
-            <span class="cc-crumb-icon" aria-hidden="true">◎</span>
-            <span class="cc-crumb"><a href={base}>NAKORE / FIELD ATLAS</a> <b>/</b> <strong>{title.split(" — ")[0]}</strong></span>
-          </div>
-          <div class="cc-topbar-right">
-            <button type="button" class="cc-route-search" data-command-open>⌕ <span>Rechercher…</span><kbd>⌘ K</kbd></button>
-            <span class="cc-top-status"><i></i> RESEARCH PORTFOLIO</span>
-            <a class="cc-avatar" href={base+"about/"} aria-label="À propos de Joseph NAKORE">N<span></span></a>
-          </div>
-        </header>
-        <CommandPalette />
-        <slot />
-        <footer class="cc-inner-footer"><span>NAKORE · CYBER INTELLIGENCE</span><span>OFFENSIVE / DEFENSIVE / AI ENGINEERING</span><a href={base}>RETOUR À L'ATLAS ↗</a></footer>
-      </div>
-    </div>
-    <div class="cc-mobile-shade" data-sidebar-close></div>
-    <CommandPreferences />
-    <script>
-      const button=document.querySelector<HTMLButtonElement>("[data-sidebar-toggle]");
-      const close=()=>{document.body.classList.remove("cc-sidebar-open");button?.setAttribute("aria-expanded","false")};
-      button?.addEventListener("click",()=>{const open=document.body.classList.toggle("cc-sidebar-open");button.setAttribute("aria-expanded",String(open))});
-      document.querySelectorAll("[data-sidebar-close]").forEach(el=>el.addEventListener("click",close));
-      document.querySelectorAll(".cc-primary-nav a").forEach(el=>el.addEventListener("click",close));
-    </script>
+    <PortfolioHeader />
+    <CommandPalette />
+    <slot />
+    <PortfolioFooter />
   </body>
 </html>
