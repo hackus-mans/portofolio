@@ -34,7 +34,7 @@ jobs:
             echo "ERROR: New hero missing from public HTML"
             exit 1
           fi
-          if ! grep -Fq 'Security Engineering' live.html; then
+          if ! grep -Fq 'SECURITY ENGINEERING' live.html; then
             echo "ERROR: Site identity missing"
             exit 1
           fi
