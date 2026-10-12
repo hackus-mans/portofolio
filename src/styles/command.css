@@ -466,3 +466,6 @@ body.cc-body{margin:0;min-height:100vh;background:#070b18;color:var(--c-white);f
   .cc-dialog-actions{flex-direction:column}
   .cc-dialog-actions button,.cc-dialog-actions a{justify-content:center}
 }
+
+.cc-nav-schematic{font:500 8px var(--c-mono);color:#96bcfa;margin-left:auto;white-space:nowrap}
+.cc-nav-current .cc-nav-schematic{color:#cadbff}
