@@ -1,43 +1,35 @@
 ---
 import BaseLayout from "./BaseLayout.astro";
-import Nav from "../components/Nav.astro";
 import { formatDate } from "../lib/content";
-
-const {
-  title,
-  summary,
-  publishedAt,
-  updatedAt,
-  tags = [],
-  category,
-  categoryHref,
-  meta = []
-} = Astro.props;
-
-const rawBase = import.meta.env.BASE_URL;
-const base = rawBase.endsWith("/") ? rawBase : rawBase + "/";
+const {title,summary,publishedAt,updatedAt,tags=[],category,categoryHref,meta=[]}=Astro.props;
+const rawBase=import.meta.env.BASE_URL;
+const base=rawBase.endsWith("/")?rawBase:rawBase+"/";
 ---
-<BaseLayout title={title + " — Joseph NAKORE"} description={summary}>
-  <Nav />
-  <main>
-    <article class="entry-page">
-      <header class="entry-hero shell">
-        <a class="back-link" href={base + categoryHref}>← {category}</a>
-        <p class="overline">{category}</p>
-        <h1>{title}</h1>
-        <p class="entry-summary">{summary}</p>
-
-        <div class="entry-meta">
-          <div><span>Publié</span><strong>{formatDate(publishedAt)}</strong></div>
-          {updatedAt && <div><span>Mis à jour</span><strong>{formatDate(updatedAt)}</strong></div>}
-          {meta.map((item) => <div><span>{item.label}</span><strong>{item.value}</strong></div>)}
+<BaseLayout title={title+" — Joseph NAKORE"} description={summary} type="article">
+  <main id="main-content">
+    <article>
+      <header class="article-head">
+        <div class="container">
+          <a class="back-link" href={base+categoryHref}>← Retour : {category}</a>
+          <p class="label-dark">FIELD NOTES / {category.toUpperCase()}</p>
+          <h1>{title}</h1>
+          <p class="lead">{summary}</p>
+          <div class="entry-meta">
+            <div><span>Publication</span><strong>{formatDate(publishedAt)}</strong></div>
+            {updatedAt&&<div><span>Mise à jour</span><strong>{formatDate(updatedAt)}</strong></div>}
+            {meta.map(row=><div><span>{row.label}</span><strong>{row.value}</strong></div>)}
+          </div>
+          {tags.length>0&&<div class="entry-tags pill-list">{tags.map(tag=><span>{tag}</span>)}</div>}
         </div>
-
-        {tags.length > 0 && <div class="chips entry-tags">{tags.map((tag) => <span>{tag}</span>)}</div>}
       </header>
-
-      <div class="entry-body shell prose">
-        <slot />
+      <div class="container article-layout">
+        <div class="prose"><slot/></div>
+        <aside class="article-sidebar">
+          <p>INDEX / KNOWLEDGE</p>
+          <a href={base+categoryHref}>← Tous les {category.toLowerCase()}</a>
+          <a href={base+"projects/"}>Dossiers projets ↗</a>
+          <a href={base+"roadmap/"}>Lumina Academy ↗</a>
+        </aside>
       </div>
     </article>
   </main>

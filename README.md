@@ -1,80 +1,69 @@
-# Joseph NAKORE — living cybersecurity portfolio
+# Joseph NAKORE — Cybersecurity Engineering portfolio
 
-Astro portfolio deployed on GitHub Pages:
+**Site officiel :** https://hackus-mans.github.io/portofolio/
 
-```text
-https://hackus-mans.github.io/portofolio/
-```
+Portfolio Astro statique construit comme une archive professionnelle et technique : travaux de sécurité offensive/défensive, architecture de projets, méthodologies, labs, articles, IA et automatisation.
 
-This repository is designed as a long-term platform rather than a static landing page.
+## Structure
 
-## Main sections
+- \`/\` — présentation, sélection de projets, compétences et laboratoire simulé
+- \`/about/\` — parcours et approche
+- \`/projects/\` — cinq dossiers de projets documentés
+- \`/writeups/\` — writeups Markdown
+- \`/labs/\` — labs Markdown
+- \`/notes/\` — documentation technique Markdown
+- \`/roadmap/\` — intégration de Lumina Academy
 
-- `/projects/` — flagship projects
-- `/writeups/` — technical writeups
-- `/labs/` — labs and experiments
-- `/notes/` — technical notes and checklists
-- `/roadmap/` — live embedded Lumina Academy roadmap
+Le code des études de cas se trouve dans \`src/data/caseStudies.ts\`. Les données synthétiques du portfolio se trouvent dans \`src/config.ts\`.
 
-## Add content without redesigning the site
+## Démarrage local
 
-Content is managed with Astro Content Collections.
-
-### New writeup
-
-Create:
-
-```text
-src/content/writeups/my-writeup.md
-```
-
-Frontmatter:
-
-```yaml
----
-title: "Title"
-summary: "Short description"
-publishedAt: 2026-09-30
-tags: ["Web", "Linux"]
-platform: "HTB"
-difficulty: "Medium"
-featured: false
-status: "published"
----
-```
-
-### New lab
-
-Create:
-
-```text
-src/content/labs/my-lab.md
-```
-
-### New note
-
-Create:
-
-```text
-src/content/notes/my-note.md
-```
-
-The archive page and individual page are generated automatically at build time.
-
-## Local development
-
-```bash
+\`\`\`bash
 npm ci
 npm run dev
 npm run build
-```
+node scripts/verify-dist.mjs
+\`\`\`
 
-## Roadmap integration
+## Publier du contenu
 
-The portfolio embeds the published roadmap directly from:
+Le site utilise Astro Content Collections. Pour publier un nouveau writeup :
 
-```text
-https://hackus-mans.github.io/roadmap/
-```
+\`src/content/writeups/mon-article.md\`
 
-Therefore roadmap repository changes become visible in the portfolio after the roadmap deployment completes.
+\`\`\`yaml
+---
+title: "Titre"
+summary: "Résumé court"
+publishedAt: 2026-10-12
+tags: ["Web", "Linux"]
+platform: "HTB"
+difficulty: "Fondation"
+featured: false
+status: "published"
+---
+\`\`\`
+
+Les labs se placent dans \`src/content/labs/\` avec \`domain\` et \`state\`. Les notes se placent dans \`src/content/notes/\` avec \`topic\`.
+
+Les collections créent automatiquement les pages individuelles et alimentent les index du site. Les archives disposent d'une recherche locale sans backend.
+
+## Navigation rapide
+
+Cliquer sur **Explorer** ou utiliser \`Ctrl/⌘ + K\` (ou \`/\` hors d'un champ texte) pour naviguer vers les projets et ressources.
+
+## Démonstrations
+
+La zone Interactive Field Lab est une **simulation uniquement dans le navigateur**. Elle ne lance aucune commande et ne touche aucune cible. Les conclusions sur les projets sont présentées avec leurs limites et leur niveau réel de preuve.
+
+## Architecture et maintenance
+
+- Astro et TypeScript
+- CSS partagé dans \`src/styles/global.css\`
+- Layout commun : \`src/layouts/BaseLayout.astro\`
+- Navigation et pied de page communs : \`src/components/Nav.astro\` et \`src/components/Footer.astro\`
+- Publications gérées avec Content Collections dans \`src/content/\`
+- Publication GitHub Pages via \`.github/workflows/deploy-astro.yml\`
+- Vérification des routes et des ressources via \`scripts/verify-dist.mjs\`
+
+Voir \`docs/REBUILD.md\` pour la philosophie, la migration et les éléments à compléter.

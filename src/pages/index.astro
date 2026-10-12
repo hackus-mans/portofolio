@@ -1,244 +1,135 @@
 ---
 import { getCollection } from "astro:content";
-import SignalLayout from "../layouts/SignalLayout.astro";
-import SignalNav from "../components/signal/SignalNav.astro";
-import SignalHero from "../components/signal/SignalHero.astro";
-import SignalLab from "../components/signal/SignalLab.astro";
+import BaseLayout from "../layouts/BaseLayout.astro";
+import SystemDiagram from "../components/SystemDiagram.astro";
+import ThreatLens from "../components/ThreatLens.astro";
 import { site } from "../config";
 import { formatDate, slugFromId } from "../lib/content";
-
 const rawBase = import.meta.env.BASE_URL;
 const base = rawBase.endsWith("/") ? rawBase : rawBase + "/";
-const [writeups, labs, notes] = await Promise.all([
-  getCollection("writeups"),
-  getCollection("labs"),
-  getCollection("notes")
-]);
-const published = {
-  writeups: writeups.filter((entry) => entry.data.status === "published"),
-  labs: labs.filter((entry) => entry.data.status === "published"),
-  notes: notes.filter((entry) => entry.data.status === "published")
-};
-const recent = [
-  ...published.writeups.map((entry) => ({
-    category: "WRITEUP", title: entry.data.title,
-    description: entry.data.summary, publishedAt: entry.data.publishedAt,
-    href: base + "writeups/" + slugFromId(entry.id) + "/",
-    tags: entry.data.tags
-  })),
-  ...published.labs.map((entry) => ({
-    category: "LAB", title: entry.data.title,
-    description: entry.data.summary, publishedAt: entry.data.publishedAt,
-    href: base + "labs/" + slugFromId(entry.id) + "/",
-    tags: entry.data.tags
-  })),
-  ...published.notes.map((entry) => ({
-    category: "NOTE", title: entry.data.title,
-    description: entry.data.summary, publishedAt: entry.data.publishedAt,
-    href: base + "notes/" + slugFromId(entry.id) + "/",
-    tags: entry.data.tags
-  }))
-].sort((a, b) => b.publishedAt.getTime() - a.publishedAt.getTime()).slice(0, 3);
-
-const knowledgeHubs = [
-  {
-    number: "01", title: "Writeups", subtitle: "De l'énumération au reporting",
-    description: "Machines, vulnérabilités et analyse reproductible.",
-    count: published.writeups.length, href: base + "writeups/"
-  },
-  {
-    number: "02", title: "Labs", subtitle: "Expérimenter pour comprendre",
-    description: "SOC, systèmes, réseau et environnements contrôlés.",
-    count: published.labs.length, href: base + "labs/"
-  },
-  {
-    number: "03", title: "Notes", subtitle: "Une connaissance qui dure",
-    description: "Mécanismes, checklists et enseignements techniques.",
-    count: published.notes.length, href: base + "notes/"
-  }
+const [w,l,n] = await Promise.all([getCollection("writeups"),getCollection("labs"),getCollection("notes")]);
+const hubs = [
+ {title:"Writeups",number:"01",entries:w.filter(e=>e.data.status==="published"),href:"writeups/",description:"Vulnérabilités, méthodes, raisonnements et documentation."},
+ {title:"Labs",number:"02",entries:l.filter(e=>e.data.status==="published"),href:"labs/",description:"Systèmes, réseau, SOC et expériences reproductibles."},
+ {title:"Notes",number:"03",entries:n.filter(e=>e.data.status==="published"),href:"notes/",description:"Synthèses techniques et connaissances structurées."}
 ];
+const recent = [
+ ...hubs[0].entries.map(e=>({title:e.data.title,summary:e.data.summary,date:e.data.publishedAt,kind:"WRITEUP",href:base+"writeups/"+slugFromId(e.id)+"/"})),
+ ...hubs[1].entries.map(e=>({title:e.data.title,summary:e.data.summary,date:e.data.publishedAt,kind:"LAB",href:base+"labs/"+slugFromId(e.id)+"/"})),
+ ...hubs[2].entries.map(e=>({title:e.data.title,summary:e.data.summary,date:e.data.publishedAt,kind:"NOTE",href:base+"notes/"+slugFromId(e.id)+"/"}))
+].sort((a,b)=>b.date.getTime()-a.date.getTime()).slice(0,3);
 ---
-<SignalLayout title={site.name + " — NAKORE // SIGNAL"} description={site.intro}>
-  <SignalNav />
-  <main id="main-content">
-    <SignalHero />
-
-    <section class="sg-proof-band" aria-label="Repères du parcours">
-      <div class="sg-shell sg-proof-grid">
-        {site.proof.map((proof) => (
-          <div class="sg-proof-item">
-            <strong>{proof.value}</strong>
-            <span>{proof.label}</span>
-            <small>{proof.detail}</small>
-          </div>
-        ))}
-      </div>
-    </section>
-
-    <section class="sg-section sg-shell" id="projects" aria-labelledby="projects-title">
-      <div class="sg-section-heading">
-        <div>
-          <p class="sg-overline">01 / SELECTED ENGINEERING</p>
-          <h2 id="projects-title">Des projets construits pour <em>résoudre de vrais problèmes.</em></h2>
+<BaseLayout title={site.name+" — Offensive × Defensive Security"} description={site.intro}>
+<main id="main-content">
+  <section class="home-hero" id="overview">
+    <div class="container home-hero-inner">
+      <div class="hero-copy">
+        <p class="hero-topline"><span class="hero-dot" aria-hidden="true"></span> JOSEPH NAKORE <span aria-hidden="true">/</span> LOMÉ, TOGO <span aria-hidden="true">/</span> CYBERSECURITY ENGINEERING</p>
+        <h1 class="hero-title">BREAK<span class="stroke">TO LEARN.</span><span class="accent">BUILD</span><span>TO DEFEND.</span></h1>
+        <p class="hero-lead">Je questionne les systèmes, j'étudie leurs failles et je construis des outils pour mieux les défendre.</p>
+        <p class="hero-text">Étudiant en cybersécurité à IPNET, je développe une pratique exigeante du pentest, du SOC et de l'ingénierie. Ce portfolio rassemble mes réalisations, mon travail de laboratoire et mes analyses — avec leurs preuves et leurs limites.</p>
+        <div class="hero-buttons">
+          <a class="button" href="#selected">Explorer mon travail <span class="arrow" aria-hidden="true">↗</span></a>
+          <a class="button outline" href={base+"projects/"}>Tous mes projets <span class="arrow" aria-hidden="true">↗</span></a>
         </div>
-        <p>Un projet, ce n'est pas simplement une pile d'outils. C'est une question, une architecture, des tests et des résultats documentés.</p>
-      </div>
-      <div class="sg-project-list">
-        {site.projects.map((project, index) => (
-          <a class="sg-project-card" href={base + project.href}>
-            <div class={"sg-project-art sg-project-art-" + (index + 1)} aria-hidden="true">
-              <span class="sg-art-top">NAKORE / ENGINEERING</span>
-              <div class="sg-art-center">
-                <span class="sg-art-cross">+</span>
-                <strong>{project.name === "Labs & CTF" ? "LAB / CTF" : project.name}</strong>
-                <span class="sg-art-id">PROJECT {project.index}</span>
-              </div>
-              <span class="sg-art-bottom">BUILD · BREAK · DETECT</span>
-            </div>
-            <div class="sg-project-info">
-              <p class="sg-project-type">{project.type}</p>
-              <div class="sg-project-title"><h3>{project.name}</h3><span aria-hidden="true">↗</span></div>
-              <p>{project.summary}</p>
-              <div class="sg-project-tags">
-                {project.tags.slice(0, 5).map((tag) => <span>{tag}</span>)}
-              </div>
-              <div class="sg-project-result"><span>REPÈRE</span><strong>{project.outcome}</strong></div>
-            </div>
-          </a>
-        ))}
-      </div>
-      <a class="sg-text-link" href={base + "projects/"}>Voir tous les projets <span aria-hidden="true">↗</span></a>
-    </section>
-
-    <section class="sg-lab-section sg-section" id="cyber-lab" aria-labelledby="lab-title">
-      <div class="sg-shell sg-lab-grid">
-        <div class="sg-lab-intro">
-          <p class="sg-overline">02 / INTERACTIVE SECURITY LAB</p>
-          <h2 id="lab-title">Don't just read.<br /><em>Investigate.</em></h2>
-          <p>Explore trois mini-scénarios pédagogiques : analyse d'un événement SOC, contrôle d'accès Web/API et permissions Linux. Observe les données, formule une hypothèse et identifie le prochain test.</p>
-          <div class="sg-lab-notice"><span class="sg-led" aria-hidden="true"></span><span>Laboratoire simulé dans le navigateur : aucune infrastructure externe, aucune cible réelle.</span></div>
-          <a class="sg-text-link" href={base + "labs/"}>Explorer mes vrais labs documentés <span aria-hidden="true">↗</span></a>
-        </div>
-        <SignalLab />
-      </div>
-    </section>
-
-    <section class="sg-section sg-section-light" id="expertise" aria-labelledby="expertise-title">
-      <div class="sg-shell">
-        <div class="sg-section-heading sg-section-heading-light">
-          <div>
-            <p class="sg-overline">03 / AREAS OF PRACTICE</p>
-            <h2 id="expertise-title">D'une action offensive <em>à une défense mesurable.</em></h2>
-          </div>
-          <p>Mes domaines se croisent : comprendre le système, identifier les faiblesses, observer les traces et construire des protections adaptées.</p>
-        </div>
-        <div class="sg-capability-grid">
-          {site.capabilities.map((area, index) => (
-            <article class="sg-capability-card">
-              <span class="sg-capability-num">{String(index + 1).padStart(2, "0")} / 04</span>
-              <h3>{area.title}</h3>
-              <p>{area.description}</p>
-              <div class="sg-capability-tags">{area.tools.map((tool) => <span>{tool}</span>)}</div>
-            </article>
-          ))}
-        </div>
-        <div class="sg-light-footer">
-          <span>RED → BLUE → ENGINEERING</span>
-          <strong>Comprendre • Tester • Détecter • Corriger</strong>
+        <div class="hero-end">
+          <span>NO BLACK BOXES.<br />JUST OBSERVATION, TESTING AND PROOF.</span>
+          <svg viewBox="0 0 32 32" fill="none" aria-hidden="true"><path d="M16 3v25m0 0L6 18m10 10l10-10" stroke="currentColor" stroke-width="1.5"/></svg>
         </div>
       </div>
-    </section>
-
-    <section class="sg-section sg-shell" id="publications" aria-labelledby="publications-title">
-      <div class="sg-section-heading">
-        <div>
-          <p class="sg-overline">04 / KNOWLEDGE & RESEARCH</p>
-          <h2 id="publications-title">Documenter aujourd'hui. <em>Comprendre encore demain.</em></h2>
-        </div>
-        <p>Une base de connaissances vivante, alimentée par des articles Markdown. Les nouvelles publications apparaissent ici automatiquement.</p>
+      <div class="hero-visual">
+        <div class="hero-visual-head"><span>NAKORE / RESEARCH INTERFACE</span><span>FIG. 001</span></div>
+        <SystemDiagram />
+        <div class="hero-visual-foot"><span>OFFENSE ↔ DEFENSE ↔ ENGINEERING</span><span>06°N / 01°E</span></div>
       </div>
-      <div class="sg-hub-grid">
-        {knowledgeHubs.map((hub) => (
-          <a class="sg-hub" href={hub.href}>
-            <span class="sg-hub-number">{hub.number} / KNOWLEDGE</span>
-            <div><h3>{hub.title}</h3><span aria-hidden="true">↗</span></div>
-            <strong>{hub.subtitle}</strong>
-            <p>{hub.description}</p>
-            <span class="sg-hub-count">{hub.count} publication{hub.count !== 1 ? "s" : ""}</span>
-          </a>
-        ))}
-      </div>
-      {recent.length > 0 && (
-        <div class="sg-recent">
-          <div class="sg-recent-head"><h3>Latest field notes</h3><span>PUBLICATIONS RÉCENTES</span></div>
-          {recent.map((item) => (
-            <a class="sg-recent-row" href={item.href}>
-              <span class="sg-recent-kind">{item.category}</span>
-              <div><h4>{item.title}</h4><p>{item.description}</p></div>
-              <time datetime={item.publishedAt.toISOString()}>{formatDate(item.publishedAt)}</time>
-              <span class="sg-recent-arrow" aria-hidden="true">↗</span>
-            </a>
-          ))}
-        </div>
-      )}
-      <div class="sg-roadmap-banner">
-        <div>
-          <p class="sg-overline">LUMINA ACADEMY / LEARNING ENGINEERING</p>
-          <h3>Une roadmap qui grandit avec les compétences.</h3>
-          <p>{site.roadmap.description}</p>
-        </div>
-        <a class="sg-button sg-button-outline" href={base + "roadmap/"}>Explorer Lumina Academy <span aria-hidden="true">↗</span></a>
-      </div>
-    </section>
-
-    <section class="sg-section sg-journey-section" id="journey" aria-labelledby="journey-title">
-      <div class="sg-shell">
-        <div class="sg-section-heading">
-          <div><p class="sg-overline">05 / THE JOURNEY</p><h2 id="journey-title">Une trajectoire. <em>Des preuves.</em></h2></div>
-          <p>Formation, distinctions et objectifs clairement séparés. Le portfolio reflète une progression réelle, sans confondre apprentissage et expertise acquise.</p>
-        </div>
-        <div class="sg-journey-grid">
-          <article class="sg-journey-card">
-            <span class="sg-journey-kicker">FORMATION / {site.education.period}</span>
-            <h3>{site.education.program}</h3>
-            <p>{site.education.school}</p>
-            <span>{site.education.location}</span>
-          </article>
-          <article class="sg-journey-card">
-            <span class="sg-journey-kicker">CERTIFICATIONS DÉCLARÉES</span>
-            <h3>Formation continue</h3>
-            <ul>{site.certifications.map((cert) => <li>{cert}</li>)}</ul>
-          </article>
-          <article class="sg-journey-card">
-            <span class="sg-journey-kicker">EN PRÉPARATION / OBJECTIFS</span>
-            <h3>Next milestones</h3>
-            <div class="sg-target-list">{site.currentTargets.map((target) => <span>{target}</span>)}</div>
-            <p>Ces objectifs ne sont pas présentés comme des certifications obtenues.</p>
-          </article>
-        </div>
-      </div>
-    </section>
-
-    <section class="sg-contact-section" id="contact" aria-labelledby="contact-title">
-      <div class="sg-shell sg-contact-inner">
-        <div>
-          <p class="sg-overline">06 / CONNECT</p>
-          <h2 id="contact-title">Construisons<br /><em>quelque chose d'utile.</em></h2>
-          <p>Échangeons autour d'une collaboration, d'un stage, d'un projet technique ou de la recherche en cybersécurité.</p>
-        </div>
-        <div class="sg-contact-actions">
-          <a class="sg-button sg-button-primary" href={site.social[1].href} target="_blank" rel="noopener noreferrer">Me contacter sur LinkedIn <span aria-hidden="true">↗</span></a>
-          <a class="sg-button sg-button-outline" href={site.social[0].href} target="_blank" rel="noopener noreferrer">Explorer mon GitHub <span aria-hidden="true">↗</span></a>
-        </div>
-      </div>
-    </section>
-  </main>
-
-  <footer class="sg-footer">
-    <div class="sg-shell sg-footer-inner">
-      <div class="sg-footer-brand"><span>N/</span><strong>{site.name}</strong><small>NAKORE // SIGNAL</small></div>
-      <p>Build. Break. Detect. Engineer.<br />{site.location}</p>
-      <a href="#overview">Retour en haut ↑</a>
     </div>
-  </footer>
-</SignalLayout>
+  </section>
+  <section class="proofline" aria-label="Repères de mon parcours">
+    <div class="container proofline-inner">
+      {site.proof.map(p=><div class="proofstat"><strong>{p.value}</strong><span>{p.label}</span><small>{p.detail}</small></div>)}
+    </div>
+  </section>
+  <section class="section-pad dark" id="selected">
+    <div class="container">
+      <div class="section-head">
+        <div><p class="mono-kicker">01 / SELECTED SYSTEMS</p><h2>Ce que je <em style="font-style:normal;color:var(--volt)">construis.</em></h2></div>
+        <p>Des prototypes, des laboratoires et des outils pédagogiques. Chaque réalisation documente une question technique, l'approche retenue et le niveau de validation réellement atteint.</p>
+      </div>
+      <div class="project-showcase">
+        {site.projects.map(project=><a class="project-feature" href={base+project.href}>
+          <span class="project-index">{project.index} / 05</span>
+          <div class="project-feature-main"><span>{project.type}</span><h3>{project.name}</h3><p>{project.summary}</p></div>
+          <div class="project-feature-art"><span>{project.slug==="mcp-automation"?"AI / MCP":project.slug==="lumina-academy"?"LUMINA":project.slug==="labs-ctf"?"RECON / CTF":project.name}</span><small>{project.status} ↗</small></div>
+        </a>)}
+      </div>
+      <a class="inline-link" href={base+"projects/"}>Voir les cinq dossiers projets <span aria-hidden="true">↗</span></a>
+    </div>
+  </section>
+  <section class="section-pad" id="expertise">
+    <div class="container split-story">
+      <div class="story-side">
+        <p class="mono-kicker">02 / CAPABILITIES</p>
+        <h2>L'offensif.<br />Le défensif.<br /><span style="color:#638236">Le lien.</span></h2>
+        <p>Je préfère comprendre pourquoi une commande fonctionne, quel événement elle produit et comment détecter ou corriger la faiblesse sous-jacente.</p>
+        <a class="inline-link" href={base+"about/"}>Découvrir mon parcours <span aria-hidden="true">↗</span></a>
+      </div>
+      <div class="skill-list">
+        {site.capabilities.map((cap,i)=><article class="skill-row">
+          <span class="skill-number">{String(i+1).padStart(2,"0")}</span>
+          <div><h3>{cap.title}</h3><strong>{cap.summary}</strong><p>{cap.description}</p><div class="skill-tags">{cap.tools.map(t=><span>{t}</span>)}</div></div>
+        </article>)}
+      </div>
+    </div>
+  </section>
+  <section class="lens-section" id="lab">
+    <div class="container lens-layout">
+      <div>
+        <p class="mono-kicker" style="color:var(--volt)">03 / INTERACTIVE FIELD LAB</p>
+        <h2>Don't just<br />read. <span style="color:var(--volt)">Inspect.</span></h2>
+        <p>Quelques scénarios pédagogiques pour découvrir comment transformer des faits techniques en hypothèses testables. Ils sont simulés : aucun serveur, aucune cible et aucune exploitation réelle.</p>
+        <a class="inline-link" style="color:var(--volt)" href={base+"labs/"}>Explorer mes labs documentés <span aria-hidden="true">↗</span></a>
+      </div>
+      <ThreatLens />
+    </div>
+  </section>
+  <section class="section-pad" id="knowledge">
+    <div class="container">
+      <div class="section-head">
+        <div><p class="mono-kicker">04 / OPEN KNOWLEDGE</p><h2>La connaissance<br />laisse des <span style="color:#648337">traces.</span></h2></div>
+        <p>Je documente aussi les erreurs, les hypothèses rejetées et les mécanismes défensifs — pas seulement les résultats finaux.</p>
+      </div>
+      <div class="knowledge-grid">
+        {hubs.map(h=><a class="knowledge-tile" href={base+h.href}>
+          <div class="knowledge-tile-top"><span>{h.number} / ARCHIVE</span><span aria-hidden="true">↗</span></div>
+          <h3>{h.title}</h3><p>{h.description}</p>
+          <strong>{h.entries.length} publication{h.entries.length>1?"s":""}</strong>
+        </a>)}
+      </div>
+      {recent.length>0&&<div class="recent-list">
+        <div class="recent-list-head"><h3>Dernières publications</h3><span>FIELD NOTES / LATEST</span></div>
+        {recent.map(r=><a class="recent-entry" href={r.href}>
+          <b>{r.kind}</b><div><h4>{r.title}</h4><p>{r.summary}</p></div><time datetime={r.date.toISOString()}>{formatDate(r.date)}</time><span aria-hidden="true">↗</span>
+        </a>)}
+      </div>}
+    </div>
+  </section>
+  <section class="section-pad journey-section" id="journey">
+    <div class="container journey-grid">
+      <div><p class="mono-kicker">05 / THE JOURNEY</p><h2>Une ambition.<br />Du travail.<br />Des preuves.</h2><p>Une progression continue entre les fondamentaux systèmes et réseaux, le pentest, la détection et l'ingénierie. Ce qui est en préparation est affiché comme tel.</p></div>
+      <div class="journey-items">
+        <div class="journey-item"><span>ÉTUDES / {site.education.period}</span><h3>{site.education.program}</h3><p>{site.education.school} — {site.education.location}</p></div>
+        <div class="journey-item"><span>DISTINCTION</span><h3>1er Prix · JPOPE 2026</h3><p>HoneyShield — projet honeypot orienté détection</p></div>
+        <div class="journey-item"><span>CERTIFICATIONS DÉCLARÉES</span><ul>{site.certifications.map(c=><li>{c}</li>)}</ul></div>
+        <div class="journey-item"><span>EN PRÉPARATION</span><h3>{site.currentTargets.join(" / ")}</h3><p>Objectifs en cours, distincts des certifications acquises.</p></div>
+      </div>
+    </div>
+  </section>
+  <section class="wide-statement" id="contact">
+    <div class="container">
+      <p class="mono-kicker" style="color:var(--volt)">READY FOR THE NEXT CHALLENGE?</p>
+      <h2 class="statement">LET'S BUILD<br /><em>SOMETHING.</em></h2>
+      <a class="button vivid" href={site.social[1].href} target="_blank" rel="noopener noreferrer">Prendre contact sur LinkedIn <span class="arrow" aria-hidden="true">↗</span></a>
+    </div>
+  </section>
+</main>
+</BaseLayout>

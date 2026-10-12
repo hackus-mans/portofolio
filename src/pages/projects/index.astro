@@ -1,34 +1,8 @@
 ---
-import BaseLayout from "../../layouts/BaseLayout.astro";
-import Nav from "../../components/Nav.astro";
-import { site } from "../../config";
-
-const rawBase = import.meta.env.BASE_URL;
-const base = rawBase.endsWith("/") ? rawBase : rawBase + "/";
+import ArchiveCollection from "../../components/ArchiveCollection.astro";
+import {site} from "../../config";
+const rawBase=import.meta.env.BASE_URL;
+const base=rawBase.endsWith("/")?rawBase:rawBase+"/";
+const entries=site.projects.map(p=>({title:p.name,summary:p.summary,kind:p.type,tags:p.tags,href:base+p.href,dateText:p.status}));
 ---
-<BaseLayout title="Projets — Joseph NAKORE" description="Projets cybersécurité, security engineering et pratique offensive de Joseph NAKORE.">
-  <Nav />
-  <main>
-    <section class="archive-hero shell">
-      <a class="back-link" href={base}>← Portfolio</a>
-      <p class="overline">PORTFOLIO / PROJETS</p>
-      <h1>Projets</h1>
-      <p>Les projets majeurs restent séparés des writeups et des labs : architecture, objectifs, choix techniques, validation et enseignements.</p>
-    </section>
-
-    <section class="archive shell">
-      {site.projects.map((project) => (
-        <a class="archive-row project-archive-row" href={base + project.href}>
-          <div>
-            <span class="entry-kind">{project.type}</span>
-            <h2>{project.name}</h2>
-            <p>{project.summary}</p>
-            <div class="chips">{project.tags.map((tag) => <span>{tag}</span>)}</div>
-          </div>
-          <div class="archive-proof"><span>REPÈRE</span><strong>{project.outcome}</strong></div>
-          <span class="row-arrow">↗</span>
-        </a>
-      ))}
-    </section>
-  </main>
-</BaseLayout>
+<ArchiveCollection title="Projets" overline="SYSTEMS / THE PORTFOLIO" description="Des systèmes construits pour apprendre, expérimenter et transmettre : objectifs, architecture, décisions, résultats et limites documentées." entries={entries} kind="projets" />
