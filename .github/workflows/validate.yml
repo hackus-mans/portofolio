@@ -52,3 +52,28 @@ jobs:
             qa-desktop.jpg
             qa-mobile.jpg
           if-no-files-found: warn
+
+  verify-live-command-center:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Inspect actual GitHub Pages response
+        shell: bash
+        run: |
+          set -euo pipefail
+          URL="https://hackus-mans.github.io/portofolio/?v=cyber-command-center-20261013"
+          curl -fLsS --retry 3 --max-time 30 -D headers.txt -o live.html -H "Cache-Control: no-cache" "$URL"
+          echo "TITLE:"
+          grep -oE '<title>[^<]*</title>' live.html | head -1
+          grep -Fq "Security Constellation" live.html || { echo "FAIL: new interface HTML marker missing"; exit 1; }
+          grep -Fq "Detection Signals" live.html || { echo "FAIL: detection widget missing"; exit 1; }
+          CSS="$(grep -oE '/portofolio/_astro/[^" ]+\.css' live.html | head -1)"
+          echo "CSS: $CSS"
+          test -n "$CSS"
+          curl -fLsS --max-time 30 "https://hackus-mans.github.io$CSS" -o live.css
+          grep -Fq ".cc-map-panel" live.css || { echo "FAIL: dashboard styling missing"; exit 1; }
+          for path in projects/ labs/ writeups/ notes/ roadmap/ projects/cybermind-x/; do
+            code="$(curl -L -s -o /dev/null -w '%{http_code}' "https://hackus-mans.github.io/portofolio/$path")"
+            echo "$path -> $code"
+            test "$code" = "200"
+          done
+          echo "SUCCESS: Command Center HTML/CSS + 6 existing routes are publicly live"
