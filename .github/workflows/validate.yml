@@ -52,3 +52,34 @@ jobs:
             qa-desktop.jpg
             qa-mobile.jpg
           if-no-files-found: warn
+
+  security-workspace-public-smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Verify the actual public V8 portfolio
+        shell: bash
+        run: |
+          set -euo pipefail
+          baseUrl="https://hackus-mans.github.io/portofolio/"
+          curl -fLsS --retry 3 --max-time 30 -H "Cache-Control: no-cache" "$baseUrl?v=security-workspace-20261013" -o /tmp/portfolio.html
+          grep -Fq "Comprendre. Construire." /tmp/portfolio.html
+          grep -Fq "Security Constellation" /tmp/portfolio.html
+          grep -Fq 'data-orbit-index="0"' /tmp/portfolio.html
+          grep -Fq 'data-ws-view="graph"' /tmp/portfolio.html
+          grep -Fq "Dernières publications" /tmp/portfolio.html
+          for slug in cybermind-x honeyshield lumina-academy mcp-automation labs-ctf; do
+            grep -Fq "$slug" /tmp/portfolio.html
+          done
+          : > /tmp/all.css
+          while IFS= read -r css; do
+            curl -fLsS --max-time 30 "https://hackus-mans.github.io$css" >> /tmp/all.css
+          done < <(grep -oE '/portofolio/_astro/[^" ]+\.css' /tmp/portfolio.html | sort -u)
+          grep -Fq ".ws-orbit-node" /tmp/all.css
+          grep -Fq ".ws-lower-grid" /tmp/all.css
+          echo "PASS: V8 HTML, constellation, real Journal and dashboard styles are publicly live"
+          for path in projects/ labs/ writeups/ notes/ journal/ roadmap/ about/ projects/cybermind-x/; do
+            code="$(curl -sL -o /dev/null -w '%{http_code}' "$baseUrl$path")"
+            echo "$path: HTTP $code"
+            test "$code" = 200
+          done
+          echo "PASS: all eight existing public routes resolve"
