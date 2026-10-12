@@ -1,0 +1,122 @@
+---
+import { site } from "../config";
+const positions=[
+  {x:27.5,y:27,color:"#438cff",symbol:"brain",mini:"SOC / SIEM",label:"Détection & IA"},
+  {x:72.5,y:27,color:"#ff5378",symbol:"shield",mini:"HONEYPOT",label:"Leurre & observation"},
+  {x:50,y:83,color:"#42c8ff",symbol:"school",mini:"ROADMAP",label:"Apprendre & transmettre"},
+  {x:78,y:67,color:"#af79ff",symbol:"bot",mini:"IA / MCP",label:"Automatisation"},
+  {x:22,y:67,color:"#45e3d2",symbol:"trophy",mini:"HTB / THM",label:"Pratique offensive"}
+];
+const satellites=[
+ {x:13,y:16,text:"SURICATA"}, {x:11,y:24,text:"WAZUH"}, {x:12,y:33,text:"SOAR"},
+ {x:89,y:13,text:"TELEMETRY"}, {x:88,y:22,text:"COWRIE"}, {x:88,y:31,text:"EVENTS"},
+ {x:10,y:58,text:"TRYHACKME"}, {x:10,y:65,text:"HACK THE BOX"}, {x:10,y:72,text:"CTF"},
+ {x:90,y:58,text:"MCP SERVER"}, {x:90,y:65,text:"PYTHON"}, {x:90,y:72,text:"AUTOMATION"},
+ {x:39,y:92,text:"GUIDES"}, {x:58,y:92,text:"ROADMAP"}
+];
+const base=import.meta.env.BASE_URL.endsWith("/")?import.meta.env.BASE_URL:import.meta.env.BASE_URL+"/";
+const stars=Array.from({length:74},(_,i)=>({x:(i*47+17)%995,y:(i*71+37)%598,r:i%5===0?1.6:.75,opacity:.19+(i%5)*.12}));
+const paths=[
+ {a:[500,312],b:[275,170],color:"#438cff"},
+ {a:[500,312],b:[725,170],color:"#ff5378"},
+ {a:[500,312],b:[220,415],color:"#45e3d2"},
+ {a:[500,312],b:[780,415],color:"#af79ff"},
+ {a:[500,312],b:[500,515],color:"#42c8ff"},
+ {a:[275,170],b:[220,415],color:"#438cff"},
+ {a:[725,170],b:[780,415],color:"#ff5378"},
+ {a:[220,415],b:[500,515],color:"#45e3d2"},
+ {a:[780,415],b:[500,515],color:"#af79ff"}
+];
+---
+<div class="ws-orbit-frame" data-orbit-root>
+  <div class="ws-orbit-viewport" tabindex="0" role="region" aria-label="Constellation de cinq projets. Sur téléphone, glisser horizontalement pour explorer." data-orbit-viewport>
+    <div class="ws-orbit-canvas">
+      <svg class="ws-orbit-lines" viewBox="0 0 1000 620" preserveAspectRatio="none" aria-hidden="true">
+        <defs>
+          <radialGradient id="ws-cosmos"><stop stop-color="#183e8f" stop-opacity=".53"/><stop offset=".67" stop-color="#122c66" stop-opacity=".18"/><stop offset="1" stop-color="#050e25" stop-opacity="0"/></radialGradient>
+          <pattern id="ws-stargrid" width="37" height="37" patternUnits="userSpaceOnUse"><path d="M37 0H0V37" fill="none" stroke="#4b7fcd" stroke-opacity=".085" stroke-width="1"/></pattern>
+          <linearGradient id="ws-orbitline"><stop stop-color="#2359a8" stop-opacity=".13"/><stop offset=".5" stop-color="#67baff" stop-opacity=".65"/><stop offset="1" stop-color="#2455a8" stop-opacity=".13"/></linearGradient>
+        </defs>
+        <rect width="1000" height="620" fill="url(#ws-stargrid)"/>
+        <ellipse cx="500" cy="308" rx="425" ry="325" fill="url(#ws-cosmos)"/>
+        <g fill="none" stroke="#3578d7" stroke-opacity=".18">
+          <ellipse cx="500" cy="309" rx="345" ry="225"/>
+          <ellipse cx="500" cy="309" rx="275" ry="175" stroke-dasharray="4 7"/>
+          <ellipse cx="500" cy="309" rx="174" ry="116" stroke-dasharray="2 9"/>
+          <circle cx="500" cy="309" r="60"/>
+        </g>
+        <g>{stars.map(star=><circle cx={star.x} cy={star.y} r={star.r} fill="#99d6ff" opacity={star.opacity}/>)}</g>
+        <g fill="none" stroke-width="1.5">{paths.map((line,i)=><path d={"M"+line.a[0]+" "+line.a[1]+"Q500 "+(i<5?270:410)+" "+line.b[0]+" "+line.b[1]} stroke={line.color} stroke-opacity=".55"/>)}</g>
+        <g fill="#7ac8ff">{[[425,263],[582,267],[340,350],[648,350],[500,421],[420,456],[602,462],[318,221],[700,236]].map(([x,y],i)=><circle cx={x} cy={y} r={i%3===0?3:2} opacity={i%3===0?.95:.56}/>)}</g>
+        <path d="M500 140v25M500 446v24M304 310h27M666 310h27" fill="none" stroke="#5b9ff8" opacity=".42"/>
+      </svg>
+      <div class="ws-central-hub" aria-label="NAKORE, centre du portfolio">
+        <div class="ws-central-orbit"><div class="ws-core-face" aria-hidden="true">
+          <svg viewBox="0 0 70 70" width="52" height="52" fill="none"><path d="M35 8C17 13 11 27 13 49l12 12h20l12-12C59 27 53 13 35 8Z" fill="#102652" stroke="#67bfff" stroke-width="2"/><path d="M24 43c3-6 7-9 11-9s8 3 11 9l-4 14H28Z" fill="#000b20"/><path d="M25 43 35 39l10 4" stroke="#58a5ff" stroke-width="1.5"/></svg>
+        </div></div>
+        <strong>NAKORE</strong><span>SECURITY WORKSPACE</span>
+      </div>
+      {site.projects.map((project,i)=><button
+        type="button"
+        class:list={["ws-orbit-node","ws-orbit-"+project.slug,{"is-active":i===0}]}
+        data-orbit-index={i}
+        aria-label={"Sélectionner "+project.name}
+        aria-pressed={i===0?"true":"false"}
+        style={"--ws-x:"+positions[i].x+"%;--ws-y:"+positions[i].y+"%;--ws-node-color:"+positions[i].color}
+      >
+        <span class="ws-orbit-circle" aria-hidden="true">
+          {positions[i].symbol==="brain"&&<svg viewBox="0 0 36 36" fill="none"><path d="M17 8c-5-4-12 0-11 6-4 5-1 10 3 11-1 4 6 6 8 2V8Zm2 0c5-4 12 0 11 6 4 5 1 10-3 11 1 4-6 6-8 2V8Z" stroke="currentColor" stroke-width="2.3"/><path d="M12 13v12m12-12v12M7 19h5m12 0h5" stroke="currentColor" stroke-width="1.8"/></svg>}
+          {positions[i].symbol==="shield"&&<svg viewBox="0 0 36 36" fill="none"><path d="m18 4 12 5v9c0 9-7 13-12 15C13 31 6 27 6 18V9l12-5Z" stroke="currentColor" stroke-width="2.5"/><path d="M18 11v11m0 5v1" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></svg>}
+          {positions[i].symbol==="school"&&<svg viewBox="0 0 36 36" fill="none"><path d="m3 14 15-8 15 8-15 8L3 14Zm7 5v7c6 5 10 5 16 0v-7M32 16v11" stroke="currentColor" stroke-width="2.5" stroke-linejoin="round"/></svg>}
+          {positions[i].symbol==="bot"&&<svg viewBox="0 0 36 36" fill="none"><rect x="6" y="12" width="24" height="19" rx="6" stroke="currentColor" stroke-width="2.5"/><path d="M18 6v6M13 21h2m6 0h2M14 27h8" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/><circle cx="18" cy="5" r="2" fill="currentColor"/></svg>}
+          {positions[i].symbol==="trophy"&&<svg viewBox="0 0 36 36" fill="none"><path d="M10 5h16v11c0 7-3 10-8 10s-8-3-8-10V5Zm0 5H5v3c0 5 2 7 7 7m14-10h5v3c0 5-2 7-7 7M18 26v6m-8 0h16" stroke="currentColor" stroke-width="2.5" stroke-linejoin="round"/></svg>}
+        </span>
+        <strong>{project.name==="AI × MCP Automation"?"AI / MCP":project.name}</strong>
+        <span class="ws-orbit-descriptor">{positions[i].label}</span>
+      </button>)}
+      {satellites.map(sat=><div class="ws-orbit-satellite" style={"--ws-x:"+sat.x+"%;--ws-y:"+sat.y+"%"}><i aria-hidden="true"></i>{sat.text}</div>)}
+      <div class="ws-orbit-floor">NO LIVE DATA · FIVE PROJECTS · EXPLORE THE CONNECTIONS</div>
+    </div>
+  </div>
+  <div class="ws-orbit-footer">
+    <span><i class="ws-led"></i> Schéma interactif · projets réels</span>
+    <span data-orbit-selection>CyberMind X · Sécurité & SOC</span>
+    <a href={base+"projects/"}>Tous les dossiers ↗</a>
+  </div>
+</div>
+<script>
+  import {site} from "../config";
+  const root=document.querySelector<HTMLElement>("[data-orbit-root]");
+  if(root){
+    const buttons=Array.from(root.querySelectorAll<HTMLButtonElement>("[data-orbit-index]"));
+    const viewport=root.querySelector<HTMLElement>("[data-orbit-viewport]");
+    const selection=root.querySelector<HTMLElement>("[data-orbit-selection]");
+    const select=(index:number,focus=false,notify=true)=>{
+      const p=site.projects[index];if(!p)return;
+      buttons.forEach((button,i)=>{
+        const active=i===index;button.classList.toggle("is-active",active);button.setAttribute("aria-pressed",String(active));
+      });
+      if(selection)selection.textContent=p.name+" · "+p.type;
+      if(focus)buttons[index]?.focus();
+      if(viewport&&viewport.scrollWidth>viewport.clientWidth+20){
+        const btn=buttons[index];
+        const left=btn.offsetLeft+btn.offsetWidth/2-viewport.clientWidth/2;
+        viewport.scrollTo({left:Math.max(0,left),behavior:window.matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth"});
+      }
+      if(notify)window.dispatchEvent(new CustomEvent("atlas:project",{detail:{slug:p.slug}}));
+    };
+    buttons.forEach((button,i)=>{
+      button.addEventListener("click",()=>select(i));
+      button.addEventListener("keydown",event=>{
+        if(event.key==="ArrowRight"||event.key==="ArrowDown"){event.preventDefault();select((i+1)%buttons.length,true);}
+        if(event.key==="ArrowLeft"||event.key==="ArrowUp"){event.preventDefault();select((i-1+buttons.length)%buttons.length,true);}
+      });
+    });
+    window.addEventListener("atlas:project",(event)=>{
+      const slug=(event as CustomEvent<{slug:string}>).detail?.slug;
+      const i=site.projects.findIndex(p=>p.slug===slug);
+      if(i>=0)select(i,false,false);
+    });
+    requestAnimationFrame(()=>{if(viewport&&viewport.scrollWidth>viewport.clientWidth+20)viewport.scrollLeft=(viewport.scrollWidth-viewport.clientWidth)/2;});
+  }
+</script>
