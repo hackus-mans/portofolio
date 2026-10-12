@@ -1,37 +1,30 @@
 ---
 import "../styles/global.css";
 import { site } from "../config";
+import Nav from "../components/Nav.astro";
+import Footer from "../components/Footer.astro";
 
 const {
-  title = site.name + " — Cybersécurité",
+  title = site.name + " — Security Engineer in Progress",
   description = site.intro,
-  image = null
+  image = "joseph-soc-v2.webp",
+  type = "website"
 } = Astro.props;
-
 const rawBase = import.meta.env.BASE_URL;
 const base = rawBase.endsWith("/") ? rawBase : rawBase + "/";
-const canonical = new URL(Astro.url.pathname, "https://hackus-mans.github.io").toString();
-const socialImage = image
-  ? new URL(base + image.replace(/^\//, ""), "https://hackus-mans.github.io").toString()
-  : new URL(base + "joseph-soc.webp", "https://hackus-mans.github.io").toString();
-
-const personSchema = {
+const origin = "https://hackus-mans.github.io";
+const canonical = new URL(Astro.url.pathname, origin).toString();
+const socialImage = new URL(base + image.replace(/^\//,""), origin).toString();
+const schema = {
   "@context": "https://schema.org",
   "@type": "Person",
   name: site.name,
   alternateName: site.handle,
-  url: "https://hackus-mans.github.io/portofolio/",
-  sameAs: site.social.map((item) => item.href),
-  jobTitle: "Étudiant en cybersécurité",
-  address: {
-    "@type": "PostalAddress",
-    addressLocality: "Lomé",
-    addressCountry: "TG"
-  },
-  alumniOf: {
-    "@type": "CollegeOrUniversity",
-    name: site.education.school
-  }
+  description: site.intro,
+  url: new URL(base, origin).toString(),
+  sameAs: site.social.map((s) => s.href),
+  address: { "@type": "PostalAddress", addressLocality: "Lomé", addressCountry: "TG" },
+  affiliation: { "@type": "CollegeOrUniversity", name: site.education.school }
 };
 ---
 <!doctype html>
@@ -39,15 +32,14 @@ const personSchema = {
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="theme-color" content="#081018" />
-    <meta name="color-scheme" content="dark" />
+    <meta name="theme-color" content="#0b0e0c" />
     <meta name="description" content={description} />
-    <meta name="robots" content="index,follow" />
+    <meta name="robots" content="index, follow" />
+    <meta property="og:type" content={type} />
+    <meta property="og:site_name" content="Joseph NAKORE — Cybersecurity Engineering" />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
-    <meta property="og:type" content="website" />
     <meta property="og:url" content={canonical} />
-    <meta property="og:locale" content="fr_FR" />
     <meta property="og:image" content={socialImage} />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={title} />
@@ -56,9 +48,12 @@ const personSchema = {
     <link rel="canonical" href={canonical} />
     <link rel="icon" type="image/svg+xml" href={base + "favicon.svg"} />
     <title>{title}</title>
-    <script type="application/ld+json" set:html={JSON.stringify(personSchema)} />
+    <script type="application/ld+json" set:html={JSON.stringify(schema)} />
   </head>
-  <body>
+  <body class="studio">
+    <a class="skip-link" href="#main-content">Aller au contenu</a>
+    <Nav />
     <slot />
+    <Footer />
   </body>
 </html>
