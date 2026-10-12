@@ -50,24 +50,103 @@ export const atlasNodes:AtlasNode[] = [
 {id:"sig-24",x:168,y:408,kind:"signal",label:"Flag",detail:"Résultat de challenge.",size:8},
 {id:"sig-25",x:612,y:411,kind:"signal",label:"Curriculum",detail:"Parcours de compétence.",size:8}
 ];
-export const atlasEdges:[string,string][]=[
-["core","cybermind"],["core","honeyshield"],["core","lumina"],["core","mcp"],["core","ctf"],
-["core","def-1"],["core","def-2"],["core","def-3"],["core","def-4"],
-["cybermind","threat-1"],["honeyshield","threat-2"],["honeyshield","threat-3"],["cybermind","threat-4"],["ctf","threat-5"],
-["cybermind","def-1"],["cybermind","def-2"],["honeyshield","def-3"],["mcp","def-4"],
-["ctf","mcp"],["honeyshield","lumina"],["def-1","def-2"],["def-3","def-4"],
-["threat-1","sig-1"],["threat-1","sig-2"],["threat-1","sig-3"],["threat-1","sig-4"],["threat-1","sig-5"],
-["threat-2","sig-10"],["threat-2","sig-11"],["threat-2","sig-12"],["threat-2","sig-13"],
-["threat-3","sig-14"],["threat-3","sig-15"],["threat-3","sig-16"],
-["threat-4","sig-17"],["threat-4","sig-18"],["threat-4","sig-19"],
-["threat-5","ctf"],["cybermind","sig-6"],["core","sig-7"],["core","sig-8"],["honeyshield","sig-9"],
-["mcp","sig-22"],["ctf","sig-23"],["ctf","sig-24"],["lumina","sig-25"],["lumina","sig-21"],["honeyshield","sig-20"],
-["sig-1","sig-2"],["sig-3","sig-4"],["sig-10","sig-11"],["sig-20","sig-11"],["sig-8","sig-9"]
+export type AtlasRelation = "portfolio"|"implements"|"investigates"|"produces"|"supports";
+export type AtlasEdge = {from:string;to:string;relation:AtlasRelation;reason:string};
+const relationship=(from:string,to:string,relation:AtlasRelation,reason:string):AtlasEdge=>({from,to,relation,reason});
+export const atlasEdges:AtlasEdge[]=[
+  relationship("core","cybermind","portfolio","CyberMind X fait partie des cinq dossiers du portfolio."),
+  relationship("core","honeyshield","portfolio","HoneyShield fait partie des cinq dossiers du portfolio."),
+  relationship("core","lumina","portfolio","Lumina Academy fait partie des cinq dossiers du portfolio."),
+  relationship("core","mcp","portfolio","AI / MCP fait partie des cinq dossiers du portfolio."),
+  relationship("core","ctf","portfolio","Labs & CTF fait partie des cinq dossiers du portfolio."),
+  relationship("cybermind","def-1","implements","Le laboratoire CyberMind X utilise Suricata pour la visibilité réseau."),
+  relationship("cybermind","def-2","implements","Le laboratoire CyberMind X utilise Wazuh pour les signaux hôtes."),
+  relationship("cybermind","def-3","implements","L'orchestration avec Shuffle SOAR est un composant expérimental de CyberMind X."),
+  relationship("cybermind","sig-6","supports","Un SIEM regroupe les événements pour aider l'analyste à les interpréter."),
+  relationship("cybermind","sig-7","supports","Un agent peut produire des événements qui alimentent l'investigation."),
+  relationship("honeyshield","def-4","implements","Un honeypot doit recueillir de la télémétrie contrôlée."),
+  relationship("honeyshield","def-5","supports","Les journaux permettent d'examiner les connexions au service simulé."),
+  relationship("honeyshield","sig-20","supports","Une réponse à une observation nécessite un workflow explicite et prudent."),
+  relationship("mcp","sig-22","implements","Le projet explore l'intégration de scripts et d'outils par MCP."),
+  relationship("lumina","sig-25","produces","Lumina Academy structure une progression sous forme de parcours."),
+  relationship("lumina","sig-21","produces","Une étude de cas documente l'application d'une compétence."),
+  relationship("ctf","sig-23","investigates","Les labs d'exploitation se limitent aux cibles autorisées."),
+  relationship("ctf","sig-24","produces","Un flag valide un objectif de challenge, pas une maîtrise complète."),
+  relationship("threat-1","honeyshield","investigates","Le honeypot permet d'observer les interactions SSH en laboratoire."),
+  relationship("threat-1","cybermind","investigates","Le SOC corrèle les échecs d'authentification pour vérifier une hypothèse de brute force."),
+  relationship("threat-1","sig-1","produces","La technique T1110 permet de catégoriser la tentative de brute force."),
+  relationship("threat-1","sig-2","produces","Les journaux d'authentification fournissent des événements datés."),
+  relationship("threat-1","sig-3","produces","SSH est le service faisant l'objet de l'observation."),
+  relationship("sig-3","sig-4","supports","Chaque événement de connexion possède un contexte de source."),
+  relationship("sig-2","sig-5","produces","Une tentative refusée est visible dans le journal de test."),
+  relationship("threat-2","ctf","investigates","La vérification des accès objet relève de la pratique Web/API en lab."),
+  relationship("threat-2","sig-10","produces","Un contrôle d'accès défaillant peut permettre d'accéder à l'objet d'un autre compte."),
+  relationship("threat-2","sig-11","produces","La différence de réponse entre deux comptes forme un indice à analyser."),
+  relationship("threat-2","sig-12","supports","Une requête de test utilise un compte explicitement autorisé."),
+  relationship("threat-2","sig-13","supports","Le contrôle attendu est de refuser l'accès à l'objet non autorisé."),
+  relationship("threat-3","ctf","investigates","Une anomalie de requêtes API se valide sur une API d'entraînement."),
+  relationship("threat-3","sig-14","produces","Une série de requêtes inhabituelles constitue la matière d'observation."),
+  relationship("threat-3","sig-15","supports","L'application API est le périmètre contrôlé du scénario."),
+  relationship("threat-3","sig-16","produces","Les journaux d'accès permettent de contextualiser les demandes."),
+  relationship("threat-4","cybermind","investigates","La chaîne SOC aide à contextualiser une authentification inhabituelle."),
+  relationship("threat-4","sig-17","produces","Une séquence de connexion peut indiquer un comportement anormal."),
+  relationship("threat-4","sig-18","produces","Une trace de connexion doit pouvoir être rattachée à un horodatage."),
+  relationship("threat-4","sig-19","supports","Le compte et la ressource ciblés déterminent le niveau de risque."),
+  relationship("threat-5","ctf","investigates","La recherche d'exposition se fait uniquement sur une machine de lab."),
+  relationship("def-1","sig-8","supports","Suricata participe à la détection et à la corrélation réseau."),
+  relationship("def-2","sig-7","supports","Wazuh exploite des agents pour observer les hôtes."),
+  relationship("def-3","sig-20","supports","Un SOAR peut coordonner une réponse après validation."),
+  relationship("def-4","sig-9","produces","La télémétrie permet d'observer un scan réseau de test.")
 ];
-export const labSignals=[
-{time:"SIM / 01",name:"Échecs d'authentification SSH",source:"Linux / honeypot",technique:"T1110",severity:"high",detail:"Dans un environnement de laboratoire, analyser fréquence, identifiants et origine des tentatives d'authentification."},
-{time:"SIM / 02",name:"Exécution PowerShell suspecte",source:"Windows / test contrôlé",technique:"T1059",severity:"high",detail:"Étudier les journaux de processus, la ligne de commande et le contexte de l'exécution."},
-{time:"SIM / 03",name:"Modification de fichier sensible",source:"Wazuh / file integrity",technique:"T1565",severity:"medium",detail:"Corréler la modification à l'utilisateur, l'horodatage et la politique d'intégrité."},
-{time:"SIM / 04",name:"Mouvement latéral hypothétique",source:"Windows / SMB lab",technique:"T1021",severity:"high",detail:"Observer authentification, communication inter-hôtes et permissions de comptes dans un laboratoire autorisé."},
-{time:"SIM / 05",name:"Analyse d'une requête API",source:"Web / authorization test",technique:"T1190",severity:"low",detail:"Vérifier les contrôles d'accès objet par objet et comparer deux sessions de test."}
+export type LabSignal={
+ id:string;nodeId:string;projectSlug:string;time:string;name:string;source:string;
+ reference:string;severity:"high"|"medium"|"low";detail:string;
+ hypothesis:string;observables:string[];investigation:string[];mitigation:string;learningGoal:string;
+};
+export const labSignals:LabSignal[]=[
+{id:"ssh",nodeId:"threat-1",projectSlug:"cybermind-x",time:"LAB / 01",name:"Échecs répétés d'authentification SSH",
+ source:"Linux / honeypot de test",reference:"MITRE T1110",severity:"high",
+ detail:"Un ensemble d'échecs SSH rapprochés pourrait évoquer une recherche de mot de passe, mais seul le contexte permet de conclure.",
+ hypothesis:"Un acteur ou un script réalise une série de tentatives de connexion non autorisées.",
+ observables:["Nombre d'échecs par intervalle et par compte","Adresse source, type de compte, succès éventuel","Événements de connexion du honeypot et de l'hôte"],
+ investigation:["Choisir un intervalle et collecter les événements SSH du laboratoire.","Grouper par source, utilisateur et résultat.","Comparer aux tests prévus et aux connexions attendues.","Décrire les conditions qui confirment ou infirment l'hypothèse."],
+ mitigation:"Limiter l'accès SSH, utiliser des clés, MFA lorsque disponible et une journalisation vérifiée.",
+ learningGoal:"Distinguer un signal de brute force d'un incident confirmé."
+},
+{id:"object",nodeId:"threat-2",projectSlug:"labs-ctf",time:"LAB / 02",name:"Contrôle d'accès objet / IDOR",
+ source:"API de laboratoire / deux comptes",reference:"CWE-639 · OWASP API1:2023",severity:"high",
+ detail:"Deux identités de test essaient un objet différent. Une réponse inattendue peut révéler une faille de contrôle d'accès.",
+ hypothesis:"L'API vérifie l'authentification mais pas l'autorisation sur l'objet demandé.",
+ observables:["Identité de session et propriétaire de l'objet","Identifiant cible et code de réponse","Différences de contenu sans données personnelles réelles"],
+ investigation:["Créer deux comptes de test isolés et deux objets appartenant chacun à un compte.","Consulter un objet autorisé depuis son compte propriétaire.","Modifier uniquement l'identifiant d'un objet de test.","Confirmer si l'API bloque ou autorise indûment l'accès."],
+ mitigation:"Vérifier côté serveur les autorisations sur chaque objet et ajouter des tests automatiques multi-comptes.",
+ learningGoal:"Comprendre la différence entre authentification et autorisation objet."
+},
+{id:"api",nodeId:"threat-3",projectSlug:"labs-ctf",time:"LAB / 03",name:"Séquence atypique de requêtes API",
+ source:"Logs HTTP / API d'entraînement",reference:"OBSERVATION HTTP",severity:"medium",
+ detail:"Un pic de requêtes et des erreurs HTTP ne prouvent pas une attaque ; ils motivent une investigation.",
+ hypothesis:"Une automatisation de tests ou un client mal configuré génère la séquence atypique.",
+ observables:["Nombre de requêtes et codes de statut par fenêtre","Chemin HTTP, compte de test et agent client","Horodatage et environnement d'origine"],
+ investigation:["Définir une fenêtre de temps sur les journaux de l'API de test.","Distinguer trafic normal, tests autorisés et erreurs de configuration.","Corréler les requêtes aux scénarios connus.","Documenter une explication alternative avant d'alerter."],
+ mitigation:"Contrôler les accès, limiter les abus et ajouter une observation API adaptée au contexte.",
+ learningGoal:"Analyser un comportement HTTP sans le qualifier prématurément de malveillant."
+},
+{id:"auth",nodeId:"threat-4",projectSlug:"cybermind-x",time:"LAB / 04",name:"Connexion inattendue à un compte",
+ source:"Wazuh / journaux d'authentification",reference:"AUTHENTICATION ANALYSIS",severity:"medium",
+ detail:"Une connexion inhabituelle n'est pas une compromission avérée : horaires, sources et activité doivent être croisés.",
+ hypothesis:"Un compte de test est utilisé dans un contexte différent des habitudes prévues.",
+ observables:["Compte, hôte, méthode d'authentification","Événements autour de la connexion","Correspondance avec le calendrier de tests"],
+ investigation:["Relever le signal avec son horodatage et son hôte.","Comparer aux actions planifiées du laboratoire.","Rechercher une authentification antérieure et une action subséquente.","Conclure avec un niveau d'incertitude explicite."],
+ mitigation:"Activer MFA, supervision des authentifications et revue des privilèges selon les risques.",
+ learningGoal:"Construire une hypothèse SOC avec un contexte suffisant."
+},
+{id:"exposure",nodeId:"threat-5",projectSlug:"labs-ctf",time:"LAB / 05",name:"Service de laboratoire exposé",
+ source:"Nmap / machine autorisée",reference:"ATTACK SURFACE",severity:"low",
+ detail:"Un port ouvert décrit une surface d'exposition, pas une vulnérabilité en soi.",
+ hypothesis:"Un service de test accessible possède une configuration pouvant justifier des contrôles supplémentaires.",
+ observables:["Protocole, port, version du service si observable","Périmètre d'autorisation et nécessité du service","Configuration et protections pertinentes"],
+ investigation:["Définir précisément l'hôte autorisé.","Inventorier les seuls ports et services concernés.","Vérifier la configuration sans perturber le service.","Rédiger une recommandation proportionnée aux faits."],
+ mitigation:"Réduire l'exposition, maintenir les services à jour et appliquer le moindre privilège.",
+ learningGoal:"Distinguer exposition, mauvaise configuration et vulnérabilité exploitée."
+}
 ];
