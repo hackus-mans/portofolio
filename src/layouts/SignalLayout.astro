@@ -1,0 +1,53 @@
+---
+import "../styles/signal.css";
+import { site } from "../config";
+
+const {
+  title = site.name + " — Security Engineering",
+  description = site.intro
+} = Astro.props;
+const rawBase = import.meta.env.BASE_URL;
+const base = rawBase.endsWith("/") ? rawBase : rawBase + "/";
+const origin = "https://hackus-mans.github.io";
+const canonical = new URL(Astro.url.pathname, origin).toString();
+const ogImage = new URL(base + "joseph-soc-v2.webp", origin).toString();
+const person = {
+  "@context": "https://schema.org",
+  "@type": "Person",
+  name: site.name,
+  url: new URL(base, origin).toString(),
+  sameAs: site.social.map((link) => link.href),
+  jobTitle: "Étudiant en cybersécurité",
+  address: { "@type": "PostalAddress", addressLocality: "Lomé", addressCountry: "TG" },
+  affiliation: { "@type": "CollegeOrUniversity", name: site.education.school }
+};
+---
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#080b12" />
+    <meta name="color-scheme" content="dark light" />
+    <meta name="description" content={description} />
+    <meta name="robots" content="index,follow" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:locale" content="fr_FR" />
+    <meta property="og:image" content={ogImage} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
+    <link rel="canonical" href={canonical} />
+    <link rel="icon" type="image/svg+xml" href={base + "favicon.svg"} />
+    <title>{title}</title>
+    <script type="application/ld+json" set:html={JSON.stringify(person)} />
+  </head>
+  <body class="sg-page">
+    <a class="sg-skip" href="#main-content">Aller au contenu principal</a>
+    <slot />
+  </body>
+</html>
