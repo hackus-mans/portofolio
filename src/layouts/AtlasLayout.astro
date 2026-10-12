@@ -1,0 +1,31 @@
+---
+import "../styles/atlas.css";
+import { site } from "../config";
+const base = import.meta.env.BASE_URL.endsWith("/") ? import.meta.env.BASE_URL : import.meta.env.BASE_URL + "/";
+const title = site.name + " — FIELD ATLAS / Security Observatory";
+const description = "Joseph NAKORE — Cybersécurité offensive, SOC, ingénierie et projets d'automatisation. Explorez un atlas interactif de mes projets et recherches.";
+const url = new URL(Astro.url.pathname, "https://hackus-mans.github.io").toString();
+---
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<meta name="color-scheme" content="dark light" />
+<meta name="theme-color" content="#0b1018" />
+<title>{title}</title>
+<meta name="description" content={description} />
+<link rel="canonical" href={url} />
+<link rel="icon" href={base + "favicon.svg"} type="image/svg+xml" />
+<meta property="og:title" content={title} />
+<meta property="og:description" content={description} />
+<meta property="og:type" content="website" />
+<meta property="og:url" content={url} />
+<meta property="og:image" content={new URL(base + "joseph-soc-v2.webp", "https://hackus-mans.github.io").toString()} />
+<meta name="twitter:card" content="summary_large_image" />
+</head>
+<body class="atlas">
+<a class="atlas-skip" href="#main-content">Aller au contenu</a>
+<slot />
+</body>
+</html>

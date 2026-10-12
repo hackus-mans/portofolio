@@ -1,0 +1,90 @@
+---
+import { site } from "../config";
+const base = import.meta.env.BASE_URL.endsWith("/") ? import.meta.env.BASE_URL : import.meta.env.BASE_URL + "/";
+const coords = [[116,76],[460,80],[515,290],[288,358],[68,286]];
+const tags = ["SOC ENGINEERING","THREAT OBSERVATION","LEARNING SYSTEMS","AI INTEGRATION","OFFENSIVE PRACTICE"];
+const descriptions = site.projects.map(project => project.summary);
+const info = site.projects.map((p,i)=>({
+ title:p.name,tag:tags[i],description:descriptions[i],tools:p.tags.slice(0,5).join(" / "),href:base+p.href
+}));
+---
+<div class="n-workspace" data-atlas-explorer data-projects={JSON.stringify(info)}>
+  <div class="n-workspace-side">
+    <span class="n-rail-label">THE INDEX / 005</span>
+    {site.projects.map((project,i)=><button class:list={["n-proj-row",{"selected":i===0}]} type="button" data-project={i} aria-pressed={i===0?"true":"false"}>
+      <small>{project.index} /</small><b>{project.name}</b><span aria-hidden="true">↗</span>
+    </button>)}
+    <div class="n-aside-note">SÉLECTIONNER UN SYSTÈME<br />← → AU CLAVIER DANS L'INDEX</div>
+  </div>
+  <div class="n-workspace-center">
+    <div class="n-center-header"><span>RELATIONSHIP MAP / EXPLORE</span><span>NODE <b id="node-counter">01</b> / 05</span></div>
+    <svg viewBox="0 0 580 420" role="group" aria-label="Cartographie interactive des cinq projets" class="n-constellation">
+      <g stroke="#758fa5" stroke-opacity=".36" fill="none">
+        <path d="M290 190 116 76 460 80 515 290 288 358 68 286 116 76" />
+        <path d="M290 190 460 80 288 358 116 76 68 286 515 290" stroke-dasharray="3 8" />
+        <circle cx="290" cy="200" r="144" stroke-dasharray="3 10"/>
+      </g>
+      <circle cx="290" cy="190" r="45" fill="#151e2a" stroke="#fc7651"/>
+      <text x="290" y="195" fill="#fff" text-anchor="middle" font-family="monospace" font-size="12">NAKORE</text>
+      <g data-nodes>
+        {coords.map(([x,y],i)=><g data-index={i} role="button" tabindex="0" aria-label={"Sélectionner " + site.projects[i].name} aria-pressed={i===0?"true":"false"} transform={"translate(" + x + " " + y + ")"}>
+          <circle r={i===0?30:28} fill={i===0?"#fc7651":"#1a2938"} stroke={i===0?"#fc7651":"#a9b9c9"}/>
+          <text fill={i===0?"#111824":"#fff"} font-size="13" font-family="monospace" text-anchor="middle" dy="5">{site.projects[i].index}</text>
+        </g>)}
+      </g>
+    </svg>
+    <div class="n-map-legend"><span>◉ ACTIVE SYSTEM</span><span>○ CONNECTED DISCIPLINE</span></div>
+  </div>
+  <aside class="n-workspace-detail" aria-live="polite" aria-atomic="true">
+    <span class="n-detail-top">ACTIVE DOSSIER <b aria-hidden="true">↗</b></span>
+    <span class="n-detail-num" id="detail-num">01</span>
+    <span class="n-detail-tag" id="detail-tag">{tags[0]}</span>
+    <h3 id="detail-title">{site.projects[0].name}</h3>
+    <p id="detail-summary">{site.projects[0].summary}</p>
+    <div class="n-detail-stack"><span>STACK / DOMAINES</span><p id="detail-tags">{info[0].tools}</p></div>
+    <a id="detail-link" href={info[0].href}>OUVRIR L'ÉTUDE DE CAS <span aria-hidden="true">↗</span></a>
+  </aside>
+</div>
+<script>
+  const root = document.querySelector<HTMLElement>("[data-atlas-explorer]");
+  if(root){
+    type Entry={title:string;tag:string;description:string;tools:string;href:string};
+    const entries:Entry[]=JSON.parse(root.dataset.projects||"[]");
+    const buttons=Array.from(root.querySelectorAll<HTMLButtonElement>("[data-project]"));
+    const nodes=Array.from(root.querySelectorAll<SVGGElement>("[data-nodes] [data-index]"));
+    const setText=(id:string,value:string)=>{const el=root.querySelector<HTMLElement>("#"+id);if(el)el.textContent=value};
+    const link=root.querySelector<HTMLAnchorElement>("#detail-link");
+    let active=0;
+    const select=(i:number,moveFocus=false)=>{
+      active=(i+entries.length)%entries.length;
+      const project=entries[active];if(!project)return;
+      buttons.forEach((b,n)=>{const on=n===active;b.classList.toggle("selected",on);b.setAttribute("aria-pressed",String(on))});
+      nodes.forEach((n,j)=>{
+        const selected=j===active;
+        n.setAttribute("aria-pressed",String(selected));
+        n.querySelector("circle")?.setAttribute("fill",selected?"#fc7651":"#1a2938");
+        n.querySelector("circle")?.setAttribute("stroke",selected?"#fc7651":"#a9b9c9");
+        n.querySelector("text")?.setAttribute("fill",selected?"#111824":"#fff");
+      });
+      setText("node-counter",String(active+1).padStart(2,"0"));
+      setText("detail-num",String(active+1).padStart(2,"0"));
+      setText("detail-tag",project.tag);
+      setText("detail-title",project.title);
+      setText("detail-summary",project.description);
+      setText("detail-tags",project.tools);
+      if(link)link.href=project.href;
+      if(moveFocus)buttons[active]?.focus();
+    };
+    buttons.forEach((b,i)=>{
+      b.addEventListener("click",()=>select(i));
+      b.addEventListener("keydown",(event)=>{
+        if(event.key==="ArrowDown"||event.key==="ArrowRight"){event.preventDefault();select(i+1,true)}
+        if(event.key==="ArrowUp"||event.key==="ArrowLeft"){event.preventDefault();select(i-1,true)}
+      });
+    });
+    nodes.forEach((n,i)=>{
+      n.addEventListener("click",()=>select(i));
+      n.addEventListener("keydown",(event)=>{if(event.key==="Enter"||event.key===" "){event.preventDefault();select(i)}});
+    });
+  }
+</script>
