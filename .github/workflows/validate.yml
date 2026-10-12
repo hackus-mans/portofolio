@@ -52,3 +52,28 @@ jobs:
             qa-desktop.jpg
             qa-mobile.jpg
           if-no-files-found: warn
+
+  published-responsive-smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Verify deployed portfolio, Journal and responsive styles
+        shell: bash
+        run: |
+          set -euo pipefail
+          baseUrl="https://hackus-mans.github.io/portofolio/"
+          curl -fLsS --retry 3 --max-time 30 -H "Cache-Control: no-cache" "$baseUrl?rev=polished-v7" -o /tmp/page.html
+          grep -Fq "Comprendre. Construire." /tmp/page.html
+          grep -Fq "Security Constellation" /tmp/page.html
+          grep -Fq "Exercices d'investigation" /tmp/page.html
+          grep -Fq 'id="journal"' /tmp/page.html
+          css="$(grep -oE '/portofolio/_astro/[^" ]+\.css' /tmp/page.html | head -1)"
+          test -n "$css"
+          curl -fLsS --max-time 30 "https://hackus-mans.github.io$css" -o /tmp/style.css
+          grep -Fq '.cc-map-viewport' /tmp/style.css
+          grep -Fq '.cc-publications' /tmp/style.css
+          echo "PASS: updated dashboard, Journal and responsive CSS are publicly served"
+          for route in projects/ labs/ notes/ writeups/ roadmap/ journal/ projects/cybermind-x/; do
+            status="$(curl -L -s -o /dev/null -w '%{http_code}' "$baseUrl$route")"
+            echo "$route -> $status"
+            test "$status" = "200"
+          done
