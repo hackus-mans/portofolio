@@ -1,106 +1,149 @@
 ---
 import CommandLayout from "../layouts/CommandLayout.astro";
 import CommandGraph from "../components/CommandGraph.astro";
-import PublicationFeed from "../components/PublicationFeed.astro";
-import { site } from "../config";
-import { labSignals } from "../data/commandData";
+import OrbitConstellation from "../components/OrbitConstellation.astro";
+import WorkspaceJournal from "../components/WorkspaceJournal.astro";
+import {site} from "../config";
+import {labSignals} from "../data/commandData";
 const base=import.meta.env.BASE_URL.endsWith("/")?import.meta.env.BASE_URL:import.meta.env.BASE_URL+"/";
 const projects=site.projects;
 const first=projects[0];
-
+const accents=["#4a8cff","#ff5378","#39c9f3","#a977ff","#40d8c4"];
+const icons=["◈","⬡","✧","⌘","◇"];
 ---
 <CommandLayout>
-<header class="cc-topbar">
+<header class="cc-topbar ws-topbar">
   <div class="cc-crumb-left">
     <button type="button" class="cc-mobile-toggle" aria-label="Ouvrir le menu" aria-expanded="false" data-sidebar-toggle><span></span><span></span><span></span></button>
-    <span class="cc-crumb-icon" aria-hidden="true">◎</span>
-    <span class="cc-crumb">NAKORE <b>/</b> FIELD ATLAS <b>/</b> <strong>Security Overview</strong></span>
+    <span class="ws-top-wordmark">SECURITY <span>WORKSPACE</span></span>
   </div>
   <div class="cc-topbar-right">
-    <label class="cc-global-search" for="cc-search"><span aria-hidden="true">⌕</span><input id="cc-search" type="search" placeholder="Chercher un projet, un scénario…" autocomplete="off" aria-label="Rechercher dans le portfolio"/><kbd>⌘ K</kbd></label>
-    <span class="cc-top-status">PORTFOLIO · DÉMO</span>
+    <label class="cc-global-search" for="cc-search"><span aria-hidden="true">⌕</span><input id="cc-search" type="search" placeholder="Projets, writeups, outils, notes…" autocomplete="off" aria-label="Rechercher dans le portfolio"/><kbd>CTRL K</kbd></label>
+    <button type="button" data-preferences-open class="ws-top-icon" aria-label="Personnaliser l'affichage" title="Préférences visuelles">☼</button>
+    <a class="ws-top-icon ws-top-github" href={site.social[0].href} target="_blank" rel="noopener noreferrer" aria-label="Ouvrir mon GitHub">⌘</a>
     <a class="cc-avatar" href={base+"about/"} aria-label="À propos de Joseph NAKORE">N<span></span></a>
   </div>
 </header>
-<main id="main-content" class="cc-main">
-  <section class="cc-title-strip" aria-labelledby="cc-title">
-    <div class="cc-title-copy">
-      <div class="cc-pretitle"><span class="cc-pretitle-dot"></span> JOSEPH NAKORE / SECURITY ENGINEERING</div>
-      <h1 id="cc-title">Comprendre. Construire.<br/><em>Sécuriser.</em></h1>
-      <p>Étudiant en cybersécurité, je documente les systèmes que j’explore, les outils que je construis et ce que mes labs m’apprennent.</p>
-      <nav class="cc-action-tabs" aria-label="Accès rapides">
-        <a class="cc-tab-primary" href="#project-intelligence">Mes projets ↗</a>
-        <a href="#journal">Mon journal</a>
-        <a href="#threat-map">La constellation</a>
-        <a href={base+"about/"}>Mon parcours</a>
-      </nav>
+<main id="main-content" class="cc-main ws-main">
+  <section class="ws-welcome" aria-labelledby="cc-title">
+    <div class="ws-welcome-content">
+      <p class="ws-eyebrow"><span></span> BIENVENUE DANS MON UNIVERS / LOMÉ, TOGO</p>
+      <h1 id="cc-title">Comprendre. Construire. <em>Sécuriser.</em></h1>
+      <p>Étudiant en cybersécurité, je relie sécurité offensive, détection et ingénierie. Explore mes projets, mes expérimentations et ce que j'apprends en construisant.</p>
+      <div class="ws-welcome-actions"><a href="#workspace-map" class="ws-primary-action">Explorer la constellation <span aria-hidden="true">↗</span></a><a href={base+"projects/"} class="ws-secondary-action">Voir mes projets <span aria-hidden="true">→</span></a></div>
     </div>
-    <div class="cc-quick-facts" aria-label="Contenu de l'atlas">
-      <a href="#project-intelligence"><strong>{String(projects.length).padStart(2,"0")}</strong><span>Dossiers de projets</span></a>
-      <a href="#detection-signals"><strong>{String(labSignals.length).padStart(2,"0")}</strong><span>Scénarios d'étude</span></a>
-      <p>CARTE SCHÉMATIQUE<br/><b>Pas de surveillance en direct</b></p>
-    </div>
+    <aside class="ws-quote" aria-label="Ma philosophie">
+      <span class="ws-quote-symbol" aria-hidden="true">“</span>
+      <p>Apprendre en construisant.<br/>Comprendre en testant.<br/><strong>Partager ce qui fonctionne.</strong></p>
+      <span class="ws-quote-sign">JOSEPH NAKORE / FIELD NOTES</span>
+      <div class="ws-horizon" aria-hidden="true"></div>
+    </aside>
   </section>
 
-  <CommandGraph />
-
-  <p class="cc-search-status" data-search-count role="status" aria-live="polite"></p>
-  <section class="cc-work-grid" aria-label="Projets et exercices">
-    <div class="cc-widget cc-project-widget" id="project-intelligence">
-      <div class="cc-widget-header"><h2><span aria-hidden="true">▱</span> Mes projets</h2><a href={base+"projects/"}>Tous les dossiers ↗</a></div>
-      <div class="cc-project-body">
-        <div class="cc-project-items" data-project-list>
-          {projects.map((p,i)=><button type="button" class:list={["cc-project-item",{"cc-project-selected":i===0}]} data-project-index={i} aria-label={"Afficher le dossier "+p.name} aria-pressed={i===0?"true":"false"} data-searchable={p.name.toLowerCase()+" "+p.tags.join(" ").toLowerCase()}>
-            <span class={"cc-project-icon cc-project-icon-"+i} aria-hidden="true">{["⌘","✥","◈","⋈","⌖"][i]}</span>
-            <span class="cc-project-info"><strong>{p.name}</strong><small>{p.type}</small></span>
-            <span class="cc-project-open" aria-hidden="true">↗</span>
-          </button>)}
+  <div class="ws-overview-grid">
+    <section class="ws-constellation-module" id="workspace-map" aria-labelledby="ws-map-title">
+      <div class="ws-panel-header ws-map-header">
+        <div class="ws-panel-heading"><span class="ws-panel-icon">✧</span><div><h2 id="ws-map-title">Security Constellation</h2><p>Cinq projets. Un même objectif : comprendre, tester et défendre.</p></div></div>
+        <div class="ws-panel-actions" role="group" aria-label="Mode d'exploration">
+          <button type="button" class="ws-view-button is-active" data-ws-view="orbit" aria-pressed="true">Constellation</button>
+          <button type="button" class="ws-view-button" data-ws-view="graph" aria-pressed="false">Investigation</button>
+          <button type="button" class="ws-view-button" data-ws-view="list" aria-pressed="false">Liste</button>
+          <button type="button" class="ws-expand-map" data-ws-expand aria-label="Agrandir la constellation" title="Agrandir la carte">⛶</button>
         </div>
-        <article class="cc-selected-project" aria-live="polite">
-          <div class="cc-case-kicker">DOSSIER SÉLECTIONNÉ <span>ÉTUDE DE CAS</span></div>
-          <h3 data-case-title>{first.name}</h3>
-          <p data-case-description>{first.summary}</p>
-          <p class="cc-case-result" data-case-result>{first.outcome} · {first.status}</p>
-          <div class="cc-case-tags" data-case-tags>{first.tags.slice(0,3).map(tag=><span>{tag}</span>)}</div>
-          <a class="cc-case-link" href={base+first.href} data-case-link>Lire l'étude de cas <span aria-hidden="true">↗</span></a>
-        </article>
       </div>
-    </div>
-    <div class="cc-widget cc-signals-widget" id="detection-signals">
-      <div class="cc-widget-header"><h2><span aria-hidden="true">⌁</span> Exercices d'investigation</h2><span class="cc-simulation-label">5 scénarios simulés</span></div>
-      <div class="cc-signal-list">
-        {labSignals.map((s,i)=><button type="button" class="cc-signal-item" data-signal-index={i} data-searchable={(s.name+" "+s.reference+" "+s.source).toLowerCase()}>
-          <span class="cc-signal-time">{s.time}</span>
-          <span class:list={["cc-signal-icon","cc-signal-"+s.severity]} aria-hidden="true">{s.severity==="high"?"!":s.severity==="medium"?"△":"◎"}</span>
-          <span class="cc-signal-name"><strong>{s.name}</strong><small>{s.source}</small></span>
-          
+      <div data-ws-panel="orbit"><OrbitConstellation /></div>
+      <div data-ws-panel="graph" hidden><CommandGraph /></div>
+      <div data-ws-panel="list" hidden>
+        <div class="ws-project-directory">
+          {projects.map((project,i)=><a href={base+project.href} class="ws-directory-entry">
+            <span class="ws-dir-index">{String(i+1).padStart(2,"0")}</span>
+            <span class="ws-dir-color" style={"--ws-accent:"+accents[i]} aria-hidden="true">{icons[i]}</span>
+            <span><strong>{project.name}</strong><small>{project.type}</small></span>
+            <span class="ws-dir-status">{project.status}</span><span aria-hidden="true">↗</span>
+          </a>)}
+        </div>
+      </div>
+    </section>
+
+    <aside class="ws-aside" aria-label="Compétences et chantiers actifs">
+      <section class="ws-module ws-focus" aria-labelledby="ws-focus-title">
+        <header class="ws-module-head"><h2 id="ws-focus-title"><span class="ws-head-icon">◎</span> Mes domaines</h2><a href={base+"about/"}>Mon profil ↗</a></header>
+        <div class="ws-focus-rows">{site.capabilities.map((cap,i)=><a href={base+"about/#skills"} class="ws-focus-row">
+          <span class="ws-focus-icon" style={"--ws-accent:"+accents[i]}>{icons[i]}</span>
+          <span class="ws-focus-copy"><strong>{cap.title}</strong><small>{cap.tools.slice(0,3).join(" · ")}</small></span><span class="ws-focus-more" aria-hidden="true">↗</span>
+        </a>)}</div>
+      </section>
+      <section class="ws-module ws-current" aria-labelledby="ws-current-title">
+        <header class="ws-module-head"><h2 id="ws-current-title"><span class="ws-head-icon">↗</span> Chantiers & projets</h2><a href={base+"projects/"}>Tout voir ↗</a></header>
+        <div class="ws-current-rows">{projects.slice(0,5).map((project,i)=><a href={base+project.href} class="ws-current-row">
+          <span class="ws-current-icon" style={"--ws-accent:"+accents[i]}>{icons[i]}</span>
+          <span class="ws-current-name"><strong>{project.name}</strong><small>{project.type.split("/")[0].trim()}</small></span>
+          <span class="ws-status" style={"--ws-accent:"+accents[i]}>{project.status}</span>
+        </a>)}</div>
+      </section>
+    </aside>
+  </div>
+
+  <div class="ws-lower-grid" aria-label="Projets, Journal et étude de cas">
+    <section class="ws-module ws-project-list" id="project-intelligence" aria-labelledby="ws-projects-title">
+      <header class="ws-module-head"><h2 id="ws-projects-title"><span class="ws-head-icon">▥</span> Mes projets</h2><a href={base+"projects/"}>Tous les projets ↗</a></header>
+      <div class="ws-project-rows">
+        {projects.map((project,i)=><button type="button" class:list={["ws-project-row",{"is-active":i===0}]} data-project-index={i} data-searchable={[project.name,project.type,...project.tags].join(" ").toLowerCase()} aria-label={"Afficher le dossier "+project.name} aria-pressed={i===0?"true":"false"}>
+          <span class="ws-project-glyph" style={"--ws-accent:"+accents[i]}>{icons[i]}</span>
+          <span class="ws-project-details"><strong>{project.name}</strong><small>{project.type}</small></span>
+          <span class="ws-project-chevron" aria-hidden="true">↗</span>
         </button>)}
       </div>
-      <div class="cc-widget-note">Sélectionne un exercice pour voir ses hypothèses, traces et mesures défensives.</div>
-    </div>
+    </section>
+
+    <WorkspaceJournal />
+
+    <section class="ws-module ws-featured" aria-labelledby="ws-featured-title">
+      <header class="ws-module-head"><h2 id="ws-featured-title"><span class="ws-head-icon">▣</span> Étude de cas</h2><a href={base+"projects/"}>Voir les dossiers ↗</a></header>
+      <div class="ws-feature-art" aria-label="Illustration conceptuelle du cycle de sécurité">
+        <div class="ws-feature-star s1"></div><div class="ws-feature-star s2"></div><div class="ws-feature-star s3"></div>
+        <div class="ws-feature-visual-ring"><span class="ws-feature-visual-core">N<span>/</span></span></div>
+        <span class="ws-feature-tag">ENGINEERING / CASE 01</span>
+        <svg viewBox="0 0 420 132" aria-hidden="true" preserveAspectRatio="none"><path d="M0 112 55 65 115 91 169 36 224 76 286 25 350 67 420 18" fill="none" stroke="#598bff" stroke-width="1.5" opacity=".45"/><path d="M0 122 58 82 117 100 169 55 222 95 287 47 348 84 420 43" fill="none" stroke="#54caff" stroke-width="1.1" opacity=".2"/></svg>
+      </div>
+      <div class="ws-feature-copy" aria-live="polite">
+        <span class="ws-feature-kicker">PROJET SÉLECTIONNÉ <span>· ÉTAT DOCUMENTÉ</span></span>
+        <h3 data-case-title>{first.name}</h3>
+        <p data-case-description>{first.summary}</p>
+        <p class="ws-feature-outcome" data-case-result>{first.outcome} · {first.status}</p>
+        <div class="ws-feature-tags" data-case-tags>{first.tags.slice(0,4).map(tag=><span>{tag}</span>)}</div>
+        <a href={base+first.href} class="ws-feature-link" data-case-link>Découvrir le projet <span aria-hidden="true">↗</span></a>
+      </div>
+    </section>
+  </div>
+
+  <section class="ws-lab-strip" id="detection-signals" aria-labelledby="ws-lab-title">
+    <div class="ws-lab-top"><div><span class="ws-overline">LAB / THREAT INVESTIGATION</span><h2 id="ws-lab-title">Apprendre à investiguer.</h2><p>Cinq scénarios de laboratoire avec hypothèses, indices, validation et pistes de défense. Il ne s'agit pas d'incidents réels.</p></div><a href={base+"labs/"}>Explorer mes labs ↗</a></div>
+    <div class="ws-lab-rows">{labSignals.map((item,i)=><button type="button" data-signal-index={i} data-searchable={(item.name+" "+item.reference+" "+item.source).toLowerCase()} class="ws-lab-row">
+      <span class="ws-lab-num">0{i+1}</span><span class="ws-lab-title">{item.name}</span><span class="ws-lab-ref">{item.reference}</span><span class="ws-lab-action" aria-hidden="true">↗</span>
+    </button>)}</div>
   </section>
-  <PublicationFeed />
-  <footer class="cc-bottom"><span>NAKORE · SECURITY ENGINEERING</span><span>Projets réels · scénarios de laboratoire simulés</span><a href={base+"about/"}>À PROPOS ↗</a></footer>
+  <p class="ws-search-feedback" data-search-count role="status" aria-live="polite"></p>
+  <footer class="cc-bottom ws-footer"><span>© 2026 JOSEPH NAKORE · LOMÉ, TOGO</span><span>OFFENSIVE / DEFENSIVE / SECURITY ENGINEERING</span><a href={site.social[1].href} target="_blank" rel="noopener noreferrer">CONTACT ↗</a></footer>
 </main>
 <dialog class="cc-dialog" id="cc-signal-dialog" aria-labelledby="cc-dialog-title">
-  <div class="cc-dialog-head"><span>SECURITY LAB / EVENT EXPLANATION</span><button type="button" data-dialog-close aria-label="Fermer">×</button></div>
+  <div class="cc-dialog-head"><span>EXERCICE DE LABORATOIRE</span><button type="button" data-dialog-close aria-label="Fermer">×</button></div>
   <div class="cc-dialog-body">
-  <small class="cc-dialog-kicker">EXERCICE GUIDÉ · ÉVÉNEMENT FICTIF</small>
-  <h2 id="cc-dialog-title" data-dialog-title></h2>
-  <p data-dialog-text></p>
-  <div class="cc-guide-goal"><span>OBJECTIF D’APPRENTISSAGE</span><p data-dialog-goal></p></div>
-  <h3>Hypothèse à tester</h3><p data-dialog-hypothesis></p>
-  <h3>Indices à rechercher</h3><ul data-dialog-observables></ul>
-  <h3>Méthode d’investigation</h3><ol data-dialog-steps></ol>
-  <h3>Mesures défensives</h3><p data-dialog-mitigation></p>
-  <dl><div><dt>Référence</dt><dd data-dialog-technique></dd></div><div><dt>Source de lab</dt><dd data-dialog-source></dd></div></dl>
-  <div class="cc-dialog-actions">
-    <button type="button" data-dialog-locate>Localiser dans la carte ◎</button>
-    <a data-dialog-project href={base+"projects/cybermind-x/"}>Lire le dossier relié ↗</a>
+    <small class="cc-dialog-kicker">SCÉNARIO GUIDÉ · DONNÉES FICTIVES</small>
+    <h2 id="cc-dialog-title" data-dialog-title></h2>
+    <p data-dialog-text></p>
+    <div class="cc-guide-goal"><span>OBJECTIF D'APPRENTISSAGE</span><p data-dialog-goal></p></div>
+    <h3>Hypothèse à tester</h3><p data-dialog-hypothesis></p>
+    <h3>Indices à rechercher</h3><ul data-dialog-observables></ul>
+    <h3>Étapes d'investigation</h3><ol data-dialog-steps></ol>
+    <h3>Mesures défensives</h3><p data-dialog-mitigation></p>
+    <dl><div><dt>Référence</dt><dd data-dialog-technique></dd></div><div><dt>Source</dt><dd data-dialog-source></dd></div></dl>
+    <div class="cc-dialog-actions">
+      <button type="button" data-dialog-locate>Localiser sur la carte détaillée ◎</button>
+      <a data-dialog-project href={base+"projects/cybermind-x/"}>Lire le dossier associé ↗</a>
+    </div>
   </div>
-</div>
 </dialog>
-
 </CommandLayout>
 <script>
 import {site} from "../config";
@@ -108,53 +151,76 @@ import {labSignals} from "../data/commandData";
 const base=import.meta.env.BASE_URL.endsWith("/")?import.meta.env.BASE_URL:import.meta.env.BASE_URL+"/";
 const root=document.querySelector<HTMLElement>("#cc-app");
 if(root){
-  const projects=Array.from(root.querySelectorAll<HTMLButtonElement>("[data-project-index]"));
-  const set=(selector:string,value:string)=>{const el=root.querySelector<HTMLElement>(selector);if(el)el.textContent=value};
-  const link=root.querySelector<HTMLAnchorElement>("[data-case-link]");
+  const projectButtons=Array.from(root.querySelectorAll<HTMLButtonElement>("[data-project-index]"));
+  const links=root.querySelector<HTMLAnchorElement>("[data-case-link]");
   const tags=root.querySelector<HTMLElement>("[data-case-tags]");
-  const activate=(i:number)=>{
-    const p=site.projects[i];if(!p)return;
-    projects.forEach((el,j)=>{const selected=i===j;el.classList.toggle("cc-project-selected",selected);el.setAttribute("aria-pressed",String(selected))});
-    set("[data-case-title]",p.name);
-    set("[data-case-description]",p.summary);
-    set("[data-case-result]",p.outcome+" · "+p.status);
-    if(link)link.href=base+p.href;
-    if(tags){tags.replaceChildren();p.tags.slice(0,3).forEach(t=>{const span=document.createElement("span");span.textContent=t;tags.append(span)})}
+  const write=(selector:string,value:string)=>{const el=root.querySelector<HTMLElement>(selector);if(el)el.textContent=value};
+  const selectProject=(index:number,notify=true)=>{
+    const project=site.projects[index];if(!project)return;
+    projectButtons.forEach((button,i)=>{const selected=i===index;button.classList.toggle("is-active",selected);button.setAttribute("aria-pressed",String(selected))});
+    write("[data-case-title]",project.name);
+    write("[data-case-description]",project.summary);
+    write("[data-case-result]",project.outcome+" · "+project.status);
+    if(links)links.href=base+project.href;
+    if(tags){
+      tags.replaceChildren();
+      project.tags.slice(0,4).forEach(tag=>{const chip=document.createElement("span");chip.textContent=tag;tags.append(chip)});
+    }
+    if(notify)window.dispatchEvent(new CustomEvent("atlas:project",{detail:{slug:project.slug}}));
   };
-  const ids=["cybermind","honeyshield","lumina","mcp","ctf"];
-  projects.forEach((el,i)=>el.addEventListener("click",()=>{
-    activate(i);
-    window.dispatchEvent(new CustomEvent("atlas:inspect",{detail:{nodeId:ids[i]}}));
-  }));
+  projectButtons.forEach((button,i)=>button.addEventListener("click",()=>selectProject(i)));
   window.addEventListener("atlas:project",(event)=>{
     const slug=(event as CustomEvent<{slug:string}>).detail?.slug;
-    const i=site.projects.findIndex(p=>p.slug===slug);
-    if(i>=0)activate(i);
+    const index=site.projects.findIndex(project=>project.slug===slug);
+    if(index>=0)selectProject(index,false);
+  });
+
+  const ws=document.querySelector<HTMLElement>("#workspace-map");
+  const views=Array.from(ws?.querySelectorAll<HTMLButtonElement>("[data-ws-view]")||[]);
+  const panels=Array.from(ws?.querySelectorAll<HTMLElement>("[data-ws-panel]")||[]);
+  const activateView=(name:string)=>{
+    panels.forEach(panel=>{panel.hidden=panel.dataset.wsPanel!==name});
+    views.forEach(button=>{const active=button.dataset.wsView===name;button.classList.toggle("is-active",active);button.setAttribute("aria-pressed",String(active))});
+    ws?.setAttribute("data-active-mode",name);
+  };
+  views.forEach(button=>button.addEventListener("click",()=>activateView(button.dataset.wsView||"orbit")));
+  ws?.querySelector<HTMLButtonElement>("[data-ws-expand]")?.addEventListener("click",()=>{
+    if(document.fullscreenElement===ws){document.exitFullscreen?.();}
+    else if(ws?.requestFullscreen){ws.requestFullscreen().catch(()=>{ws.classList.toggle("ws-maximized")});}
+    else ws?.classList.toggle("ws-maximized");
+  });
+  document.addEventListener("fullscreenchange",()=>ws?.classList.toggle("ws-is-fullscreen",document.fullscreenElement===ws));
+  window.addEventListener("atlas:inspect",()=>{
+    // The research diagram is intentionally hidden behind its dedicated mode until requested.
+    if(ws?.getAttribute("data-active-mode")==="graph")return;
+    activateView("graph");
   });
 
   const dialog=document.querySelector<HTMLDialogElement>("#cc-signal-dialog");
-  const populate=(selector:string,items:string[])=>{
-    const target=root.querySelector<HTMLElement>(selector);
-    if(!target)return;
-    target.replaceChildren();
-    items.forEach(item=>{const li=document.createElement("li");li.textContent=item;target.append(li)});
+  const populate=(selector:string,values:string[])=>{
+    const list=root.querySelector<HTMLElement>(selector);if(!list)return;
+    list.replaceChildren();values.forEach(text=>{const li=document.createElement("li");li.textContent=text;list.append(li)});
   };
-  const showSignal=(i:number)=>{
-    const s=labSignals[i];if(!s||!dialog)return;
-    set("[data-dialog-title]",s.name);set("[data-dialog-text]",s.detail);
-    set("[data-dialog-technique]",s.reference);set("[data-dialog-source]",s.source);
-    set("[data-dialog-goal]",s.learningGoal);set("[data-dialog-hypothesis]",s.hypothesis);
-    set("[data-dialog-mitigation]",s.mitigation);
-    populate("[data-dialog-observables]",s.observables);
-    populate("[data-dialog-steps]",s.investigation);
-    const related=site.projects.find(p=>p.slug===s.projectSlug);
-    const relatedLink=root.querySelector<HTMLAnchorElement>("[data-dialog-project]");
-    if(relatedLink&&related)relatedLink.href=base+related.href;
+  const showSignal=(index:number)=>{
+    const item=labSignals[index];if(!item||!dialog)return;
+    write("[data-dialog-title]",item.name);
+    write("[data-dialog-text]",item.detail);
+    write("[data-dialog-goal]",item.learningGoal);
+    write("[data-dialog-hypothesis]",item.hypothesis);
+    write("[data-dialog-mitigation]",item.mitigation);
+    write("[data-dialog-technique]",item.reference);
+    write("[data-dialog-source]",item.source);
+    populate("[data-dialog-observables]",item.observables);
+    populate("[data-dialog-steps]",item.investigation);
+    const related=site.projects.find(project=>project.slug===item.projectSlug);
+    const a=root.querySelector<HTMLAnchorElement>("[data-dialog-project]");
+    if(related&&a)a.href=base+related.href;
     const locate=root.querySelector<HTMLButtonElement>("[data-dialog-locate]");
     if(locate)locate.onclick=()=>{
       dialog.close();
-      window.dispatchEvent(new CustomEvent("atlas:inspect",{detail:{nodeId:s.nodeId}}));
-      document.getElementById("threat-map")?.scrollIntoView({behavior:"smooth",block:"start"});
+      activateView("graph");
+      window.dispatchEvent(new CustomEvent("atlas:inspect",{detail:{nodeId:item.nodeId}}));
+      ws?.scrollIntoView({behavior:"smooth",block:"start"});
     };
     dialog.showModal();
   };
@@ -165,34 +231,32 @@ if(root){
   });
   dialog?.querySelector("[data-dialog-close]")?.addEventListener("click",()=>dialog.close());
   dialog?.addEventListener("click",event=>{if(event.target===dialog)dialog.close()});
-
-  const field=root.querySelector<HTMLInputElement>("#cc-search");
+  const search=root.querySelector<HTMLInputElement>("#cc-search");
   const searchable=Array.from(root.querySelectorAll<HTMLElement>("[data-searchable]"));
-  const searchStatus=root.querySelector<HTMLElement>("[data-search-count]");
-  const normalize=(s:string)=>s.normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase().trim();
-  field?.addEventListener("input",()=>{
-    const query=normalize(field.value);
-    let visible=0;
-    searchable.forEach(el=>{const matches=!query||normalize(el.dataset.searchable||"").includes(query);el.hidden=!matches;if(matches)visible++});
-    if(searchStatus)searchStatus.textContent=query
-      ? visible+" résultat(s) pour « "+field.value+" » — Entrée pour sélectionner le premier."
-      : "";
+  const status=root.querySelector<HTMLElement>("[data-search-count]");
+  const normalize=(value:string)=>value.normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase().trim();
+  search?.addEventListener("input",()=>{
+    const text=normalize(search.value);
+    let found=0;
+    searchable.forEach(el=>{
+      const ok=!text||normalize(el.dataset.searchable||"").includes(text);
+      el.hidden=!ok;if(ok)found++;
+    });
+    if(status)status.textContent=text?found+" résultat(s) pour « "+search.value+" » — Entrée pour ouvrir le premier.":"";
   });
-  field?.addEventListener("keydown",event=>{
+  search?.addEventListener("keydown",event=>{
     if(event.key==="Enter"){
-      const first=searchable.find(el=>!el.hidden);
+      const first=searchable.find(node=>!node.hidden);
       if(first){event.preventDefault();first.click();first.scrollIntoView({behavior:"smooth",block:"center"})}
     }
-    if(event.key==="Escape"){field.value="";field.dispatchEvent(new Event("input"));field.blur()}
+    if(event.key==="Escape"){search.value="";search.dispatchEvent(new Event("input"));search.blur()}
   });
   document.addEventListener("keydown",event=>{
-    if((event.ctrlKey||event.metaKey)&&event.key.toLowerCase()==="k"){
-      event.preventDefault();field?.focus();field?.select();
-    }
+    if((event.ctrlKey||event.metaKey)&&event.key.toLowerCase()==="k"){event.preventDefault();search?.focus();search?.select()}
   });
   const toggle=root.querySelector<HTMLButtonElement>("[data-sidebar-toggle]");
   const closeSidebar=()=>{document.body.classList.remove("cc-sidebar-open");toggle?.setAttribute("aria-expanded","false")};
-  toggle?.addEventListener("click",()=>{const isOpen=document.body.classList.toggle("cc-sidebar-open");toggle.setAttribute("aria-expanded",String(isOpen))});
+  toggle?.addEventListener("click",()=>{const open=document.body.classList.toggle("cc-sidebar-open");toggle.setAttribute("aria-expanded",String(open))});
   root.querySelectorAll("[data-sidebar-close]").forEach(el=>el.addEventListener("click",closeSidebar));
   root.querySelectorAll(".cc-primary-nav a").forEach(el=>el.addEventListener("click",closeSidebar));
 }

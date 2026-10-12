@@ -1,0 +1,16 @@
+---
+import { getPublications } from "../lib/publications";
+const entries=(await getPublications()).slice(0,4);
+const base=import.meta.env.BASE_URL.endsWith("/")?import.meta.env.BASE_URL:import.meta.env.BASE_URL+"/";
+---
+<section class="ws-module ws-journal-module" id="journal" aria-labelledby="ws-journal-heading">
+  <header class="ws-module-head"><h2 id="ws-journal-heading"><span class="ws-head-icon">▤</span> Dernières publications</h2><a href={base+"journal/"}>Tout voir ↗</a></header>
+  <div class="ws-journal-entries">
+    {entries.map(entry=><a class="ws-journal-entry" href={entry.href} data-searchable={[entry.title,entry.summary,...entry.tags].join(" ").toLowerCase()}>
+      <time datetime={entry.date.toISOString()}><b>{new Intl.DateTimeFormat("fr-FR",{day:"2-digit"}).format(entry.date)}</b><span>{new Intl.DateTimeFormat("fr-FR",{month:"short"}).format(entry.date).toUpperCase()}</span></time>
+      <div class="ws-journal-copy"><strong>{entry.title}</strong><span class="ws-journal-tax">{entry.kind} · {entry.tags.slice(0,2).join(" / ")||"Documentation"}</span></div>
+      <span class="ws-journal-arrow" aria-hidden="true">↗</span>
+    </a>)}
+    {entries.length===0&&<p class="ws-journal-empty">Aucun article publié pour le moment. Les prochains labs et writeups apparaîtront automatiquement ici.</p>}
+  </div>
+</section>
