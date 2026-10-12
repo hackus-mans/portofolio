@@ -170,10 +170,10 @@ if(root){
     nodeElements.forEach(el=>{
       const kind=el.dataset.nodeKind||"";
       const show=filter==="all" || (filter==="project" && (kind==="core"||kind==="project")) || (filter==="threat" && (kind==="threat"||kind==="signal"));
-      el.hidden=!show;el.setAttribute("aria-hidden",String(!show));el.setAttribute("tabindex",show?"0":"-1");
+      el.toggleAttribute("hidden",!show);el.setAttribute("aria-hidden",String(!show));el.setAttribute("tabindex",show?"0":"-1");
       if(show && el.dataset.graphNode)shown.add(el.dataset.graphNode);
     });
-    edges.forEach(el=>{const [a,b]=(el.dataset.edgeNodes||"").split(" ");el.hidden=!shown.has(a)||!shown.has(b)});
+    edges.forEach(el=>{const [a,b]=(el.dataset.edgeNodes||"").split(" ");el.toggleAttribute("hidden",!shown.has(a)||!shown.has(b))});
   };
   root.querySelectorAll<HTMLButtonElement>("[data-map-filter]").forEach(button=>{
     button.addEventListener("click",()=>{
