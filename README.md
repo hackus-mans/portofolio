@@ -44,3 +44,9 @@ node --test scripts/new-entry.test.mjs
 Les brouillons sont absents du **site**, mais leurs fichiers restent visibles dans ce dépôt public. Ne jamais y écrire de secrets ou de données confidentielles.
 
 La carte et les scénarios sont pédagogiques : aucun flux SOC réel ni commande exécutée sur une cible. Les positions sont illustratives.
+
+## Responsive et accessibilité
+
+Le Command Center a été épuré : les trois espaces centraux sont la carte de relations, les dossiers de projets et les scénarios d'investigation. Le journal reste accessible sur l'accueil et sur sa page dédiée. La carte est **déplaçable au doigt sur téléphone**, avec centrage sur le nœud actif. Les présentations, études de cas, notes, labs et articles restent conservés.
+
+Tests : `npm run build`, `node scripts/verify-dist.mjs` et la vérification Chromium sur 14 largeurs de 320 à 2560 pixels via la PR GitHub.
