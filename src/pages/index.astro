@@ -1,135 +1,147 @@
 ---
-import { getCollection } from "astro:content";
-import BaseLayout from "../layouts/BaseLayout.astro";
-import SystemDiagram from "../components/SystemDiagram.astro";
-import ThreatLens from "../components/ThreatLens.astro";
+import CommandLayout from "../layouts/CommandLayout.astro";
+import CommandGraph from "../components/CommandGraph.astro";
 import { site } from "../config";
-import { formatDate, slugFromId } from "../lib/content";
-const rawBase = import.meta.env.BASE_URL;
-const base = rawBase.endsWith("/") ? rawBase : rawBase + "/";
-const [w,l,n] = await Promise.all([getCollection("writeups"),getCollection("labs"),getCollection("notes")]);
-const hubs = [
- {title:"Writeups",number:"01",entries:w.filter(e=>e.data.status==="published"),href:"writeups/",description:"Vulnérabilités, méthodes, raisonnements et documentation."},
- {title:"Labs",number:"02",entries:l.filter(e=>e.data.status==="published"),href:"labs/",description:"Systèmes, réseau, SOC et expériences reproductibles."},
- {title:"Notes",number:"03",entries:n.filter(e=>e.data.status==="published"),href:"notes/",description:"Synthèses techniques et connaissances structurées."}
+import { labSignals } from "../data/commandData";
+const base=import.meta.env.BASE_URL.endsWith("/")?import.meta.env.BASE_URL:import.meta.env.BASE_URL+"/";
+const projects=site.projects;
+const first=projects[0];
+const groups=[
+{value:String(projects.length).padStart(2,"0"),label:"Projects mapped",icon:"layers",tone:"blue"},
+{value:"04",label:"Research domains",icon:"globe",tone:"blue"},
+{value:String(labSignals.length).padStart(2,"0"),label:"Lab signal examples",icon:"pulse",tone:"red"},
+{value:"00",label:"Live feeds connected",icon:"db",tone:"muted"}
 ];
-const recent = [
- ...hubs[0].entries.map(e=>({title:e.data.title,summary:e.data.summary,date:e.data.publishedAt,kind:"WRITEUP",href:base+"writeups/"+slugFromId(e.id)+"/"})),
- ...hubs[1].entries.map(e=>({title:e.data.title,summary:e.data.summary,date:e.data.publishedAt,kind:"LAB",href:base+"labs/"+slugFromId(e.id)+"/"})),
- ...hubs[2].entries.map(e=>({title:e.data.title,summary:e.data.summary,date:e.data.publishedAt,kind:"NOTE",href:base+"notes/"+slugFromId(e.id)+"/"}))
-].sort((a,b)=>b.date.getTime()-a.date.getTime()).slice(0,3);
 ---
-<BaseLayout title={site.name+" — Offensive × Defensive Security"} description={site.intro}>
-<main id="main-content">
-  <section class="home-hero" id="overview">
-    <div class="container home-hero-inner">
-      <div class="hero-copy">
-        <p class="hero-topline"><span class="hero-dot" aria-hidden="true"></span> JOSEPH NAKORE <span aria-hidden="true">/</span> LOMÉ, TOGO <span aria-hidden="true">/</span> CYBERSECURITY ENGINEERING</p>
-        <h1 class="hero-title">BREAK<span class="stroke">TO LEARN.</span><span class="accent">BUILD</span><span>TO DEFEND.</span></h1>
-        <p class="hero-lead">Je questionne les systèmes, j'étudie leurs failles et je construis des outils pour mieux les défendre.</p>
-        <p class="hero-text">Étudiant en cybersécurité à IPNET, je développe une pratique exigeante du pentest, du SOC et de l'ingénierie. Ce portfolio rassemble mes réalisations, mon travail de laboratoire et mes analyses — avec leurs preuves et leurs limites.</p>
-        <div class="hero-buttons">
-          <a class="button" href="#selected">Explorer mon travail <span class="arrow" aria-hidden="true">↗</span></a>
-          <a class="button outline" href={base+"projects/"}>Tous mes projets <span class="arrow" aria-hidden="true">↗</span></a>
+<CommandLayout>
+<header class="cc-topbar">
+  <div class="cc-crumb-left">
+    <button type="button" class="cc-mobile-toggle" aria-label="Ouvrir le menu" aria-expanded="false" data-sidebar-toggle><span></span><span></span><span></span></button>
+    <span class="cc-crumb-icon" aria-hidden="true">◎</span>
+    <span class="cc-crumb">NAKORE <b>/</b> FIELD ATLAS <b>/</b> <strong>Security Overview</strong></span>
+  </div>
+  <div class="cc-topbar-right">
+    <label class="cc-global-search" for="cc-search"><span aria-hidden="true">⌕</span><input id="cc-search" type="search" placeholder="Rechercher un projet ou un signal…" autocomplete="off"/><kbd>⌘ K</kbd></label>
+    <span class="cc-top-status"><i></i> PORTFOLIO / DEMO</span>
+    <a class="cc-avatar" href={base+"about/"} aria-label="À propos de Joseph NAKORE">N<span></span></a>
+  </div>
+</header>
+<main id="main-content" class="cc-main">
+  <section class="cc-title-strip" aria-labelledby="cc-title">
+    <div class="cc-title-copy">
+      <div class="cc-pretitle"><span class="cc-pretitle-dot"></span> SECURITY RESEARCH WORKSPACE <span class="cc-split">/</span> LOMÉ, TOGO</div>
+      <h1 id="cc-title">Global Security <em>Constellation</em></h1>
+      <p>Explore mes projets en cybersécurité comme un système interconnecté : attaque, détection, investigation et ingénierie.</p>
+      <div class="cc-action-tabs" role="group" aria-label="Navigation rapide">
+        <a class="cc-tab-primary" href="#threat-map">◉ &nbsp; Cartographie</a>
+        <a href="#project-intelligence">Projets</a>
+        <a href="#detection-signals">Signaux de lab</a>
+        <a href={base+"projects/"}>Études de cas ↗</a>
+      </div>
+    </div>
+    <div class="cc-metric-grid" aria-label="Repères réels et simulations">
+      {groups.map(item=><div class:list={["cc-metric","cc-metric-"+item.tone]}>
+        <div class="cc-metric-top"><span class="cc-metric-icon" aria-hidden="true">{item.icon==="layers"?"⬡":item.icon==="globe"?"◎":item.icon==="pulse"?"〽":"▤"}</span><strong>{item.value}</strong></div>
+        <small>{item.label}</small>
+      </div>)}
+    </div>
+  </section>
+
+  <CommandGraph />
+
+  <section class="cc-work-grid" aria-label="Panels des projets et signaux">
+    <div class="cc-widget cc-project-widget" id="project-intelligence">
+      <div class="cc-widget-header"><h2><span aria-hidden="true">▱</span> Project Intelligence</h2><a href={base+"projects/"}>View all ↗</a></div>
+      <div class="cc-project-items" data-project-list>
+        {projects.map((p,i)=><button type="button" class:list={["cc-project-item",{"cc-project-selected":i===0}]} data-project-index={i} aria-pressed={i===0?"true":"false"} data-searchable={p.name.toLowerCase()+" "+p.tags.join(" ").toLowerCase()}>
+          <span class={"cc-project-icon cc-project-icon-"+i} aria-hidden="true">{["⌘","✥","◈","⋈","⌖"][i]}</span>
+          <span class="cc-project-info"><strong>{p.name}</strong><small>{p.type}</small></span>
+          <span class="cc-project-state">{p.status}</span>
+          <span class="cc-project-open" aria-hidden="true">↗</span>
+        </button>)}
+      </div>
+    </div>
+    <div class="cc-widget cc-signals-widget" id="detection-signals">
+      <div class="cc-widget-header"><h2><span aria-hidden="true">⌁</span> Detection Signals</h2><span class="cc-simulation-label"><i></i> Simulated events</span></div>
+      <div class="cc-signal-list">
+        {labSignals.map((s,i)=><button type="button" class="cc-signal-item" data-signal-index={i} data-searchable={s.name.toLowerCase()+" "+s.technique.toLowerCase()+" "+s.source.toLowerCase()}>
+          <span class="cc-signal-time">{s.time}</span>
+          <span class:list={["cc-signal-icon","cc-signal-"+s.severity]} aria-hidden="true">{s.severity==="high"?"!":s.severity==="medium"?"△":"◎"}</span>
+          <span class="cc-signal-name"><strong>{s.name}</strong><small>{s.source}</small></span>
+          <span class="cc-signal-tactic">{s.technique}</span>
+        </button>)}
+      </div>
+      <div class="cc-widget-note">Scénarios pédagogiques fictifs · pas de données en temps réel.</div>
+    </div>
+    <div class="cc-widget cc-case-widget" id="case-study">
+      <div class="cc-widget-header"><h2><span aria-hidden="true">▣</span> Case Study Overview</h2><a href={base+"projects/"}>Browse all ↗</a></div>
+      <div class="cc-case-preview">
+        <div class="cc-case-art" aria-hidden="true">
+          <svg viewBox="0 0 400 135" preserveAspectRatio="xMidYMid slice">
+            <defs><pattern id="cc-case-grid" width="24" height="24" patternUnits="userSpaceOnUse"><path d="M24 0H0V24" fill="none" stroke="#8a9fe1" stroke-opacity=".24"/></pattern></defs>
+            <rect width="400" height="135" fill="#100e30"/><rect width="400" height="135" fill="url(#cc-case-grid)"/>
+            <path d="M-5 105 39 78 78 96 112 32 140 86 180 68 211 20 260 90 290 30 327 88 360 60 405 100" fill="none" stroke="#e84671" stroke-width="1.4"/>
+            <path d="M-5 115 39 88 78 106 112 42 140 96 180 78 211 30 260 100 290 40 327 98 360 70 405 110V140H-5Z" fill="#601143" opacity=".65"/>
+            <path d="M0 130 120 30 200 85 290 16 400 130" fill="none" stroke="#7d62f4" stroke-opacity=".55"/>
+            <g fill="#f54b77"><circle cx="112" cy="32" r="4"/><circle cx="211" cy="20" r="4"/><circle cx="290" cy="30" r="4"/></g>
+            <text x="18" y="21" fill="#eeb5f0" font-family="monospace" font-size="10">CASE STUDY / ARCHITECTURE</text>
+          </svg>
         </div>
-        <div class="hero-end">
-          <span>NO BLACK BOXES.<br />JUST OBSERVATION, TESTING AND PROOF.</span>
-          <svg viewBox="0 0 32 32" fill="none" aria-hidden="true"><path d="M16 3v25m0 0L6 18m10 10l10-10" stroke="currentColor" stroke-width="1.5"/></svg>
-        </div>
       </div>
-      <div class="hero-visual">
-        <div class="hero-visual-head"><span>NAKORE / RESEARCH INTERFACE</span><span>FIG. 001</span></div>
-        <SystemDiagram />
-        <div class="hero-visual-foot"><span>OFFENSE ↔ DEFENSE ↔ ENGINEERING</span><span>06°N / 01°E</span></div>
+      <div class="cc-case-content">
+        <div class="cc-case-kicker">FEATURED PROJECT <span>◉ RESEARCH</span></div>
+        <h3 data-case-title>{first.name}</h3>
+        <p data-case-description>{first.summary}</p>
+        <div class="cc-case-tags" data-case-tags>{first.tags.slice(0,3).map(tag=><span>{tag}</span>)}</div>
+        <a class="cc-case-link" href={base+first.href} data-case-link>Ouvrir l'étude de cas <span aria-hidden="true">↗</span></a>
       </div>
     </div>
   </section>
-  <section class="proofline" aria-label="Repères de mon parcours">
-    <div class="container proofline-inner">
-      {site.proof.map(p=><div class="proofstat"><strong>{p.value}</strong><span>{p.label}</span><small>{p.detail}</small></div>)}
-    </div>
-  </section>
-  <section class="section-pad dark" id="selected">
-    <div class="container">
-      <div class="section-head">
-        <div><p class="mono-kicker">01 / SELECTED SYSTEMS</p><h2>Ce que je <em style="font-style:normal;color:var(--volt)">construis.</em></h2></div>
-        <p>Des prototypes, des laboratoires et des outils pédagogiques. Chaque réalisation documente une question technique, l'approche retenue et le niveau de validation réellement atteint.</p>
-      </div>
-      <div class="project-showcase">
-        {site.projects.map(project=><a class="project-feature" href={base+project.href}>
-          <span class="project-index">{project.index} / 05</span>
-          <div class="project-feature-main"><span>{project.type}</span><h3>{project.name}</h3><p>{project.summary}</p></div>
-          <div class="project-feature-art"><span>{project.slug==="mcp-automation"?"AI / MCP":project.slug==="lumina-academy"?"LUMINA":project.slug==="labs-ctf"?"RECON / CTF":project.name}</span><small>{project.status} ↗</small></div>
-        </a>)}
-      </div>
-      <a class="inline-link" href={base+"projects/"}>Voir les cinq dossiers projets <span aria-hidden="true">↗</span></a>
-    </div>
-  </section>
-  <section class="section-pad" id="expertise">
-    <div class="container split-story">
-      <div class="story-side">
-        <p class="mono-kicker">02 / CAPABILITIES</p>
-        <h2>L'offensif.<br />Le défensif.<br /><span style="color:#638236">Le lien.</span></h2>
-        <p>Je préfère comprendre pourquoi une commande fonctionne, quel événement elle produit et comment détecter ou corriger la faiblesse sous-jacente.</p>
-        <a class="inline-link" href={base+"about/"}>Découvrir mon parcours <span aria-hidden="true">↗</span></a>
-      </div>
-      <div class="skill-list">
-        {site.capabilities.map((cap,i)=><article class="skill-row">
-          <span class="skill-number">{String(i+1).padStart(2,"0")}</span>
-          <div><h3>{cap.title}</h3><strong>{cap.summary}</strong><p>{cap.description}</p><div class="skill-tags">{cap.tools.map(t=><span>{t}</span>)}</div></div>
-        </article>)}
-      </div>
-    </div>
-  </section>
-  <section class="lens-section" id="lab">
-    <div class="container lens-layout">
-      <div>
-        <p class="mono-kicker" style="color:var(--volt)">03 / INTERACTIVE FIELD LAB</p>
-        <h2>Don't just<br />read. <span style="color:var(--volt)">Inspect.</span></h2>
-        <p>Quelques scénarios pédagogiques pour découvrir comment transformer des faits techniques en hypothèses testables. Ils sont simulés : aucun serveur, aucune cible et aucune exploitation réelle.</p>
-        <a class="inline-link" style="color:var(--volt)" href={base+"labs/"}>Explorer mes labs documentés <span aria-hidden="true">↗</span></a>
-      </div>
-      <ThreatLens />
-    </div>
-  </section>
-  <section class="section-pad" id="knowledge">
-    <div class="container">
-      <div class="section-head">
-        <div><p class="mono-kicker">04 / OPEN KNOWLEDGE</p><h2>La connaissance<br />laisse des <span style="color:#648337">traces.</span></h2></div>
-        <p>Je documente aussi les erreurs, les hypothèses rejetées et les mécanismes défensifs — pas seulement les résultats finaux.</p>
-      </div>
-      <div class="knowledge-grid">
-        {hubs.map(h=><a class="knowledge-tile" href={base+h.href}>
-          <div class="knowledge-tile-top"><span>{h.number} / ARCHIVE</span><span aria-hidden="true">↗</span></div>
-          <h3>{h.title}</h3><p>{h.description}</p>
-          <strong>{h.entries.length} publication{h.entries.length>1?"s":""}</strong>
-        </a>)}
-      </div>
-      {recent.length>0&&<div class="recent-list">
-        <div class="recent-list-head"><h3>Dernières publications</h3><span>FIELD NOTES / LATEST</span></div>
-        {recent.map(r=><a class="recent-entry" href={r.href}>
-          <b>{r.kind}</b><div><h4>{r.title}</h4><p>{r.summary}</p></div><time datetime={r.date.toISOString()}>{formatDate(r.date)}</time><span aria-hidden="true">↗</span>
-        </a>)}
-      </div>}
-    </div>
-  </section>
-  <section class="section-pad journey-section" id="journey">
-    <div class="container journey-grid">
-      <div><p class="mono-kicker">05 / THE JOURNEY</p><h2>Une ambition.<br />Du travail.<br />Des preuves.</h2><p>Une progression continue entre les fondamentaux systèmes et réseaux, le pentest, la détection et l'ingénierie. Ce qui est en préparation est affiché comme tel.</p></div>
-      <div class="journey-items">
-        <div class="journey-item"><span>ÉTUDES / {site.education.period}</span><h3>{site.education.program}</h3><p>{site.education.school} — {site.education.location}</p></div>
-        <div class="journey-item"><span>DISTINCTION</span><h3>1er Prix · JPOPE 2026</h3><p>HoneyShield — projet honeypot orienté détection</p></div>
-        <div class="journey-item"><span>CERTIFICATIONS DÉCLARÉES</span><ul>{site.certifications.map(c=><li>{c}</li>)}</ul></div>
-        <div class="journey-item"><span>EN PRÉPARATION</span><h3>{site.currentTargets.join(" / ")}</h3><p>Objectifs en cours, distincts des certifications acquises.</p></div>
-      </div>
-    </div>
-  </section>
-  <section class="wide-statement" id="contact">
-    <div class="container">
-      <p class="mono-kicker" style="color:var(--volt)">READY FOR THE NEXT CHALLENGE?</p>
-      <h2 class="statement">LET'S BUILD<br /><em>SOMETHING.</em></h2>
-      <a class="button vivid" href={site.social[1].href} target="_blank" rel="noopener noreferrer">Prendre contact sur LinkedIn <span class="arrow" aria-hidden="true">↗</span></a>
-    </div>
-  </section>
+  <footer class="cc-bottom"><div><span class="cc-status-dot"></span> FIELD ATLAS V5 / STATIC DEMONSTRATION</div><div>NAKORE · OFFENSE / DEFENSE / ENGINEERING</div><a href={base+"about/"}>À PROPOS ↗</a></footer>
 </main>
-</BaseLayout>
+<dialog class="cc-dialog" id="cc-signal-dialog" aria-labelledby="cc-dialog-title">
+  <div class="cc-dialog-head"><span>SECURITY LAB / EVENT EXPLANATION</span><button type="button" data-dialog-close aria-label="Fermer">×</button></div>
+  <div class="cc-dialog-body"><small class="cc-dialog-kicker">SIMULATION · AUCUNE DONNÉE RÉELLE</small><h2 id="cc-dialog-title" data-dialog-title></h2><p data-dialog-text></p><dl><div><dt>Technique de référence</dt><dd data-dialog-technique></dd></div><div><dt>Source</dt><dd data-dialog-source></dd></div></dl></div>
+</dialog>
+</CommandLayout>
+<script>
+import {site} from "../config";
+import {labSignals} from "../data/commandData";
+const base=import.meta.env.BASE_URL.endsWith("/")?import.meta.env.BASE_URL:import.meta.env.BASE_URL+"/";
+const root=document.querySelector<HTMLElement>("#cc-app");
+if(root){
+ const projects=Array.from(root.querySelectorAll<HTMLButtonElement>("[data-project-index]"));
+ const set=(selector:string,text:string)=>{const el=root.querySelector<HTMLElement>(selector);if(el)el.textContent=text};
+ const link=root.querySelector<HTMLAnchorElement>("[data-case-link]");
+ const tags=root.querySelector<HTMLElement>("[data-case-tags]");
+ const activate=(i:number)=>{
+  const p=site.projects[i];if(!p)return;
+  projects.forEach((el,j)=>{const active=i===j;el.classList.toggle("cc-project-selected",active);el.setAttribute("aria-pressed",String(active))});
+  set("[data-case-title]",p.name);set("[data-case-description]",p.summary);
+  if(link)link.href=base+p.href;
+  if(tags){tags.replaceChildren();p.tags.slice(0,3).forEach(t=>{const span=document.createElement("span");span.textContent=t;tags.append(span)})}
+ };
+ projects.forEach((el,i)=>el.addEventListener("click",()=>activate(i)));
+ const dialog=document.querySelector<HTMLDialogElement>("#cc-signal-dialog");
+ root.querySelectorAll<HTMLButtonElement>("[data-signal-index]").forEach((btn,i)=>btn.addEventListener("click",()=>{
+  const s=labSignals[i];if(!s||!dialog)return;
+  set("[data-dialog-title]",s.name);set("[data-dialog-text]",s.detail);set("[data-dialog-technique]",s.technique);set("[data-dialog-source]",s.source);dialog.showModal();
+ }));
+ dialog?.querySelector("[data-dialog-close]")?.addEventListener("click",()=>dialog.close());
+ dialog?.addEventListener("click",e=>{if(e.target===dialog)dialog.close()});
+ const field=root.querySelector<HTMLInputElement>("#cc-search");
+ const searchable=Array.from(root.querySelectorAll<HTMLElement>("[data-searchable]"));
+ field?.addEventListener("input",()=>{
+  const term=field.value.trim().toLowerCase();
+  searchable.forEach(el=>{el.hidden=!el.dataset.searchable?.includes(term)});
+ });
+ document.addEventListener("keydown",e=>{
+  if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==="k"){e.preventDefault();field?.focus();field?.select()}
+ });
+ const toggle=root.querySelector<HTMLButtonElement>("[data-sidebar-toggle]");
+ const closeSidebar=()=>{document.body.classList.remove("cc-sidebar-open");toggle?.setAttribute("aria-expanded","false")};
+ toggle?.addEventListener("click",()=>{const open=document.body.classList.toggle("cc-sidebar-open");toggle.setAttribute("aria-expanded",String(open))});
+ root.querySelectorAll("[data-sidebar-close]").forEach(el=>el.addEventListener("click",closeSidebar));
+ root.querySelectorAll(".cc-primary-nav a").forEach(el=>el.addEventListener("click",closeSidebar));
+}
+</script>
