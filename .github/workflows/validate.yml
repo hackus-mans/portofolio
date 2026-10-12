@@ -47,3 +47,17 @@ jobs:
             head -c 800 live.html
             exit 1
           fi
+          echo "Inspecting the deployed stylesheet"
+          CSS_PATH=$(grep -oE '/portofolio/_astro/[^" ]+\.css' live.html | head -1 || true)
+          if [ -z "$CSS_PATH" ]; then
+            echo "FAILURE: No expected stylesheet path in page HTML"
+            exit 1
+          fi
+          echo "Stylesheet path: $CSS_PATH"
+          curl -L -fsS --max-time 30 -o live.css -w "CSS HTTP %{http_code}; bytes %{size_download}\n" "https://hackus-mans.github.io$CSS_PATH"
+          if grep -Fq '.sg-hero' live.css; then
+            echo "SUCCESS: SIGNAL CSS has been served from the public site"
+          else
+            echo "FAILURE: SIGNAL styles missing from deployed stylesheet"
+            exit 1
+          fi
