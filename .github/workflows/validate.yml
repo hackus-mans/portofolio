@@ -17,3 +17,33 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm run build
+
+  verify-public-site:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Inspect live GitHub Pages response
+        shell: bash
+        run: |
+          set -euo pipefail
+          URL="https://hackus-mans.github.io/portofolio/?verify=signal-v2-20261012"
+          echo "Checking the public URL"
+          curl -L -fsS --max-time 30 --retry 3 \
+            -H "Cache-Control: no-cache" \
+            -D headers.txt \
+            -o live.html \
+            -w "HTTP %{http_code}; effective URL %{url_effective}; size %{size_download}; content type %{content_type}\n" \
+            "$URL"
+          echo "Response headers:"
+          grep -iE '^(HTTP/|date:|cache-control:|age:|etag:|last-modified:|x-cache:|content-type:)' headers.txt || true
+          echo "Page title:"
+          grep -oE '<title>[^<]*</title>' live.html | head -1 || true
+          if grep -Fq 'Understand.' live.html; then
+            echo "SUCCESS: New SIGNAL hero is served by the public website."
+          elif grep -Fq 'Un portfolio construit pour évoluer' live.html; then
+            echo "FAILURE: Public website still serves the old homepage."
+            exit 1
+          else
+            echo "FAILURE: Neither new nor old expected homepage marker detected."
+            head -c 800 live.html
+            exit 1
+          fi
