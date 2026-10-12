@@ -34,7 +34,7 @@ const links=[
       {link.icon==="route"&&<svg viewBox="0 0 24 24"><circle cx="5" cy="5" r="2"/><circle cx="19" cy="19" r="2"/><path d="M7 5h6a4 4 0 0 1 0 8h-2a3 3 0 0 0 0 6h6"/></svg>}
     </span>
     <span>{link.label}</span>
-    {i===1&&<i class="cc-nav-live" aria-hidden="true"></i>}
+    {i===1&&<small class="cc-nav-schematic">schéma</small>}
   </a>)}
   </nav>
   <div class="cc-sidebar-separator"></div>
@@ -52,3 +52,22 @@ const links=[
   </div>
 </aside>
 <div class="cc-mobile-shade" data-sidebar-close></div>
+
+<script>
+const navigation=document.querySelector<HTMLElement>(".cc-primary-nav");
+if(navigation){
+  const update=()=>{
+    const home=location.pathname.replace(/\/+$/,"/")==="/portofolio/";
+    if(!home)return;
+    const onMap=location.hash==="#threat-map";
+    const links=Array.from(navigation.querySelectorAll<HTMLAnchorElement>("a"));
+    links.forEach((link,i)=>{
+      const active=onMap?i===1:i===0;
+      link.classList.toggle("cc-nav-current",active);
+      if(active)link.setAttribute("aria-current","location");else link.removeAttribute("aria-current");
+    });
+  };
+  window.addEventListener("hashchange",update);
+  update();
+}
+</script>
