@@ -1,0 +1,27 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import {site} from "../../config";
+const base=import.meta.env.BASE_URL.endsWith("/")?import.meta.env.BASE_URL:import.meta.env.BASE_URL+"/";
+const results=site.proof.filter(proof=>!proof.label.includes("Licence"));
+---
+<BaseLayout title="CTF et distinctions — Joseph NAKORE" description="Compétitions CTF et projets présentés par Joseph NAKORE.">
+<main id="main-content" class="ed-container ed-subpage">
+  <header class="ed-subpage-head">
+    <span class="ed-overline">CTF / COMPETITIONS</span>
+    <h1>Compétitions & distinctions<span class="ed-accent">.</span></h1>
+    <p>J'apprends à tester, comprendre et expliquer mes démarches en laboratoire et lors de compétitions. Les informations ci-dessous proviennent des résultats que j'ai déclarés dans mon portfolio.</p>
+  </header>
+  <div class="ed-honors">
+    {results.map((proof,i)=><a class="ed-honor-card" href={i===0?base+"projects/honeyshield/":base+"projects/labs-ctf/"}>
+      <div class="ed-honor-top"><span class="ed-honor-icon" aria-hidden="true">{i===0?"✧":"▥"}</span><span class="ed-honor-index">0{i+1} / COMPETITION</span></div>
+      <p class="ed-honor-type">{proof.detail}</p><h3>{proof.label}</h3><p class="ed-honor-result">{proof.value}</p>
+      <span class="ed-honor-footer">Consulter le contexte ↗</span>
+    </a>)}
+  </div>
+  <p class="ed-subpage-notice">Les classements sont présentés comme déclarés. Les preuves documentaires et comptes rendus pourront être joints aux fiches correspondantes.</p>
+  <section class="ed-section" aria-labelledby="ctf-practice">
+    <div class="ed-section-heading"><div><span class="ed-overline">CONTINUOUS PRACTICE</span><h2 id="ctf-practice">La pratique au-delà des podiums</h2></div></div>
+    <div class="ed-contact-card"><div><h2>Labs, plateformes et writeups</h2><p>Énumération, Web/API, sécurité offensive, Linux et Windows : je documente une progression méthodique sur des environnements autorisés.</p></div><a class="ed-btn ed-btn-primary" href={base+"projects/labs-ctf/"}>Voir mes labs ↗</a></div>
+  </section>
+</main>
+</BaseLayout>
