@@ -1,114 +1,59 @@
 ---
-import CommandLayout from "../layouts/CommandLayout.astro";
-import {site} from "../config";
-import {getPublications} from "../lib/publications";
-const publications=await getPublications();
-const base=import.meta.env.BASE_URL.endsWith("/")?import.meta.env.BASE_URL:import.meta.env.BASE_URL+"/";
-const approach=[
- {step:"01",title:"Learn",description:"Étudier les protocoles, Linux, Windows et les fondamentaux avant les outils."},
- {step:"02",title:"Build",description:"Créer des labs, automatisations et environnements de défense reproductibles."},
- {step:"03",title:"Break",description:"Tester les hypothèses sur des systèmes autorisés, CTF et laboratoires."},
- {step:"04",title:"Document",description:"Expliquer le raisonnement, les résultats, les limites et les corrections."}
-];
-const distinctions=site.proof.filter(item=>!item.label.includes("Licence"));
-const projects=site.projects;
+import "../styles/site.css";
+import contenu from "../data/contenu.json";
+
+type Projet = { titre: string; description: string; url: string; technologies: string[] };
+type Lien = { nom: string; url: string };
+const projets = contenu.projets as Projet[];
+const liens = contenu.liens as Lien[];
+const aDuContenu = Boolean(contenu.sousTitre.trim() || contenu.presentation.trim() || projets.length || liens.length);
+const base = import.meta.env.BASE_URL.endsWith("/") ? import.meta.env.BASE_URL : import.meta.env.BASE_URL + "/";
 ---
-<CommandLayout>
-<main class="ed-home" id="main-content">
-  <section class="ed-hero" aria-labelledby="hero-title">
-    <div class="ed-grid-backdrop" aria-hidden="true"></div>
-    <div class="ed-container ed-hero-grid">
-      <div class="ed-hero-copy">
-        <div class="ed-profile-pill"><span class="ed-online-dot"></span> Étudiant en cybersécurité <span class="ed-pill-separator">·</span> IPNET Institute of Technology</div>
-        <h1 id="hero-title">NAKORE<span class="ed-accent">.</span><small>Joseph Yendoubouame NAKORE</small></h1>
-        <p class="ed-hero-job">Pentest, sécurité des systèmes et réseaux, SOC</p>
-        <p class="ed-hero-domains">Security Engineering <span>•</span> Web/API <span>•</span> AI & Automation</p>
-        <p class="ed-hero-intro">Je cherche à comprendre les systèmes jusque dans leurs failles pour apprendre à mieux les défendre. Ce site rassemble mes projets, laboratoires, writeups et découvertes techniques au fil de ma progression.</p>
-        <div class="ed-hero-buttons">
-          <a class="ed-btn ed-btn-primary" href={base+"projects/"}>Découvrir mes projets <span aria-hidden="true">↗</span></a>
-          <a class="ed-btn ed-btn-outline" href={base+"writeups/"}>Lire mes writeups <span aria-hidden="true">↗</span></a>
-          <a class="ed-btn ed-btn-outline" href={base+"contact/"}>Me contacter <span aria-hidden="true">↗</span></a>
-        </div>
-        <div class="ed-social-icons" aria-label="Profils publics">
-          {site.social.map(link=><a href={link.href} target="_blank" rel="noopener noreferrer" aria-label={"Mon profil "+link.label} title={link.label}>
-            {link.label==="GitHub"?<svg viewBox="0 0 24 24" aria-hidden="true" fill="currentColor"><path d="M12 2a10 10 0 0 0-3.16 19.49c.5.09.68-.22.68-.49v-1.91c-2.77.6-3.36-1.17-3.36-1.17-.45-1.13-1.1-1.43-1.1-1.43-.9-.61.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.89 1.52 2.34 1.08 2.91.82.09-.64.35-1.08.64-1.33-2.21-.25-4.53-1.1-4.53-4.94 0-1.09.39-1.99 1.03-2.69-.1-.25-.45-1.28.1-2.65 0 0 .84-.27 2.75 1.03A9.53 9.53 0 0 1 12 6.59c.85 0 1.71.11 2.51.34 1.91-1.3 2.75-1.03 2.75-1.03.55 1.37.2 2.4.1 2.65.64.7 1.03 1.6 1.03 2.69 0 3.85-2.33 4.69-4.55 4.94.36.31.69.91.69 1.85V21c0 .27.18.59.69.49A10 10 0 0 0 12 2Z"/></svg>:<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M5.1 3a2.1 2.1 0 1 1-.01 4.2A2.1 2.1 0 0 1 5.1 3ZM3.3 9h3.6v12H3.3V9Zm5.8 0h3.5v1.6h.1a3.9 3.9 0 0 1 3.5-1.9c3.8 0 4.5 2.5 4.5 5.8V21h-3.6v-5.8c0-1.4 0-3.1-1.9-3.1-1.9 0-2.2 1.5-2.2 3V21H9.1V9Z"/></svg>}
-          </a>)}
-        </div>
-      </div>
-      <div class="ed-terminal-wrap">
-        <div class="ed-terminal" role="img" aria-label="Terminal décoratif : whoami renvoie hackus-mans, puis affiche les domaines cybersécurité et la progression de l'étudiant">
-          <div class="ed-terminal-bar"><div class="ed-terminal-lights" aria-hidden="true"><i></i><i></i><i></i></div><span>hackus-mans@ipnet: ~</span><span class="ed-terminal-bar-end">⌘</span></div>
-          <div class="ed-terminal-screen">
-            <div class="ed-terminal-command"><span>$</span> whoami</div><div class="ed-terminal-output">hackus-mans</div>
-            <div class="ed-terminal-command"><span>$</span> cat interests.txt</div>
-            <div class="ed-terminal-output">Linux & Windows Administration</div>
-            <div class="ed-terminal-output">Web / API Security & CTF</div>
-            <div class="ed-terminal-output">SOC & Detection Engineering</div>
-            <div class="ed-terminal-output">Python, AI & MCP</div>
-            <div class="ed-terminal-command"><span>$</span> status</div>
-            <div class="ed-terminal-output ed-terminal-progress">learning, building, documenting<span class="ed-caret" aria-hidden="true"></span></div>
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#0c111b" />
+    <meta name="description" content={contenu.sousTitre || "Portfolio personnel en cours de construction."} />
+    <link rel="canonical" href={"https://hackus-mans.github.io"+base} />
+    <title>{contenu.titre}</title>
+  </head>
+  <body>
+    <div class="page">
+      <header class="topbar">
+        <a class="brand" href={base}>{contenu.titre}</a>
+        {liens.length > 0 && <nav aria-label="Mes liens">
+          {liens.map(lien => <a href={lien.url} rel="noopener noreferrer">{lien.nom}</a>)}
+        </nav>}
+      </header>
+      <main id="main-content">
+        <section class="intro" aria-labelledby="page-title">
+          <span class="eyebrow"><span class="dot" aria-hidden="true"></span> Portfolio personnel</span>
+          <h1 id="page-title">{contenu.titre}</h1>
+          {contenu.sousTitre && <p class="lead">{contenu.sousTitre}</p>}
+          {!aDuContenu && <p class="empty">En construction. Le contenu sera ajouté prochainement.</p>}
+        </section>
+        {contenu.presentation && <section class="section" aria-labelledby="about-title">
+          <h2 id="about-title">Présentation</h2>
+          <p class="prose">{contenu.presentation}</p>
+        </section>}
+        {projets.length > 0 && <section class="section" aria-labelledby="projects-title">
+          <h2 id="projects-title">Projets</h2>
+          <div class="projects">
+            {projets.map(projet => <article class="project">
+              <h3>{projet.titre}</h3>
+              {projet.description && <p>{projet.description}</p>}
+              {projet.technologies?.length > 0 && <div class="tags">{projet.technologies.map(tech => <span>{tech}</span>)}</div>}
+              {projet.url && <a href={projet.url} rel="noopener noreferrer">Découvrir le projet <span aria-hidden="true">↗</span></a>}
+            </article>)}
           </div>
-        </div>
-      </div>
+        </section>}
+      </main>
+      <footer>
+        <span>{contenu.titre}</span>
+        <span>Site personnel</span>
+      </footer>
     </div>
-  </section>
-
-  <section class="ed-section ed-container" id="highlights" aria-labelledby="highlights-title">
-    <div class="ed-section-heading"><div><span class="ed-overline">CTF / DISTINCTIONS</span><h2 id="highlights-title">Compétitions & réalisations</h2></div><a class="ed-section-link" href={base+"ctf/"}>Mes résultats <span>↗</span></a></div>
-    <div class="ed-honors">
-      {distinctions.map((item,i)=><a class="ed-honor-card" href={i===0?base+"projects/honeyshield/":base+"ctf/"}>
-        <div class="ed-honor-top"><span class="ed-honor-icon" aria-hidden="true">{i===0?"✧":i===1?"⌘":"▥"}</span><span class="ed-honor-index">0{i+1} / RECORD</span></div>
-        <p class="ed-honor-type">{item.detail}</p>
-        <h3>{item.label}</h3>
-        <p class="ed-honor-result">{item.value}</p>
-        <span class="ed-honor-footer">Résultat déclaré <span aria-hidden="true">↗</span></span>
-      </a>)}
-    </div>
-  </section>
-
-  <section class="ed-section ed-container" id="projects" aria-labelledby="projects-title">
-    <div class="ed-section-heading"><div><span class="ed-overline">PROJECTS / BUILD</span><h2 id="projects-title">Ce que je construis</h2></div><a class="ed-section-link" href={base+"projects/"}>Tous les projets <span>↗</span></a></div>
-    <div class="ed-project-grid">
-      {projects.map((project,i)=><article class:list={["ed-project-card",{"ed-project-featured":i===0}]}>
-        <div class="ed-project-card-top"><span class="ed-folder-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 7V5.5C3 4.7 3.7 4 4.5 4H10l2 3h7.5c.8 0 1.5.7 1.5 1.5V19c0 .8-.7 1.5-1.5 1.5h-15C3.7 20.5 3 19.8 3 19V7Z"/></svg></span><span class="ed-status-chip">{project.status}</span></div>
-        <h3><a href={base+project.href}>{project.name}</a></h3>
-        <p>{project.summary}</p>
-        <div class="ed-project-card-bottom"><div class="ed-tag-list">{project.tags.slice(0,i===0?7:5).map(tag=><span>{tag}</span>)}</div><span class="ed-read-more">Consulter le dossier <span aria-hidden="true">↗</span></span></div>
-      </article>)}
-    </div>
-  </section>
-
-  <section class="ed-section ed-container" id="writeups" aria-labelledby="writeups-title">
-    <div class="ed-section-heading"><div><span class="ed-overline">WRITEUPS / FIELD NOTES</span><h2 id="writeups-title">Dernières publications techniques</h2></div><a class="ed-section-link" href={base+"journal/"}>Tout mon journal <span>↗</span></a></div>
-    <div class="ed-publication-grid">
-      {publications.slice(0,6).map(item=><article class="ed-publication-card">
-        <div class="ed-pub-meta"><span class="ed-pub-type">{item.kind}</span><time datetime={item.date.toISOString()}>{item.dateText}</time></div>
-        <h3><a href={item.href}>{item.title}</a></h3>
-        <p>{item.summary}</p>
-        <div class="ed-tag-list">{item.tags.slice(0,4).map(tag=><span>{tag}</span>)}</div>
-        <span class="ed-read-more">Lire l'article <span aria-hidden="true">↗</span></span>
-      </article>)}
-      {publications.length===0&&<div class="ed-empty-card"><h3>Premières notes en préparation</h3><p>Mes prochains comptes rendus de labs, writeups et réflexions seront publiés ici.</p></div>}
-    </div>
-  </section>
-
-  <section class="ed-section ed-container" id="approach" aria-labelledby="approach-title">
-    <div class="ed-section-heading"><div><span class="ed-overline">APPROACH / PROCESS</span><h2 id="approach-title">Ma méthode d'apprentissage</h2></div></div>
-    <ol class="ed-approach-grid">
-      {approach.map(item=><li class="ed-approach-card"><span>{item.step}</span><h3>{item.title}</h3><p>{item.description}</p></li>)}
-    </ol>
-    <div class="ed-skills-block" id="skills">
-      <div class="ed-section-heading"><div><span class="ed-overline">SKILLS / TOOLS</span><h2>Domaines que j'explore</h2><p>Une progression pratique, documentée dans mes projets et mes laboratoires.</p></div><a class="ed-section-link" href={base+"about/#skills"}>Mon parcours <span>↗</span></a></div>
-      <div class="ed-skills-grid">{site.capabilities.map(cap=><article class="ed-skill-card"><h3>{cap.title}</h3><p>{cap.description}</p><div class="ed-tag-list">{cap.tools.map(t=><span>{t}</span>)}</div></article>)}</div>
-    </div>
-  </section>
-
-  <section class="ed-section ed-container ed-contact-section" id="contact" aria-labelledby="contact-title">
-    <div class="ed-contact-card">
-      <div class="ed-contact-pattern" aria-hidden="true"></div>
-      <div><span class="ed-overline">CONTACT / COLLABORATION</span><h2 id="contact-title">Parlons sécurité, CTF et ingénierie.</h2><p>Un projet, une question technique, un stage ou une collaboration ? Je serais ravi d'en discuter.</p></div>
-      <a class="ed-btn ed-btn-primary" href={base+"contact/"}>Me contacter <span aria-hidden="true">↗</span></a>
-    </div>
-  </section>
-</main>
-</CommandLayout>
+  </body>
+</html>
