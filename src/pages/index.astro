@@ -1,263 +1,114 @@
 ---
 import CommandLayout from "../layouts/CommandLayout.astro";
-import CommandGraph from "../components/CommandGraph.astro";
-import OrbitConstellation from "../components/OrbitConstellation.astro";
-import WorkspaceJournal from "../components/WorkspaceJournal.astro";
 import {site} from "../config";
-import {labSignals} from "../data/commandData";
+import {getPublications} from "../lib/publications";
+const publications=await getPublications();
 const base=import.meta.env.BASE_URL.endsWith("/")?import.meta.env.BASE_URL:import.meta.env.BASE_URL+"/";
+const approach=[
+ {step:"01",title:"Learn",description:"Étudier les protocoles, Linux, Windows et les fondamentaux avant les outils."},
+ {step:"02",title:"Build",description:"Créer des labs, automatisations et environnements de défense reproductibles."},
+ {step:"03",title:"Break",description:"Tester les hypothèses sur des systèmes autorisés, CTF et laboratoires."},
+ {step:"04",title:"Document",description:"Expliquer le raisonnement, les résultats, les limites et les corrections."}
+];
+const distinctions=site.proof.filter(item=>!item.label.includes("Licence"));
 const projects=site.projects;
-const first=projects[0];
-const accents=["#4a8cff","#ff5378","#39c9f3","#a977ff","#40d8c4"];
-const icons=["◈","⬡","✧","⌘","◇"];
 ---
 <CommandLayout>
-<header class="cc-topbar ws-topbar">
-  <div class="cc-crumb-left">
-    <button type="button" class="cc-mobile-toggle" aria-label="Ouvrir le menu" aria-expanded="false" data-sidebar-toggle><span></span><span></span><span></span></button>
-    <span class="ws-top-wordmark">SECURITY <span>WORKSPACE</span></span>
-  </div>
-  <div class="cc-topbar-right">
-    <label class="cc-global-search" for="cc-search"><span aria-hidden="true">⌕</span><input id="cc-search" type="search" placeholder="Projets, writeups, outils, notes…" autocomplete="off" aria-label="Rechercher dans le portfolio"/><kbd>CTRL K</kbd></label>
-    <button type="button" data-preferences-open class="ws-top-icon" aria-label="Personnaliser l'affichage" title="Préférences visuelles">☼</button>
-    <a class="ws-top-icon ws-top-github" href={site.social[0].href} target="_blank" rel="noopener noreferrer" aria-label="Ouvrir mon GitHub">⌘</a>
-    <a class="cc-avatar" href={base+"about/"} aria-label="À propos de Joseph NAKORE">N<span></span></a>
-  </div>
-</header>
-<main id="main-content" class="cc-main ws-main">
-  <section class="ws-welcome" aria-labelledby="cc-title">
-    <div class="ws-welcome-content">
-      <p class="ws-eyebrow"><span></span> BIENVENUE DANS MON UNIVERS / LOMÉ, TOGO</p>
-      <h1 id="cc-title">Comprendre. Construire. <em>Sécuriser.</em></h1>
-      <p>Étudiant en cybersécurité, je relie sécurité offensive, détection et ingénierie. Explore mes projets, mes expérimentations et ce que j'apprends en construisant.</p>
-      <div class="ws-welcome-actions"><a href="#workspace-map" class="ws-primary-action">Explorer la constellation <span aria-hidden="true">↗</span></a><a href={base+"projects/"} class="ws-secondary-action">Voir mes projets <span aria-hidden="true">→</span></a></div>
-    </div>
-    <aside class="ws-quote" aria-label="Ma philosophie">
-      <span class="ws-quote-symbol" aria-hidden="true">“</span>
-      <p>Apprendre en construisant.<br/>Comprendre en testant.<br/><strong>Partager ce qui fonctionne.</strong></p>
-      <span class="ws-quote-sign">JOSEPH NAKORE / FIELD NOTES</span>
-      <div class="ws-horizon" aria-hidden="true"></div>
-    </aside>
-  </section>
-
-  <div class="ws-overview-grid">
-    <section class="ws-constellation-module" id="workspace-map" aria-labelledby="ws-map-title">
-      <div class="ws-panel-header ws-map-header">
-        <div class="ws-panel-heading"><span class="ws-panel-icon">✧</span><div><h2 id="ws-map-title">Security Constellation</h2><p>Cinq projets. Un même objectif : comprendre, tester et défendre.</p></div></div>
-        <div class="ws-panel-actions" role="group" aria-label="Mode d'exploration">
-          <button type="button" class="ws-view-button is-active" data-ws-view="orbit" aria-pressed="true">Constellation</button>
-          <button type="button" class="ws-view-button" data-ws-view="graph" aria-pressed="false">Investigation</button>
-          <button type="button" class="ws-view-button" data-ws-view="list" aria-pressed="false">Liste</button>
-          <button type="button" class="ws-expand-map" data-ws-expand aria-label="Agrandir la constellation" title="Agrandir la carte">⛶</button>
+<main class="ed-home" id="main-content">
+  <section class="ed-hero" aria-labelledby="hero-title">
+    <div class="ed-grid-backdrop" aria-hidden="true"></div>
+    <div class="ed-container ed-hero-grid">
+      <div class="ed-hero-copy">
+        <div class="ed-profile-pill"><span class="ed-online-dot"></span> Étudiant en cybersécurité <span class="ed-pill-separator">·</span> IPNET Institute of Technology</div>
+        <h1 id="hero-title">NAKORE<span class="ed-accent">.</span><small>Joseph Yendoubouame NAKORE</small></h1>
+        <p class="ed-hero-job">Pentest, sécurité des systèmes et réseaux, SOC</p>
+        <p class="ed-hero-domains">Security Engineering <span>•</span> Web/API <span>•</span> AI & Automation</p>
+        <p class="ed-hero-intro">Je cherche à comprendre les systèmes jusque dans leurs failles pour apprendre à mieux les défendre. Ce site rassemble mes projets, laboratoires, writeups et découvertes techniques au fil de ma progression.</p>
+        <div class="ed-hero-buttons">
+          <a class="ed-btn ed-btn-primary" href={base+"projects/"}>Découvrir mes projets <span aria-hidden="true">↗</span></a>
+          <a class="ed-btn ed-btn-outline" href={base+"writeups/"}>Lire mes writeups <span aria-hidden="true">↗</span></a>
+          <a class="ed-btn ed-btn-outline" href={base+"contact/"}>Me contacter <span aria-hidden="true">↗</span></a>
         </div>
-      </div>
-      <div data-ws-panel="orbit"><OrbitConstellation /></div>
-      <div data-ws-panel="graph" hidden><CommandGraph /></div>
-      <div data-ws-panel="list" hidden>
-        <div class="ws-project-directory">
-          {projects.map((project,i)=><a href={base+project.href} class="ws-directory-entry">
-            <span class="ws-dir-index">{String(i+1).padStart(2,"0")}</span>
-            <span class="ws-dir-color" style={"--ws-accent:"+accents[i]} aria-hidden="true">{icons[i]}</span>
-            <span><strong>{project.name}</strong><small>{project.type}</small></span>
-            <span class="ws-dir-status">{project.status}</span><span aria-hidden="true">↗</span>
+        <div class="ed-social-icons" aria-label="Profils publics">
+          {site.social.map(link=><a href={link.href} target="_blank" rel="noopener noreferrer" aria-label={"Mon profil "+link.label} title={link.label}>
+            {link.label==="GitHub"?<svg viewBox="0 0 24 24" aria-hidden="true" fill="currentColor"><path d="M12 2a10 10 0 0 0-3.16 19.49c.5.09.68-.22.68-.49v-1.91c-2.77.6-3.36-1.17-3.36-1.17-.45-1.13-1.1-1.43-1.1-1.43-.9-.61.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.89 1.52 2.34 1.08 2.91.82.09-.64.35-1.08.64-1.33-2.21-.25-4.53-1.1-4.53-4.94 0-1.09.39-1.99 1.03-2.69-.1-.25-.45-1.28.1-2.65 0 0 .84-.27 2.75 1.03A9.53 9.53 0 0 1 12 6.59c.85 0 1.71.11 2.51.34 1.91-1.3 2.75-1.03 2.75-1.03.55 1.37.2 2.4.1 2.65.64.7 1.03 1.6 1.03 2.69 0 3.85-2.33 4.69-4.55 4.94.36.31.69.91.69 1.85V21c0 .27.18.59.69.49A10 10 0 0 0 12 2Z"/></svg>:<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M5.1 3a2.1 2.1 0 1 1-.01 4.2A2.1 2.1 0 0 1 5.1 3ZM3.3 9h3.6v12H3.3V9Zm5.8 0h3.5v1.6h.1a3.9 3.9 0 0 1 3.5-1.9c3.8 0 4.5 2.5 4.5 5.8V21h-3.6v-5.8c0-1.4 0-3.1-1.9-3.1-1.9 0-2.2 1.5-2.2 3V21H9.1V9Z"/></svg>}
           </a>)}
         </div>
       </div>
-    </section>
-
-    <aside class="ws-aside" aria-label="Compétences et chantiers actifs">
-      <section class="ws-module ws-focus" aria-labelledby="ws-focus-title">
-        <header class="ws-module-head"><h2 id="ws-focus-title"><span class="ws-head-icon">◎</span> Mes domaines</h2><a href={base+"about/"}>Mon profil ↗</a></header>
-        <div class="ws-focus-rows">{site.capabilities.map((cap,i)=><a href={base+"about/#skills"} class="ws-focus-row">
-          <span class="ws-focus-icon" style={"--ws-accent:"+accents[i]}>{icons[i]}</span>
-          <span class="ws-focus-copy"><strong>{cap.title}</strong><small>{cap.tools.slice(0,3).join(" · ")}</small></span><span class="ws-focus-more" aria-hidden="true">↗</span>
-        </a>)}</div>
-      </section>
-      <section class="ws-module ws-current" aria-labelledby="ws-current-title">
-        <header class="ws-module-head"><h2 id="ws-current-title"><span class="ws-head-icon">↗</span> Chantiers & projets</h2><a href={base+"projects/"}>Tout voir ↗</a></header>
-        <div class="ws-current-rows">{projects.slice(0,5).map((project,i)=><a href={base+project.href} class="ws-current-row">
-          <span class="ws-current-icon" style={"--ws-accent:"+accents[i]}>{icons[i]}</span>
-          <span class="ws-current-name"><strong>{project.name}</strong><small>{project.type.split("/")[0].trim()}</small></span>
-          <span class="ws-status" style={"--ws-accent:"+accents[i]}>{project.status}</span>
-        </a>)}</div>
-      </section>
-    </aside>
-  </div>
-
-  <div class="ws-lower-grid" aria-label="Projets, Journal et étude de cas">
-    <section class="ws-module ws-project-list" id="project-intelligence" aria-labelledby="ws-projects-title">
-      <header class="ws-module-head"><h2 id="ws-projects-title"><span class="ws-head-icon">▥</span> Mes projets</h2><a href={base+"projects/"}>Tous les projets ↗</a></header>
-      <div class="ws-project-rows">
-        {projects.map((project,i)=><button type="button" class:list={["ws-project-row",{"is-active":i===0}]} data-project-index={i} data-searchable={[project.name,project.type,...project.tags].join(" ").toLowerCase()} aria-label={"Afficher le dossier "+project.name} aria-pressed={i===0?"true":"false"}>
-          <span class="ws-project-glyph" style={"--ws-accent:"+accents[i]}>{icons[i]}</span>
-          <span class="ws-project-details"><strong>{project.name}</strong><small>{project.type}</small></span>
-          <span class="ws-project-chevron" aria-hidden="true">↗</span>
-        </button>)}
+      <div class="ed-terminal-wrap">
+        <div class="ed-terminal" role="img" aria-label="Terminal décoratif : whoami renvoie hackus-mans, puis affiche les domaines cybersécurité et la progression de l'étudiant">
+          <div class="ed-terminal-bar"><div class="ed-terminal-lights" aria-hidden="true"><i></i><i></i><i></i></div><span>hackus-mans@ipnet: ~</span><span class="ed-terminal-bar-end">⌘</span></div>
+          <div class="ed-terminal-screen">
+            <div class="ed-terminal-command"><span>$</span> whoami</div><div class="ed-terminal-output">hackus-mans</div>
+            <div class="ed-terminal-command"><span>$</span> cat interests.txt</div>
+            <div class="ed-terminal-output">Linux & Windows Administration</div>
+            <div class="ed-terminal-output">Web / API Security & CTF</div>
+            <div class="ed-terminal-output">SOC & Detection Engineering</div>
+            <div class="ed-terminal-output">Python, AI & MCP</div>
+            <div class="ed-terminal-command"><span>$</span> status</div>
+            <div class="ed-terminal-output ed-terminal-progress">learning, building, documenting<span class="ed-caret" aria-hidden="true"></span></div>
+          </div>
+        </div>
       </div>
-    </section>
-
-    <WorkspaceJournal />
-
-    <section class="ws-module ws-featured" aria-labelledby="ws-featured-title">
-      <header class="ws-module-head"><h2 id="ws-featured-title"><span class="ws-head-icon">▣</span> Étude de cas</h2><a href={base+"projects/"}>Voir les dossiers ↗</a></header>
-      <div class="ws-feature-art" aria-label="Illustration conceptuelle du cycle de sécurité">
-        <div class="ws-feature-star s1"></div><div class="ws-feature-star s2"></div><div class="ws-feature-star s3"></div>
-        <div class="ws-feature-visual-ring"><span class="ws-feature-visual-core">N<span>/</span></span></div>
-        <span class="ws-feature-tag">ENGINEERING / CASE 01</span>
-        <svg viewBox="0 0 420 132" aria-hidden="true" preserveAspectRatio="none"><path d="M0 112 55 65 115 91 169 36 224 76 286 25 350 67 420 18" fill="none" stroke="#598bff" stroke-width="1.5" opacity=".45"/><path d="M0 122 58 82 117 100 169 55 222 95 287 47 348 84 420 43" fill="none" stroke="#54caff" stroke-width="1.1" opacity=".2"/></svg>
-      </div>
-      <div class="ws-feature-copy" aria-live="polite">
-        <span class="ws-feature-kicker">PROJET SÉLECTIONNÉ <span>· ÉTAT DOCUMENTÉ</span></span>
-        <h3 data-case-title>{first.name}</h3>
-        <p data-case-description>{first.summary}</p>
-        <p class="ws-feature-outcome" data-case-result>{first.outcome} · {first.status}</p>
-        <div class="ws-feature-tags" data-case-tags>{first.tags.slice(0,4).map(tag=><span>{tag}</span>)}</div>
-        <a href={base+first.href} class="ws-feature-link" data-case-link>Découvrir le projet <span aria-hidden="true">↗</span></a>
-      </div>
-    </section>
-  </div>
-
-  <section class="ws-lab-strip" id="detection-signals" aria-labelledby="ws-lab-title">
-    <div class="ws-lab-top"><div><span class="ws-overline">LAB / THREAT INVESTIGATION</span><h2 id="ws-lab-title">Apprendre à investiguer.</h2><p>Cinq scénarios de laboratoire avec hypothèses, indices, validation et pistes de défense. Il ne s'agit pas d'incidents réels.</p></div><a href={base+"labs/"}>Explorer mes labs ↗</a></div>
-    <div class="ws-lab-rows">{labSignals.map((item,i)=><button type="button" data-signal-index={i} data-searchable={(item.name+" "+item.reference+" "+item.source).toLowerCase()} class="ws-lab-row">
-      <span class="ws-lab-num">0{i+1}</span><span class="ws-lab-title">{item.name}</span><span class="ws-lab-ref">{item.reference}</span><span class="ws-lab-action" aria-hidden="true">↗</span>
-    </button>)}</div>
-  </section>
-  <p class="ws-search-feedback" data-search-count role="status" aria-live="polite"></p>
-  <footer class="cc-bottom ws-footer"><span>© 2026 JOSEPH NAKORE · LOMÉ, TOGO</span><span>OFFENSIVE / DEFENSIVE / SECURITY ENGINEERING</span><a href={site.social[1].href} target="_blank" rel="noopener noreferrer">CONTACT ↗</a></footer>
-</main>
-<dialog class="cc-dialog" id="cc-signal-dialog" aria-labelledby="cc-dialog-title">
-  <div class="cc-dialog-head"><span>EXERCICE DE LABORATOIRE</span><button type="button" data-dialog-close aria-label="Fermer">×</button></div>
-  <div class="cc-dialog-body">
-    <small class="cc-dialog-kicker">SCÉNARIO GUIDÉ · DONNÉES FICTIVES</small>
-    <h2 id="cc-dialog-title" data-dialog-title></h2>
-    <p data-dialog-text></p>
-    <div class="cc-guide-goal"><span>OBJECTIF D'APPRENTISSAGE</span><p data-dialog-goal></p></div>
-    <h3>Hypothèse à tester</h3><p data-dialog-hypothesis></p>
-    <h3>Indices à rechercher</h3><ul data-dialog-observables></ul>
-    <h3>Étapes d'investigation</h3><ol data-dialog-steps></ol>
-    <h3>Mesures défensives</h3><p data-dialog-mitigation></p>
-    <dl><div><dt>Référence</dt><dd data-dialog-technique></dd></div><div><dt>Source</dt><dd data-dialog-source></dd></div></dl>
-    <div class="cc-dialog-actions">
-      <button type="button" data-dialog-locate>Localiser sur la carte détaillée ◎</button>
-      <a data-dialog-project href={base+"projects/cybermind-x/"}>Lire le dossier associé ↗</a>
     </div>
-  </div>
-</dialog>
+  </section>
+
+  <section class="ed-section ed-container" id="highlights" aria-labelledby="highlights-title">
+    <div class="ed-section-heading"><div><span class="ed-overline">CTF / DISTINCTIONS</span><h2 id="highlights-title">Compétitions & réalisations</h2></div><a class="ed-section-link" href={base+"ctf/"}>Mes résultats <span>↗</span></a></div>
+    <div class="ed-honors">
+      {distinctions.map((item,i)=><a class="ed-honor-card" href={i===0?base+"projects/honeyshield/":base+"ctf/"}>
+        <div class="ed-honor-top"><span class="ed-honor-icon" aria-hidden="true">{i===0?"✧":i===1?"⌘":"▥"}</span><span class="ed-honor-index">0{i+1} / RECORD</span></div>
+        <p class="ed-honor-type">{item.detail}</p>
+        <h3>{item.label}</h3>
+        <p class="ed-honor-result">{item.value}</p>
+        <span class="ed-honor-footer">Résultat déclaré <span aria-hidden="true">↗</span></span>
+      </a>)}
+    </div>
+  </section>
+
+  <section class="ed-section ed-container" id="projects" aria-labelledby="projects-title">
+    <div class="ed-section-heading"><div><span class="ed-overline">PROJECTS / BUILD</span><h2 id="projects-title">Ce que je construis</h2></div><a class="ed-section-link" href={base+"projects/"}>Tous les projets <span>↗</span></a></div>
+    <div class="ed-project-grid">
+      {projects.map((project,i)=><article class:list={["ed-project-card",{"ed-project-featured":i===0}]}>
+        <div class="ed-project-card-top"><span class="ed-folder-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 7V5.5C3 4.7 3.7 4 4.5 4H10l2 3h7.5c.8 0 1.5.7 1.5 1.5V19c0 .8-.7 1.5-1.5 1.5h-15C3.7 20.5 3 19.8 3 19V7Z"/></svg></span><span class="ed-status-chip">{project.status}</span></div>
+        <h3><a href={base+project.href}>{project.name}</a></h3>
+        <p>{project.summary}</p>
+        <div class="ed-project-card-bottom"><div class="ed-tag-list">{project.tags.slice(0,i===0?7:5).map(tag=><span>{tag}</span>)}</div><span class="ed-read-more">Consulter le dossier <span aria-hidden="true">↗</span></span></div>
+      </article>)}
+    </div>
+  </section>
+
+  <section class="ed-section ed-container" id="writeups" aria-labelledby="writeups-title">
+    <div class="ed-section-heading"><div><span class="ed-overline">WRITEUPS / FIELD NOTES</span><h2 id="writeups-title">Dernières publications techniques</h2></div><a class="ed-section-link" href={base+"journal/"}>Tout mon journal <span>↗</span></a></div>
+    <div class="ed-publication-grid">
+      {publications.slice(0,6).map(item=><article class="ed-publication-card">
+        <div class="ed-pub-meta"><span class="ed-pub-type">{item.kind}</span><time datetime={item.date.toISOString()}>{item.dateText}</time></div>
+        <h3><a href={item.href}>{item.title}</a></h3>
+        <p>{item.summary}</p>
+        <div class="ed-tag-list">{item.tags.slice(0,4).map(tag=><span>{tag}</span>)}</div>
+        <span class="ed-read-more">Lire l'article <span aria-hidden="true">↗</span></span>
+      </article>)}
+      {publications.length===0&&<div class="ed-empty-card"><h3>Premières notes en préparation</h3><p>Mes prochains comptes rendus de labs, writeups et réflexions seront publiés ici.</p></div>}
+    </div>
+  </section>
+
+  <section class="ed-section ed-container" id="approach" aria-labelledby="approach-title">
+    <div class="ed-section-heading"><div><span class="ed-overline">APPROACH / PROCESS</span><h2 id="approach-title">Ma méthode d'apprentissage</h2></div></div>
+    <ol class="ed-approach-grid">
+      {approach.map(item=><li class="ed-approach-card"><span>{item.step}</span><h3>{item.title}</h3><p>{item.description}</p></li>)}
+    </ol>
+    <div class="ed-skills-block" id="skills">
+      <div class="ed-section-heading"><div><span class="ed-overline">SKILLS / TOOLS</span><h2>Domaines que j'explore</h2><p>Une progression pratique, documentée dans mes projets et mes laboratoires.</p></div><a class="ed-section-link" href={base+"about/#skills"}>Mon parcours <span>↗</span></a></div>
+      <div class="ed-skills-grid">{site.capabilities.map(cap=><article class="ed-skill-card"><h3>{cap.title}</h3><p>{cap.description}</p><div class="ed-tag-list">{cap.tools.map(t=><span>{t}</span>)}</div></article>)}</div>
+    </div>
+  </section>
+
+  <section class="ed-section ed-container ed-contact-section" id="contact" aria-labelledby="contact-title">
+    <div class="ed-contact-card">
+      <div class="ed-contact-pattern" aria-hidden="true"></div>
+      <div><span class="ed-overline">CONTACT / COLLABORATION</span><h2 id="contact-title">Parlons sécurité, CTF et ingénierie.</h2><p>Un projet, une question technique, un stage ou une collaboration ? Je serais ravi d'en discuter.</p></div>
+      <a class="ed-btn ed-btn-primary" href={base+"contact/"}>Me contacter <span aria-hidden="true">↗</span></a>
+    </div>
+  </section>
+</main>
 </CommandLayout>
-<script>
-import {site} from "../config";
-import {labSignals} from "../data/commandData";
-const base=import.meta.env.BASE_URL.endsWith("/")?import.meta.env.BASE_URL:import.meta.env.BASE_URL+"/";
-const root=document.querySelector<HTMLElement>("#cc-app");
-if(root){
-  const projectButtons=Array.from(root.querySelectorAll<HTMLButtonElement>("[data-project-index]"));
-  const links=root.querySelector<HTMLAnchorElement>("[data-case-link]");
-  const tags=root.querySelector<HTMLElement>("[data-case-tags]");
-  const write=(selector:string,value:string)=>{const el=root.querySelector<HTMLElement>(selector);if(el)el.textContent=value};
-  const selectProject=(index:number,notify=true)=>{
-    const project=site.projects[index];if(!project)return;
-    projectButtons.forEach((button,i)=>{const selected=i===index;button.classList.toggle("is-active",selected);button.setAttribute("aria-pressed",String(selected))});
-    write("[data-case-title]",project.name);
-    write("[data-case-description]",project.summary);
-    write("[data-case-result]",project.outcome+" · "+project.status);
-    if(links)links.href=base+project.href;
-    if(tags){
-      tags.replaceChildren();
-      project.tags.slice(0,4).forEach(tag=>{const chip=document.createElement("span");chip.textContent=tag;tags.append(chip)});
-    }
-    if(notify)window.dispatchEvent(new CustomEvent("atlas:project",{detail:{slug:project.slug}}));
-  };
-  projectButtons.forEach((button,i)=>button.addEventListener("click",()=>selectProject(i)));
-  window.addEventListener("atlas:project",(event)=>{
-    const slug=(event as CustomEvent<{slug:string}>).detail?.slug;
-    const index=site.projects.findIndex(project=>project.slug===slug);
-    if(index>=0)selectProject(index,false);
-  });
-
-  const ws=document.querySelector<HTMLElement>("#workspace-map");
-  const views=Array.from(ws?.querySelectorAll<HTMLButtonElement>("[data-ws-view]")||[]);
-  const panels=Array.from(ws?.querySelectorAll<HTMLElement>("[data-ws-panel]")||[]);
-  const activateView=(name:string)=>{
-    panels.forEach(panel=>{panel.hidden=panel.dataset.wsPanel!==name});
-    views.forEach(button=>{const active=button.dataset.wsView===name;button.classList.toggle("is-active",active);button.setAttribute("aria-pressed",String(active))});
-    ws?.setAttribute("data-active-mode",name);
-  };
-  views.forEach(button=>button.addEventListener("click",()=>activateView(button.dataset.wsView||"orbit")));
-  ws?.querySelector<HTMLButtonElement>("[data-ws-expand]")?.addEventListener("click",()=>{
-    if(document.fullscreenElement===ws){document.exitFullscreen?.();}
-    else if(ws?.requestFullscreen){ws.requestFullscreen().catch(()=>{ws.classList.toggle("ws-maximized")});}
-    else ws?.classList.toggle("ws-maximized");
-  });
-  document.addEventListener("fullscreenchange",()=>ws?.classList.toggle("ws-is-fullscreen",document.fullscreenElement===ws));
-  window.addEventListener("atlas:inspect",()=>{
-    // The research diagram is intentionally hidden behind its dedicated mode until requested.
-    if(ws?.getAttribute("data-active-mode")==="graph")return;
-    activateView("graph");
-  });
-
-  const dialog=document.querySelector<HTMLDialogElement>("#cc-signal-dialog");
-  const populate=(selector:string,values:string[])=>{
-    const list=root.querySelector<HTMLElement>(selector);if(!list)return;
-    list.replaceChildren();values.forEach(text=>{const li=document.createElement("li");li.textContent=text;list.append(li)});
-  };
-  const showSignal=(index:number)=>{
-    const item=labSignals[index];if(!item||!dialog)return;
-    write("[data-dialog-title]",item.name);
-    write("[data-dialog-text]",item.detail);
-    write("[data-dialog-goal]",item.learningGoal);
-    write("[data-dialog-hypothesis]",item.hypothesis);
-    write("[data-dialog-mitigation]",item.mitigation);
-    write("[data-dialog-technique]",item.reference);
-    write("[data-dialog-source]",item.source);
-    populate("[data-dialog-observables]",item.observables);
-    populate("[data-dialog-steps]",item.investigation);
-    const related=site.projects.find(project=>project.slug===item.projectSlug);
-    const a=root.querySelector<HTMLAnchorElement>("[data-dialog-project]");
-    if(related&&a)a.href=base+related.href;
-    const locate=root.querySelector<HTMLButtonElement>("[data-dialog-locate]");
-    if(locate)locate.onclick=()=>{
-      dialog.close();
-      activateView("graph");
-      window.dispatchEvent(new CustomEvent("atlas:inspect",{detail:{nodeId:item.nodeId}}));
-      ws?.scrollIntoView({behavior:"smooth",block:"start"});
-    };
-    dialog.showModal();
-  };
-  root.querySelectorAll<HTMLButtonElement>("[data-signal-index]").forEach((button,i)=>button.addEventListener("click",()=>showSignal(i)));
-  window.addEventListener("atlas:scenario",(event)=>{
-    const i=(event as CustomEvent<{index:number}>).detail?.index;
-    if(typeof i==="number")showSignal(i);
-  });
-  dialog?.querySelector("[data-dialog-close]")?.addEventListener("click",()=>dialog.close());
-  dialog?.addEventListener("click",event=>{if(event.target===dialog)dialog.close()});
-  const search=root.querySelector<HTMLInputElement>("#cc-search");
-  const searchable=Array.from(root.querySelectorAll<HTMLElement>("[data-searchable]"));
-  const status=root.querySelector<HTMLElement>("[data-search-count]");
-  const normalize=(value:string)=>value.normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase().trim();
-  search?.addEventListener("input",()=>{
-    const text=normalize(search.value);
-    let found=0;
-    searchable.forEach(el=>{
-      const ok=!text||normalize(el.dataset.searchable||"").includes(text);
-      el.hidden=!ok;if(ok)found++;
-    });
-    if(status)status.textContent=text?found+" résultat(s) pour « "+search.value+" » — Entrée pour ouvrir le premier.":"";
-  });
-  search?.addEventListener("keydown",event=>{
-    if(event.key==="Enter"){
-      const first=searchable.find(node=>!node.hidden);
-      if(first){event.preventDefault();first.click();first.scrollIntoView({behavior:"smooth",block:"center"})}
-    }
-    if(event.key==="Escape"){search.value="";search.dispatchEvent(new Event("input"));search.blur()}
-  });
-  document.addEventListener("keydown",event=>{
-    if((event.ctrlKey||event.metaKey)&&event.key.toLowerCase()==="k"){event.preventDefault();search?.focus();search?.select()}
-  });
-  const toggle=root.querySelector<HTMLButtonElement>("[data-sidebar-toggle]");
-  const closeSidebar=()=>{document.body.classList.remove("cc-sidebar-open");toggle?.setAttribute("aria-expanded","false")};
-  toggle?.addEventListener("click",()=>{const open=document.body.classList.toggle("cc-sidebar-open");toggle.setAttribute("aria-expanded",String(open))});
-  root.querySelectorAll("[data-sidebar-close]").forEach(el=>el.addEventListener("click",closeSidebar));
-  root.querySelectorAll(".cc-primary-nav a").forEach(el=>el.addEventListener("click",closeSidebar));
-}
-</script>
