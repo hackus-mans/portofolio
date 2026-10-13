@@ -1,6 +1,7 @@
 ---
 import CommandLayout from "../layouts/CommandLayout.astro";
 import {site} from "../config";
+import {combinedProjects,achievements} from "../lib/adminContent";
 import {getPublications} from "../lib/publications";
 const publications=await getPublications();
 const base=import.meta.env.BASE_URL.endsWith("/")?import.meta.env.BASE_URL:import.meta.env.BASE_URL+"/";
@@ -10,8 +11,11 @@ const approach=[
  {step:"03",title:"Break",description:"Tester les hypothèses sur des systèmes autorisés, CTF et laboratoires."},
  {step:"04",title:"Document",description:"Expliquer le raisonnement, les résultats, les limites et les corrections."}
 ];
-const distinctions=site.proof.filter(item=>!item.label.includes("Licence"));
-const projects=site.projects;
+const distinctions=[
+ ...site.proof.filter(item=>!item.label.includes("Licence")).map(item=>({...item,href:item.detail==="HoneyShield"?base+"projects/honeyshield/":base+"ctf/"})),
+ ...achievements.map(item=>({value:item.result,label:item.title,detail:[item.event,item.year].filter(Boolean).join(" · "),href:item.proofUrl||base+"ctf/"}))
+];
+const projects=combinedProjects;
 ---
 <CommandLayout>
 <main class="ed-home" id="main-content">
@@ -56,7 +60,7 @@ const projects=site.projects;
   <section class="ed-section ed-container" id="highlights" aria-labelledby="highlights-title">
     <div class="ed-section-heading"><div><span class="ed-overline">CTF / DISTINCTIONS</span><h2 id="highlights-title">Compétitions & réalisations</h2></div><a class="ed-section-link" href={base+"ctf/"}>Mes résultats <span>↗</span></a></div>
     <div class="ed-honors">
-      {distinctions.map((item,i)=><a class="ed-honor-card" href={i===0?base+"projects/honeyshield/":base+"ctf/"}>
+      {distinctions.map((item,i)=><a class="ed-honor-card" href={item.href}>
         <div class="ed-honor-top"><span class="ed-honor-icon" aria-hidden="true">{i===0?"✧":i===1?"⌘":"▥"}</span><span class="ed-honor-index">0{i+1} / RECORD</span></div>
         <p class="ed-honor-type">{item.detail}</p>
         <h3>{item.label}</h3>
