@@ -1,0 +1,192 @@
+---
+import "../../styles/admin.css";
+import {site} from "../../config";
+const base=import.meta.env.BASE_URL.endsWith("/")?import.meta.env.BASE_URL:import.meta.env.BASE_URL+"/";
+const existingProjectSlugs=site.projects.map(p=>p.slug).join(",");
+---
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="robots" content="noindex,nofollow,noarchive" />
+  <meta name="referrer" content="no-referrer" />
+  <meta name="theme-color" content="#0a111c" />
+  <link rel="icon" href={base+"favicon.svg"} type="image/svg+xml"/>
+  <title>Portail administrateur · NAKORE</title>
+  <meta name="description" content="Espace de rédaction réservé au propriétaire du portfolio." />
+</head>
+<body class="admin-body" data-repo-owner="hackus-mans" data-repo-name="portofolio" data-existing-projects={existingProjectSlugs}>
+  <header class="admin-topbar">
+    <a href={base} class="admin-brand"><span class="admin-brand-mark">N<span>.</span></span><span>NAKORE <small>/ STUDIO</small></span></a>
+    <div class="admin-header-actions">
+      <span class="admin-connection" id="admin-connection"><i></i> Déconnecté</span>
+      <a href={base} class="admin-top-link">Voir le site ↗</a>
+      <button id="admin-signout" type="button" hidden class="admin-signout">Se déconnecter</button>
+    </div>
+  </header>
+  <main id="main-content">
+    <section class="admin-auth" id="admin-auth">
+      <div class="admin-auth-art" aria-hidden="true"><span class="admin-auth-visual">N<span>/</span></span><span class="admin-auth-orbit"></span><span class="admin-auth-code">EDITORIAL CONTROL PANEL // 01</span></div>
+      <div class="admin-auth-copy">
+        <p class="admin-eyebrow"><span class="admin-led"></span> ESPACE DE PUBLICATION PERSONNEL</p>
+        <h1>Construire.<br/><em>Documenter.</em><br/>Publier.</h1>
+        <p>Gère tes writeups, labs, projets, notes, compétitions et certifications dans une seule interface. Tu conserves ton site actuel, sans éditer les fichiers à la main.</p>
+        <form id="admin-login-form" class="admin-login-form">
+          <label for="github-token">Jeton GitHub à accès limité</label>
+          <div class="admin-token-input"><input type="password" id="github-token" name="token" required autocomplete="off" spellcheck="false" placeholder="github_pat_..." aria-describedby="token-explanation"/><button type="button" id="admin-toggle-token" aria-label="Afficher ou masquer le jeton">Voir</button></div>
+          <p id="token-explanation">Ce jeton reste uniquement dans la mémoire de cet onglet. Il n'est pas enregistré dans le navigateur ni envoyé à un autre service que l'API GitHub.</p>
+          <button type="submit" class="admin-button admin-button-primary" id="admin-login">Ouvrir mon espace <span aria-hidden="true">↗</span></button>
+        </form>
+        <div class="admin-token-help">
+          <strong>Première connexion ?</strong>
+          <p>Crée un jeton <em>fine-grained</em> dans GitHub, limite-le au dépôt <code>hackus-mans/portofolio</code>, donne uniquement la permission <strong>Contents: Read and write</strong> et définis une expiration courte.</p>
+          <a href="https://github.com/settings/personal-access-tokens/new" rel="noopener noreferrer" target="_blank">Créer mon jeton GitHub ↗</a>
+        </div>
+        <p class="admin-security-note"><strong>À savoir :</strong> GitHub Pages n'exécute pas de serveur. L'URL de cet éditeur est publique, mais seules des autorisations GitHub permettent d'écrire dans ton dépôt. Pour une authentification à mot de passe avec sessions privées, il faudra ajouter un backend sécurisé.</p>
+      </div>
+    </section>
+    <div id="admin-shell" class="admin-shell" hidden>
+      <aside class="admin-sidebar">
+        <div class="admin-sidebar-heading">MON ESPACE</div>
+        <nav aria-label="Sections de gestion">
+          <button data-section="dashboard" class="admin-nav-item is-active"><span>▦</span> Tableau de bord</button>
+          <span class="admin-nav-group">PUBLICATIONS</span>
+          <button data-section="writeups" class="admin-nav-item"><span>▤</span> Writeups</button>
+          <button data-section="labs" class="admin-nav-item"><span>⌘</span> Laboratoires</button>
+          <button data-section="notes" class="admin-nav-item"><span>≡</span> Notes</button>
+          <span class="admin-nav-group">PORTFOLIO</span>
+          <button data-section="projects" class="admin-nav-item"><span>▧</span> Projets</button>
+          <button data-section="achievements" class="admin-nav-item"><span>✧</span> CTF & distinctions</button>
+          <button data-section="certifications" class="admin-nav-item"><span>◇</span> Certifications</button>
+          <button data-section="media" class="admin-nav-item"><span>▣</span> Images & médias</button>
+        </nav>
+        <div class="admin-sidebar-bottom"><span>SESSION GITHUB</span><strong id="admin-account-name">—</strong><span>Aucune donnée sensible sauvegardée</span></div>
+      </aside>
+      <div class="admin-content">
+        <div class="admin-mobile-nav"><label for="admin-mobile-section">Rubrique</label><select id="admin-mobile-section">
+          <option value="dashboard">Tableau de bord</option><option value="writeups">Writeups</option>
+          <option value="labs">Laboratoires</option><option value="notes">Notes</option>
+          <option value="projects">Projets</option><option value="achievements">CTF & distinctions</option>
+          <option value="certifications">Certifications</option><option value="media">Images & médias</option>
+        </select></div>
+        <div class="admin-content-heading">
+          <div><p class="admin-eyebrow"><span class="admin-led"></span> NAKORE / CONTENT WORKSPACE</p><h1 id="admin-section-title">Tableau de bord</h1><p id="admin-section-desc">Ton espace de rédaction et de publication.</p></div>
+          <button type="button" class="admin-button admin-button-primary" id="admin-create" hidden>+ Nouvelle publication</button>
+        </div>
+        <section id="admin-dashboard" aria-label="Résumé des publications">
+          <div class="admin-stats" id="admin-stats">
+            <article><span>Writeups</span><strong id="stat-writeups">—</strong><small>articles</small></article>
+            <article><span>Laboratoires</span><strong id="stat-labs">—</strong><small>expériences</small></article>
+            <article><span>Notes</span><strong id="stat-notes">—</strong><small>documents</small></article>
+            <article><span>Projets</span><strong id="stat-projects">—</strong><small>nouveaux dossiers</small></article>
+          </div>
+          <div class="admin-dashboard-grid">
+            <section class="admin-panel"><div class="admin-panel-head"><h2>Commencer une publication</h2><small>CHOISIS TA RUBRIQUE</small></div>
+              <div class="admin-quick-actions">
+                <button data-quick="writeups"><span class="admin-quick-icon">▤</span><span>Écrire un writeup<small>Décrire un challenge</small></span>↗</button>
+                <button data-quick="labs"><span class="admin-quick-icon">⌘</span><span>Documenter un lab<small>Hypothèse, méthode, résultats</small></span>↗</button>
+                <button data-quick="projects"><span class="admin-quick-icon">▧</span><span>Créer un projet<small>Une fiche de cas complète</small></span>↗</button>
+                <button data-quick="notes"><span class="admin-quick-icon">≡</span><span>Prendre une note<small>Une notion comprise</small></span>↗</button>
+              </div>
+            </section>
+            <section class="admin-panel"><div class="admin-panel-head"><h2>Cycle de publication</h2><small>GITHUB PAGES</small></div>
+              <div class="admin-publish-flow"><div><b>01</b><span>Rédiger ou modifier le contenu</span></div><div><b>02</b><span>Choisir Brouillon ou Publié</span></div><div><b>03</b><span>Enregistrer sur GitHub</span></div><div><b>04</b><span>Attendre la compilation du site</span></div></div>
+              <a class="admin-workflow-link" href="https://github.com/hackus-mans/portofolio/actions/workflows/deploy-astro.yml" target="_blank" rel="noopener noreferrer">Suivre mes déploiements ↗</a>
+            </section>
+          </div>
+          <p class="admin-callout">Les cinq projets historiques de ton portfolio sont conservés. Le portail gère les <strong>nouveaux projets</strong> ; les dossiers historiques restent modifiables dans le dépôt GitHub.</p>
+        </section>
+        <section id="admin-library" hidden>
+          <div class="admin-library-tools"><label for="admin-filter">Rechercher</label><input id="admin-filter" type="search" placeholder="Filtrer mes publications..." autocomplete="off"/><span id="admin-list-total"></span></div>
+          <div id="admin-list" class="admin-list"><p>Chargement des contenus…</p></div>
+        </section>
+        <section id="admin-editor" hidden>
+          <form id="admin-editor-form" novalidate>
+            <input type="hidden" name="recordPath" />
+            <div class="admin-editor-toolbar">
+              <div><span id="admin-editor-kicker" class="admin-eyebrow">NOUVELLE PUBLICATION</span><h2 id="admin-editor-heading">Nouvelle publication</h2></div>
+              <div class="admin-editor-actions">
+                <button type="button" class="admin-button admin-button-ghost" id="admin-cancel">Annuler</button>
+                <button type="button" class="admin-button admin-button-danger" id="admin-delete" hidden>Supprimer</button>
+                <button type="submit" class="admin-button admin-button-primary" id="admin-save">Enregistrer sur GitHub ↗</button>
+              </div>
+            </div>
+            <div class="admin-edit-grid">
+              <div class="admin-panel admin-form-main">
+                <div class="admin-field"><label for="field-title">Titre <span>*</span></label><input id="field-title" name="title" required maxlength="160" placeholder="Ex. Analyse d'un lab Linux" /></div>
+                <div class="admin-field"><label for="field-summary">Résumé <span>*</span></label><textarea id="field-summary" name="summary" rows="3" maxlength="400" required placeholder="En quelques phrases, quel est l'objectif ?"></textarea></div>
+                <div data-form-kind="article">
+                  <div class="admin-field"><label for="field-body">Contenu Markdown <span>*</span></label><div class="admin-markdown-tip">Utilise ## pour un titre, \`\`\` pour un bloc de code et ![alt](url) pour une image.</div><textarea id="field-body" name="body" rows="19" placeholder="## Contexte&#10;&#10;## Démarche&#10;&#10;## Résultat"></textarea></div>
+                  <div class="admin-inline-fields">
+                    <div class="admin-field" data-article-field="writeups"><label for="field-platform">Plateforme</label><input name="platform" id="field-platform" placeholder="Hack The Box"/></div>
+                    <div class="admin-field" data-article-field="writeups"><label for="field-difficulty">Difficulté</label><input name="difficulty" id="field-difficulty" placeholder="Easy"/></div>
+                    <div class="admin-field" data-article-field="labs" hidden><label for="field-domain">Domaine</label><input name="domain" id="field-domain" placeholder="SOC / Linux / Web"/></div>
+                    <div class="admin-field" data-article-field="labs" hidden><label for="field-state">État du laboratoire</label><select name="state" id="field-state"><option value="active">En cours</option><option value="completed">Terminé</option><option value="archived">Archivé</option></select></div>
+                    <div class="admin-field" data-article-field="notes" hidden><label for="field-topic">Sujet</label><input name="topic" id="field-topic" placeholder="Linux"/></div>
+                  </div>
+                  <div class="admin-field"><label for="field-tags">Technologies / tags</label><input name="tags" id="field-tags" placeholder="Linux, SOC, Python"/></div>
+                  <div class="admin-field"><label for="field-date">Date de publication</label><input name="publishedAt" id="field-date" type="date"/></div>
+                </div>
+                <div data-form-kind="projects" hidden>
+                  <div class="admin-inline-fields">
+                    <div class="admin-field"><label for="project-category">Domaine</label><input name="category" id="project-category" placeholder="SOC / Security Engineering"/></div>
+                    <div class="admin-field"><label for="project-stage">Avancement</label><input name="stage" id="project-stage" placeholder="En développement"/></div>
+                  </div>
+                  <div class="admin-field"><label for="project-tech">Technologies</label><input name="technologies" id="project-tech" placeholder="Python, Wazuh, Docker"/></div>
+                  <div class="admin-field"><label for="project-problem">Problème à résoudre</label><textarea name="problem" id="project-problem" rows="5"></textarea></div>
+                  <div class="admin-field"><label for="project-approach">Architecture / méthodologie</label><textarea name="approach" id="project-approach" rows="7"></textarea></div>
+                  <div class="admin-field"><label for="project-results">Résultats & preuves</label><textarea name="results" id="project-results" rows="5"></textarea></div>
+                  <div class="admin-field"><label for="project-next">Limites / prochaines étapes</label><textarea name="next" id="project-next" rows="4"></textarea></div>
+                  <div class="admin-field"><label for="project-link">Lien du dépôt ou de la démo</label><input type="url" name="link" id="project-link" placeholder="https://github.com/..."/></div>
+                </div>
+                <div data-form-kind="achievements" hidden>
+                  <div class="admin-inline-fields">
+                    <div class="admin-field"><label for="achievement-result">Résultat / classement</label><input name="result" id="achievement-result" placeholder="1er Prix"/></div>
+                    <div class="admin-field"><label for="achievement-event">Compétition</label><input name="event" id="achievement-event" placeholder="JPOPE / CTF"/></div>
+                    <div class="admin-field"><label for="achievement-year">Année</label><input name="year" id="achievement-year" placeholder="2026"/></div>
+                  </div>
+                  <div class="admin-field"><label for="achievement-proof">Lien de preuve (facultatif)</label><input type="url" name="proofUrl" id="achievement-proof" placeholder="https://..."/></div>
+                </div>
+                <div data-form-kind="certifications" hidden>
+                  <div class="admin-inline-fields">
+                    <div class="admin-field"><label for="credential-issuer">Organisme</label><input name="issuer" id="credential-issuer" placeholder="Cisco / Fortinet / HTB"/></div>
+                    <div class="admin-field"><label for="credential-state">Situation</label><select name="credentialState" id="credential-state"><option value="earned">Déclarée obtenue</option><option value="preparing">En préparation</option></select></div>
+                    <div class="admin-field"><label for="credential-date">Date (facultative)</label><input type="date" name="date" id="credential-date"/></div>
+                    <div class="admin-field"><label for="credential-proof">Lien de vérification</label><input type="url" name="verificationUrl" id="credential-proof" placeholder="https://..."/></div>
+                  </div>
+                </div>
+              </div>
+              <aside class="admin-panel admin-form-aside">
+                <h3>Publication</h3>
+                <div class="admin-field"><label for="field-status">Visibilité</label><select name="status" id="field-status"><option value="draft">Brouillon — masqué du site</option><option value="published">Publié — visible après déploiement</option></select></div>
+                <div class="admin-field"><label for="field-slug">Identifiant URL</label><input name="slug" id="field-slug" placeholder="mon-article"/><small>Utilisé pour l'URL ; ne change pas après création.</small></div>
+                <div class="admin-preview-box"><span>APERÇU DU TITRE</span><strong id="admin-preview-title">Titre de la publication</strong><p id="admin-preview-summary">Ton résumé apparaîtra ici.</p></div>
+                <p class="admin-editor-hint">Chaque enregistrement devient un commit dans ton dépôt. Si tu choisis « Publié », GitHub Pages reconstruira automatiquement ton portfolio.</p>
+                <a class="admin-workflow-link" href="https://github.com/hackus-mans/portofolio/actions" target="_blank" rel="noopener noreferrer">Vérifier les déploiements ↗</a>
+              </aside>
+            </div>
+          </form>
+        </section>
+        <section id="admin-media" hidden>
+          <div class="admin-panel admin-media-panel"><div class="admin-panel-head"><h2>Ajouter une image</h2><small>CAPTURES / ILLUSTRATIONS</small></div>
+            <form id="admin-image-form">
+              <div class="admin-field"><label for="media-file">Choisir une image (PNG, JPG, WebP, max. 1,5 Mo)</label><input type="file" id="media-file" name="file" accept="image/png,image/jpeg,image/webp" required /></div>
+              <div class="admin-field"><label for="media-alt">Description de l'image</label><input id="media-alt" name="alt" placeholder="Capture anonymisée du scan Nmap"/></div>
+              <button class="admin-button admin-button-primary" type="submit">Ajouter à la médiathèque ↗</button>
+            </form>
+            <div id="admin-upload-result" hidden class="admin-upload-result">
+              <p>Image enregistrée ! Copie ce code Markdown dans un writeup :</p>
+              <code id="admin-upload-markdown"></code>
+              <button type="button" id="admin-copy-image" class="admin-button admin-button-ghost">Copier</button>
+            </div>
+            <p class="admin-media-tip">Avant de publier une capture, masque les adresses privées, identifiants, jetons et autres données sensibles. Les images sont publiques dans ton dépôt.</p>
+          </div>
+        </section>
+      </div>
+    </div>
+  </main>
+  <div class="admin-toast" id="admin-toast" role="status" aria-live="polite" hidden></div>
+  <script src="../../scripts/admin.ts"></script>
+</body>
+</html>
