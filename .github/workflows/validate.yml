@@ -52,3 +52,32 @@ jobs:
             qa-desktop.jpg
             qa-mobile.jpg
           if-no-files-found: warn
+
+  editorial-public-website-smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Inspect public GitHub Pages release
+        shell: bash
+        run: |
+          set -euo pipefail
+          site="https://hackus-mans.github.io/portofolio/"
+          curl -fLsS --retry 3 --max-time 30 -H "Cache-Control: no-cache" "$site?revision=editorial-clone-20261013" -o /tmp/index.html
+          grep -Fq "NAKORE" /tmp/index.html
+          grep -Fq 'ed-honor-card' /tmp/index.html
+          grep -Fq 'ed-terminal' /tmp/index.html
+          grep -Fq 'ed-project-card' /tmp/index.html
+          grep -Fq 'ed-desktop-links' /tmp/index.html
+          echo "PASS: editorial homepage is live"
+          : >/tmp/styles.css
+          while IFS= read -r asset; do
+            curl -fLsS --max-time 30 "https://hackus-mans.github.io$asset" >> /tmp/styles.css
+          done < <(grep -oE '/portofolio/_astro/[^" ]+\.css' /tmp/index.html | sort -u)
+          grep -Fq ".ed-hero-grid" /tmp/styles.css
+          grep -Fq ".ed-project-grid" /tmp/styles.css
+          echo "PASS: editorial responsive stylesheet publicly available"
+          for route in projects/ ctf/ writeups/ certifications/ about/ contact/ journal/ labs/ notes/ roadmap/ projects/cybermind-x/; do
+            code="$(curl -Ls -o /dev/null -w '%{http_code}' "$site$route")"
+            echo "$route -> HTTP $code"
+            test "$code" = 200
+          done
+          echo "PASS: all eleven checked public routes resolve"
