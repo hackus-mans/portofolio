@@ -1,0 +1,68 @@
+name: Publier dans mon journal
+on:
+  workflow_dispatch:
+    inputs:
+      category:
+        description: Type de publication
+        required: true
+        type: choice
+        options: [notes, labs, writeups]
+        default: notes
+      title:
+        description: Titre
+        required: true
+        type: string
+      summary:
+        description: Résumé en une phrase (400 caractères maximum)
+        required: true
+        type: string
+      body:
+        description: Texte Markdown (coller le texte préparé dans un éditeur)
+        required: true
+        type: string
+      tags:
+        description: Sujets séparés par des virgules (Linux, Python, SOC)
+        type: string
+        default: ""
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+concurrency:
+  group: journal-publication
+  cancel-in-progress: false
+jobs:
+  publish:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: main
+          fetch-depth: 0
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - name: Créer la publication
+        run: node scripts/new-entry.mjs --from-env
+        env:
+          ENTRY_CATEGORY: ${{ inputs.category }}
+          ENTRY_TITLE: ${{ inputs.title }}
+          ENTRY_SUMMARY: ${{ inputs.summary }}
+          ENTRY_BODY: ${{ inputs.body }}
+          ENTRY_TAGS: ${{ inputs.tags }}
+      - run: npm run build
+      - run: node scripts/verify-dist.mjs
+      - name: Enregistrer dans le dépôt
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add src/content/
+          git commit -m 'content: nouvelle publication du journal'
+          git pull --rebase origin main
+          git push origin HEAD:main
+  deploy:
+    needs: publish
+    uses: ./.github/workflows/deploy-astro.yml

@@ -1,0 +1,201 @@
+---
+import { atlasNodes, atlasEdges } from "../data/commandData";
+const nodeLookup=new Map(atlasNodes.map(n=>[n.id,n]));
+const links=atlasEdges.map(edge=>({...edge,a:nodeLookup.get(edge.from),b:nodeLookup.get(edge.to)})).filter(edge=>edge.a&&edge.b);
+const continents=[
+"M83 95 139 61 203 53 220 79 194 92 178 110 155 116 157 148 143 161 115 157 92 132 74 125Z",
+"M181 161 208 168 223 190 221 213 245 232 237 269 222 299 204 336 193 312 194 283 178 261 172 237 154 220 155 195Z",
+"M377 85 415 65 455 79 471 98 466 124 436 128 420 159 390 170 372 145 353 127Z",
+"M442 158 470 135 499 153 532 186 529 212 513 233 513 273 495 312 469 314 445 288 443 246 423 223Z",
+"M465 98 505 69 559 70 585 82 617 62 662 71 692 55 754 63 794 76 842 77 891 93 912 118 882 133 852 155 811 144 781 163 746 149 700 162 671 151 631 177 603 167 577 141 552 145 521 120 489 126Z",
+"M827 298 874 294 913 318 946 340 944 372 921 387 878 379 848 355 824 337Z",
+"M579 218 617 207 642 230 622 248 599 249Z",
+"M362 295 382 288 395 304 379 316Z"
+];
+---
+<section class="cc-map-panel" id="threat-map" aria-labelledby="graph-title" data-map-panel>
+  <div class="cc-map-top">
+    <div>
+      <div class="cc-section-eyebrow"><span class="cc-pulse-blue"></span> EXPLORATEUR DE PROJETS ET DE SCÉNARIOS</div>
+      <h2 id="graph-title">Security Constellation <span class="cc-heading-suffix">/ Topologie pédagogique</span></h2><p class="cc-map-explainer">Chaque lien a une explication. Cette carte est schématique : aucune attaque en direct, aucune géolocalisation.</p>
+    </div>
+    <div class="cc-map-controls" aria-label="Contrôles de la carte">
+      <button type="button" class="cc-map-control active" data-map-filter="all" aria-pressed="true">Tous</button>
+      <button type="button" class="cc-map-control" data-map-filter="project" aria-pressed="false">Projets</button>
+      <button type="button" class="cc-map-control" data-map-filter="threat" aria-pressed="false">Scénarios</button>
+    </div>
+  </div>
+  <div class="cc-map-stage" data-map-stage data-filter="all">
+    <div class="cc-map-viewport" data-map-viewport tabindex="0" role="region" aria-label="Carte des projets. Sur mobile, faire glisser horizontalement pour explorer.">
+      <div class="cc-graph-layer" data-graph-layer>
+      <svg class="cc-network" viewBox="0 0 1080 485" role="group" aria-label="Cartographie interactive de projets et scénarios de sécurité simulés">
+        <defs>
+          <pattern id="cc-world-dots" width="7" height="7" patternUnits="userSpaceOnUse"><circle cx="3.3" cy="3.3" r="1.13" fill="#3167a8" opacity=".78"/></pattern>
+          <radialGradient id="cc-world-halo"><stop stop-color="#1a3c89" stop-opacity=".31"/><stop offset="1" stop-color="#0a1030" stop-opacity="0"/></radialGradient>
+          <filter id="cc-blue-glow" x="-150%" y="-150%" width="400%" height="400%"><feGaussianBlur stdDeviation="7"/></filter>
+          <filter id="cc-red-glow" x="-150%" y="-150%" width="400%" height="400%"><feGaussianBlur stdDeviation="8"/></filter>
+          <linearGradient id="cc-link-grad"><stop stop-color="#2c74ff"/><stop offset="1" stop-color="#567aaf"/></linearGradient>
+          <linearGradient id="cc-blue-fill" x1="0" x2="1" y1="0" y2="1"><stop stop-color="#1b62fb"/><stop offset="1" stop-color="#091940"/></linearGradient>
+          <linearGradient id="cc-red-fill" x1="0" x2="1" y1="0" y2="1"><stop stop-color="#b62148"/><stop offset="1" stop-color="#420b23"/></linearGradient>
+        </defs>
+        <rect width="1080" height="485" fill="transparent"/>
+        <ellipse cx="560" cy="237" rx="510" ry="273" fill="url(#cc-world-halo)"/>
+        <g opacity=".53" fill="url(#cc-world-dots)">{continents.map(path=><path d={path}/>)}</g>
+        <g class="cc-world-crosshairs" stroke="#3e6fba" stroke-width=".7" opacity=".32" fill="none">
+          <path d="M0 160H1080M0 322H1080M190 0V485M550 0V485M900 0V485" stroke-dasharray="3 10"/>
+          <circle cx="555" cy="225" r="175" stroke-dasharray="4 9"/>
+          <circle cx="555" cy="225" r="295" stroke-dasharray="3 12"/>
+        </g>
+        <g class="cc-network-lines">
+          {links.map((edge,i)=>{
+            const a=edge.a!,b=edge.b!,mx=(a.x+b.x)/2,my=Math.min(a.y,b.y)-Math.min(Math.abs(a.x-b.x)*.075,40);
+            return <path class:list={["cc-edge",{"cc-edge-hot":a.kind==="threat"||b.kind==="threat"}]} d={"M"+a.x+" "+a.y+" Q"+mx+" "+my+" "+b.x+" "+b.y} data-edge-nodes={a.id+" "+b.id} data-relation={edge.relation} aria-label={edge.reason} style={"--edge-delay:"+((i%8)*.14)+"s"}/>;
+          })}
+        </g>
+        <g class="cc-network-nodes">
+          {atlasNodes.map(node=><g role="button" tabindex="0" class:list={["cc-node","cc-node-"+node.kind]} transform={"translate("+node.x+" "+node.y+")"} data-graph-node={node.id} data-node-kind={node.kind} aria-label={"Sélectionner "+node.label} aria-pressed="false">
+            <title>{node.label} — {node.detail}</title>
+            <circle class="cc-node-glow" r={(node.size||10)*1.5}/>
+            <circle class="cc-node-outer" r={(node.size||10)+7}/>
+            <circle class="cc-node-inner" r={node.size||10}/>
+            {node.kind==="core"
+              ?<><path d="M-10 10V-10H-4L9 4V-10H14V10H8L-5-4V10Z" fill="#e6edff"/><circle cx="16" cy="-16" r="3.2" fill="#5de5bd"/></>
+              :node.kind==="threat"
+              ?<><path d="M-6 -7 0 -10 6 -7 6 1 0 9 -6 1Z" fill="#fff1f4" opacity=".95"/><path d="M0 -4V2M0 5v1" stroke="#be153d" stroke-width="2.2" stroke-linecap="round"/></>
+              :node.kind==="project"
+              ?<><path d="M-8 -8H5L9-4V8H-8Z" fill="none" stroke="#e6f3ff" stroke-width="1.8"/><path d="M-4 -2H5M-4 2H5" stroke="#d2eaff" stroke-width="1.2"/></>
+              :node.kind==="defense"
+              ?<><path d="M0 -9 8 -5 7 2 0 10 -7 2 -8 -5Z" stroke="#ebf4ff" fill="none" stroke-width="1.8"/><path d="m-3 0 2 2 4-5" fill="none" stroke="#fff" stroke-width="1.7"/></>
+              :<circle cx="0" cy="0" r="2.5" fill="#e6efff"/>}
+            {node.size&&node.size>=18&&<text class="cc-node-label" y={(node.size||15)+27} text-anchor="middle">{node.label}</text>}
+          </g>)}
+        </g>
+        <g fill="#8ea8d7" font-family="monospace" font-size="10" opacity=".67" letter-spacing="1.3">
+          <text x="63" y="75">N. AMERICA</text><text x="227" y="360">S. AMERICA</text><text x="453" y="62">EUROPE</text><text x="667" y="121">ASIA</text><text x="503" y="349">AFRICA</text><text x="877" y="455">AUSTRALIA</text>
+        </g>
+      </svg>
+    </div>
+    </div>
+    <div class="cc-map-legend"><span><i class="blue"></i> Projets et outils</span><span><i class="red"></i> Exercices simulés</span><span><i class="small"></i> Traces</span></div>
+    <div class="cc-map-zoom" aria-label="Zoom de la carte"><button type="button" data-zoom-in aria-label="Zoom avant">+</button><button type="button" data-zoom-out aria-label="Zoom arrière">−</button><button type="button" data-zoom-reset aria-label="Réinitialiser le zoom">◎</button></div>
+    <div class="cc-map-inspector" data-inspector hidden>
+      <div class="cc-inspector-top"><span>EXPLORATEUR / CONTEXTE</span><button type="button" data-inspector-close aria-label="Fermer les détails">×</button></div>
+      <span class="cc-inspector-kind" data-inspector-kind>PROJET</span>
+      <strong data-inspector-title>NAKORE CORE</strong>
+      <p data-inspector-detail>Relations de projets</p>
+      <div class="cc-inspector-relations"><b>RELATIONS DOCUMENTÉES</b><ul data-inspector-relations></ul></div>
+      <a data-inspector-link href="#" hidden>Voir l'étude de cas ↗</a>
+      <button type="button" class="cc-inspector-action" data-inspector-scenario hidden>Étudier ce scénario ↗</button>
+    </div>
+  </div>
+  <div class="cc-map-statusbar">
+    <span><span class="cc-status-dot"></span> TOPOLOGIE SCHÉMATIQUE · AUCUN FLUX NI POSITION GÉOGRAPHIQUE RÉELS</span>
+    <span class="cc-desktop-map-tip">CLIQUER UN NŒUD POUR VOIR SON RÔLE</span><span class="cc-mobile-map-tip">← FAIRE GLISSER LA CARTE →</span>
+  </div>
+</section>
+<script>
+import { atlasNodes,atlasEdges,labSignals } from "../data/commandData";
+import {site} from "../config";
+const root=document.querySelector<HTMLElement>("[data-map-panel]");
+if(root){
+  const nodeElements=Array.from(root.querySelectorAll<SVGGElement>("[data-graph-node]"));
+  const edges=Array.from(root.querySelectorAll<SVGPathElement>("[data-edge-nodes]"));
+  const stage=root.querySelector<HTMLElement>("[data-map-stage]");
+  const graph=root.querySelector<HTMLElement>("[data-graph-layer]");
+  const viewport=root.querySelector<HTMLElement>("[data-map-viewport]");
+  const inspector=root.querySelector<HTMLElement>("[data-inspector]");
+  const title=root.querySelector<HTMLElement>("[data-inspector-title]");
+  const detail=root.querySelector<HTMLElement>("[data-inspector-detail]");
+  const link=root.querySelector<HTMLAnchorElement>("[data-inspector-link]");
+  const nodeKind=root.querySelector<HTMLElement>("[data-inspector-kind]");
+  const relationList=root.querySelector<HTMLElement>("[data-inspector-relations]");
+  const scenarioAction=root.querySelector<HTMLButtonElement>("[data-inspector-scenario]");
+  const kinds:Record<string,string>={core:"PORTFOLIO",project:"PROJET",defense:"COMPOSANT / OUTIL",threat:"SCÉNARIO SIMULÉ",signal:"TRACE / CONCEPT"};
+  const connectedProjects=(id:string)=>{
+    const slugs=new Set<string>();
+    const direct=atlasNodes.find(n=>n.id===id)?.project;
+    if(direct)slugs.add(direct);
+    atlasEdges.filter(e=>e.from===id||e.to===id).forEach(e=>{
+      const neighbor=atlasNodes.find(n=>n.id===(e.from===id?e.to:e.from));
+      if(neighbor?.project)slugs.add(neighbor.project);
+    });
+    return Array.from(slugs);
+  };
+  const base=import.meta.env.BASE_URL.endsWith("/")?import.meta.env.BASE_URL:import.meta.env.BASE_URL+"/";
+  let zoom=1;
+  const panTo=(id:string,behavior:ScrollBehavior="smooth")=>{
+    if(!viewport||viewport.scrollWidth<=viewport.clientWidth+4)return;
+    const node=atlasNodes.find(item=>item.id===id);if(!node)return;
+    const position=viewport.scrollWidth*node.x/1080-viewport.clientWidth/2;
+    viewport.scrollTo({left:Math.max(0,position),behavior});
+  };
+  let selectedNode="core";
+  requestAnimationFrame(()=>panTo("core","auto"));
+  window.addEventListener("load",()=>panTo(selectedNode,"auto"),{once:true});
+  window.addEventListener("resize",()=>{
+    if(viewport && viewport.scrollWidth>viewport.clientWidth+12)panTo(selectedNode,"auto");
+  });
+  const setZoom=(value:number)=>{zoom=Math.max(.8,Math.min(1.65,value));graph?.style.setProperty("--cc-zoom",zoom.toString())};
+  root.querySelector("[data-zoom-in]")?.addEventListener("click",()=>setZoom(zoom+.15));
+  root.querySelector("[data-zoom-out]")?.addEventListener("click",()=>setZoom(zoom-.15));
+  root.querySelector("[data-zoom-reset]")?.addEventListener("click",()=>setZoom(1));
+  const inspect=(id:string)=>{
+    const node=atlasNodes.find(n=>n.id===id);
+    if(!node||!inspector)return;
+    inspector.hidden=false;if(title)title.textContent=node.label;if(detail)detail.textContent=node.detail;
+    if(nodeKind)nodeKind.textContent=kinds[node.kind]||"CONCEPT";
+    const relevant=atlasEdges.filter(e=>e.from===id||e.to===id);
+    if(relationList){
+      relationList.replaceChildren();
+      relevant.slice(0,4).forEach(e=>{
+        const li=document.createElement("li");
+        li.textContent=e.reason;
+        relationList.append(li);
+      });
+      if(relevant.length>4){
+        const li=document.createElement("li");li.textContent="+ "+(relevant.length-4)+" autres relations sur la carte";relationList.append(li);
+      }
+    }
+    const candidates=connectedProjects(id);
+    const project=site.projects.find(p=>p.slug===candidates[0]);
+    if(link){link.hidden=!project;if(project)link.href=base+project.href;}
+    const scenario=labSignals.find(s=>s.nodeId===id);
+    if(scenarioAction)scenarioAction.hidden=!scenario;
+    selectedNode=id;
+    panTo(id);
+    if(node.project){
+      window.dispatchEvent(new CustomEvent("atlas:project",{detail:{slug:node.project}}));
+    }
+    nodeElements.forEach(el=>{const active=el.dataset.graphNode===id;el.classList.toggle("cc-node-selected",active);el.setAttribute("aria-pressed",String(active))});
+    edges.forEach(edge=>edge.classList.toggle("cc-edge-selected",(edge.dataset.edgeNodes||"").split(" ").includes(id)));
+  };
+  scenarioAction?.addEventListener("click",()=>{const active=nodeElements.find(e=>e.classList.contains("cc-node-selected"))?.dataset.graphNode;const i=labSignals.findIndex(s=>s.nodeId===active);if(i>=0)window.dispatchEvent(new CustomEvent("atlas:scenario",{detail:{index:i}}))});
+  window.addEventListener("atlas:inspect",(event)=>{const id=(event as CustomEvent<{nodeId:string}>).detail?.nodeId;if(id)inspect(id)});
+  nodeElements.forEach(node=>{
+    node.addEventListener("click",()=>inspect(node.dataset.graphNode||""));
+    node.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();inspect(node.dataset.graphNode||"")}});
+  });
+  const close=()=>{if(inspector)inspector.hidden=true;nodeElements.forEach(el=>{el.classList.remove("cc-node-selected");el.setAttribute("aria-pressed","false")});edges.forEach(e=>e.classList.remove("cc-edge-selected"))};
+  root.querySelector("[data-inspector-close]")?.addEventListener("click",close);
+  const applyFilter=(filter:string)=>{
+    if(stage)stage.dataset.filter=filter;
+    const shown=new Set<string>();
+    nodeElements.forEach(el=>{
+      const kind=el.dataset.nodeKind||"";
+      const show=filter==="all" || (filter==="project" && (kind==="core"||kind==="project")) || (filter==="threat" && (kind==="threat"||kind==="signal"));
+      el.toggleAttribute("hidden",!show);el.setAttribute("aria-hidden",String(!show));el.setAttribute("tabindex",show?"0":"-1");
+      if(show && el.dataset.graphNode)shown.add(el.dataset.graphNode);
+    });
+    edges.forEach(el=>{const [a,b]=(el.dataset.edgeNodes||"").split(" ");el.toggleAttribute("hidden",!shown.has(a)||!shown.has(b))});
+  };
+  root.querySelectorAll<HTMLButtonElement>("[data-map-filter]").forEach(button=>{
+    button.addEventListener("click",()=>{
+      const filter=button.dataset.mapFilter||"all";
+      applyFilter(filter);
+      root.querySelectorAll<HTMLButtonElement>("[data-map-filter]").forEach(b=>{const active=b===button;b.classList.toggle("active",active);b.setAttribute("aria-pressed",String(active))});
+      close();
+    });
+  });
+  applyFilter("all");
+}
+</script>

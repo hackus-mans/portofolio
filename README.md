@@ -1,45 +1,52 @@
-# Portfolio vierge
+# Joseph NAKORE — Portfolio cybersécurité
 
-Site public : https://hackus-mans.github.io/portofolio/
+**Site :** https://hackus-mans.github.io/portofolio/
 
-Le site a été remis à zéro. Aucun ancien projet, résultat, certification, photo ou article ne figure dans cette version. Tu peux désormais ajouter ton contenu toi-même, directement depuis GitHub.
+Une constellation interactive pour explorer mes projets, et un journal pour documenter mes apprentissages. Astro génère un site statique ; le contenu est conservé dans Git, sans base de données à administrer.
 
-## Modifier ton site sans coder
+## Publier au quotidien, depuis GitHub
 
-1. Ouvre ce fichier : https://github.com/hackus-mans/portofolio/blob/main/src/data/contenu.json
-2. Clique sur le crayon (« Edit this file »).
-3. Modifie les champs du fichier :
-   - **titre** : le titre du site ;
-   - **sousTitre** : la phrase sous le titre ;
-   - **presentation** : ta description personnelle ;
-   - **projets** : une liste de projets ;
-   - **liens** : tes profils et autres liens.
-4. Clique sur **Commit changes**, en choisissant la branche main.
-5. Attends que « Deploy Astro portfolio » passe au vert dans GitHub Actions. La mise à jour apparaîtra sur ton site.
+1. Ouvrir [Publier dans mon journal](https://github.com/hackus-mans/portofolio/actions/workflows/publish-content.yml).
+2. Cliquer **Run workflow**, conserver la branche **main**.
+3. Choisir `notes`, `labs` ou `writeups`, puis remplir le titre, le résumé, le texte Markdown et les sujets.
+4. Cliquer **Run workflow** et attendre la réussite de la publication et du déploiement.
 
-### Ajouter un projet
+Le contenu apparaît automatiquement dans sa rubrique, dans le **Journal**, et parmi les trois publications les plus récentes sur l’accueil. Le compteur de publications se recalcule. Il n’y a pas de fichier d’accueil à modifier.
 
-Chaque projet de la liste projets doit avoir ces propriétés :
-- **titre** : le nom du projet ;
-- **description** : ce que tu as fait ;
-- **url** : le lien du projet ;
-- **technologies** : un tableau de noms de technologies.
+**Pour un long texte :** créer un fichier `.md` dans `src/content/notes/`, `src/content/labs/` ou `src/content/writeups/` avec l’éditeur GitHub, puis le committer sur `main`. Le champ texte du formulaire Actions est un champ chaîne ; pour conserver confortablement les paragraphes, préférer l’éditeur de fichiers. Voir [le guide et les modèles](docs/PUBLICATION.md).
 
-Un lien doit avoir deux propriétés : **nom** et **url**.
+## Publier depuis son ordinateur
 
-Tu peux laisser projets et liens à [] aussi longtemps que tu veux : le site ne montrera pas de cartes vides.
+```bash
+npm ci
+npm run new -- notes "Comprendre les permissions Linux" "Ce que le bit setgid change sur un dossier."
+npm run dev
+```
 
-## Modifier la présentation
+`npm run new` crée un brouillon daté avec un plan à compléter et indique son chemin. Remplacer `status: "draft"` par `status: "published"` quand le contenu est prêt, puis committer et pousser sur `main`.
 
-- Contenu : **src/data/contenu.json**
-- Page : **src/pages/index.astro**
-- Couleurs et styles : **src/styles/site.css**
+```bash
+npm run build
+node scripts/verify-dist.mjs
+node --test scripts/new-entry.test.mjs
+```
 
-Depuis ton ordinateur : git clone https://github.com/hackus-mans/portofolio.git, puis cd portofolio, npm ci, npm run dev.
+## Où modifier quoi ?
 
-## Sauvegarde avant la remise à zéro
+| Contenu | Fichier ou dossier |
+| --- | --- |
+| Notes, labs, writeups | `src/content/` |
+| Présentation, compétences, liste des projets | `src/config.ts` |
+| Études de cas détaillées | `src/data/caseStudies.ts` |
+| Relations de la constellation et scénarios | `src/data/commandData.ts` |
+| Apparence de l’accueil | `src/styles/command.css` |
 
-Une copie complète est conservée sur la branche :
-https://github.com/hackus-mans/portofolio/tree/backup/portfolio-before-reset-2026-10-13
+Les brouillons sont absents du **site**, mais leurs fichiers restent visibles dans ce dépôt public. Ne jamais y écrire de secrets ou de données confidentielles.
 
-L'historique Git n'a pas été effacé. Tout peut être récupéré plus tard si tu changes d'avis.
+La carte et les scénarios sont pédagogiques : aucun flux SOC réel ni commande exécutée sur une cible. Les positions sont illustratives.
+
+## Responsive et accessibilité
+
+Le Command Center a été épuré : les trois espaces centraux sont la carte de relations, les dossiers de projets et les scénarios d'investigation. Le journal reste accessible sur l'accueil et sur sa page dédiée. La carte est **déplaçable au doigt sur téléphone**, avec centrage sur le nœud actif. Les présentations, études de cas, notes, labs et articles restent conservés.
+
+Tests : `npm run build`, `node scripts/verify-dist.mjs` et la vérification Chromium sur 14 largeurs de 320 à 2560 pixels via la PR GitHub.

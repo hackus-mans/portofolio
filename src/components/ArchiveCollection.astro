@@ -1,0 +1,61 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+const {
+  title,overline,description,entries=[],kind="PUBLICATIONS",
+  pageTitle=title+" — Joseph NAKORE"
+} = Astro.props;
+const rawBase=import.meta.env.BASE_URL;
+const base=rawBase.endsWith("/")?rawBase:rawBase+"/";
+---
+<BaseLayout title={pageTitle} description={description}>
+  <main id="main-content">
+    <header class="page-hero">
+      <div class="container">
+        <a class="back-link" href={base}>← Retour à l'accueil</a>
+        <p class="label-dark">{overline}</p>
+        <h1>{title}<span style="color:var(--volt)">.</span></h1>
+        <p class="lead">{description}</p>
+        <div class="hero-foot"><span>THE ARCHIVE / {String(entries.length).padStart(2,"0")} ENTRIES</span><span>BUILD / BREAK / DOCUMENT</span></div>
+      </div>
+    </header>
+    <section class="container archive-area" data-archive>
+      <div class="archive-toolbar">
+        <span>{entries.length} {kind.toLowerCase()}</span>
+        <label class="searchbox">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><circle cx="10" cy="10" r="7"/><path d="m15.5 15.5 5 5"/></svg>
+          <input type="search" aria-label={"Filtrer les "+kind.toLowerCase()} placeholder="Rechercher un titre, sujet, outil…" data-search />
+        </label>
+      </div>
+      <div data-results>
+        {entries.map((item)=>(
+          <a class="archive-row" href={item.href} data-entry data-keywords={[item.title,item.summary,item.kind,...(item.tags||[])].join(" ").toLocaleLowerCase("fr")}>
+            <span class="archive-kind">{item.kind}</span>
+            <div class="archive-body">
+              <h2>{item.title}</h2>
+              <p>{item.summary}</p>
+              {item.tags?.length>0&&<ul class="pill-list">{item.tags.slice(0,7).map(tag=><li>{tag}</li>)}</ul>}
+            </div>
+            <time class="archive-date" datetime={item.date?.toISOString?.()}>{item.dateText||""}</time>
+            <span class="archive-arrow" aria-hidden="true">↗</span>
+          </a>
+        ))}
+      </div>
+      <p class="empty-state" data-empty hidden>Aucun résultat correspondant à cette recherche.</p>
+      {entries.length===0&&<p class="empty-state">Aucune publication pour le moment. Les prochaines apparaîtront ici automatiquement.</p>}
+    </section>
+  </main>
+</BaseLayout>
+<script>
+const root=document.querySelector<HTMLElement>("[data-archive]");
+if(root){
+ const field=root.querySelector<HTMLInputElement>("[data-search]");
+ const rows=Array.from(root.querySelectorAll<HTMLElement>("[data-entry]"));
+ const empty=root.querySelector<HTMLElement>("[data-empty]");
+ const normalize=(value:string)=>value.normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase().trim();
+ field?.addEventListener("input",()=>{
+  const query=normalize(field.value);let shown=0;
+  rows.forEach(row=>{const match=normalize(row.dataset.keywords||"").includes(query);row.hidden=!match;if(match)shown++});
+  if(empty)empty.hidden=shown>0||rows.length===0;
+ });
+}
+</script>
