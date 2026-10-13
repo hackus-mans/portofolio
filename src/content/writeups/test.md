@@ -3,7 +3,7 @@ title: "test"
 summary: "test"
 publishedAt: 2026-10-13
 tags: ["linux"]
-status: "draft"
+status: "published"
 platform: "hackthebox"
 difficulty: "easy"
 ---
