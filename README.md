@@ -1,45 +1,37 @@
-# Portfolio vierge
+# Portfolio Joseph NAKORE
 
-Site public : https://hackus-mans.github.io/portofolio/
+Site : https://hackus-mans.github.io/portofolio/
 
-Le site a été remis à zéro. Aucun ancien projet, résultat, certification, photo ou article ne figure dans cette version. Tu peux désormais ajouter ton contenu toi-même, directement depuis GitHub.
+## Principe
 
-## Modifier ton site sans coder
+La présentation et les pages du portfolio sont conservées. Les catégories **Writeups**, **Labs**, **Notes** et leur agrégateur **Journal** démarrent sans publication d'exemple. Le propriétaire y ajoute progressivement ses vrais contenus, en autonomie.
 
-1. Ouvre ce fichier : https://github.com/hackus-mans/portofolio/blob/main/src/data/contenu.json
-2. Clique sur le crayon (« Edit this file »).
-3. Modifie les champs du fichier :
-   - **titre** : le titre du site ;
-   - **sousTitre** : la phrase sous le titre ;
-   - **presentation** : ta description personnelle ;
-   - **projets** : une liste de projets ;
-   - **liens** : tes profils et autres liens.
-4. Clique sur **Commit changes**, en choisissant la branche main.
-5. Attends que « Deploy Astro portfolio » passe au vert dans GitHub Actions. La mise à jour apparaîtra sur ton site.
+## Publier un article depuis GitHub
 
-### Ajouter un projet
+1. Ouvrir [Publier dans mon journal](https://github.com/hackus-mans/portofolio/actions/workflows/publish-content.yml).
+2. Cliquer sur **Run workflow** en restant sur la branche **main**.
+3. Choisir `writeups`, `labs` ou `notes` puis renseigner le titre, résumé, texte et tags.
+4. Valider : l'article apparaîtra automatiquement dans sa rubrique et dans le Journal après le déploiement.
 
-Chaque projet de la liste projets doit avoir ces propriétés :
-- **titre** : le nom du projet ;
-- **description** : ce que tu as fait ;
-- **url** : le lien du projet ;
-- **technologies** : un tableau de noms de technologies.
+Pour écrire un article long, utiliser l'éditeur de fichiers GitHub. Les répertoires sont :
 
-Un lien doit avoir deux propriétés : **nom** et **url**.
+- `src/content/writeups/` — comptes rendus de challenges autorisés ;
+- `src/content/labs/` — laboratoires ;
+- `src/content/notes/` — prises de notes.
 
-Tu peux laisser projets et liens à [] aussi longtemps que tu veux : le site ne montrera pas de cartes vides.
+Les fichiers `.gitkeep` gardent ces dossiers présents tant qu'ils sont vides. Voir `docs/PUBLICATION.md` pour les modèles et champs requis.
 
-## Modifier la présentation
+## Autres éléments du portfolio
 
-- Contenu : **src/data/contenu.json**
-- Page : **src/pages/index.astro**
-- Couleurs et styles : **src/styles/site.css**
+Les pages d'accueil, projets, CTF, certifications, parcours, contact et le design existant ont été conservés. Pour les modifier toi-même :
 
-Depuis ton ordinateur : git clone https://github.com/hackus-mans/portofolio.git, puis cd portofolio, npm ci, npm run dev.
+- `src/config.ts` : identité, compétences et projets ;
+- `src/data/caseStudies.ts` : détails de projets ;
+- `src/pages/index.astro` : page d'accueil ;
+- `src/styles/editorial.css` : style actuel.
 
-## Sauvegarde avant la remise à zéro
+Pour développer localement : `npm ci`, `npm run dev`, `npm run build`.
 
-Une copie complète est conservée sur la branche :
-https://github.com/hackus-mans/portofolio/tree/backup/portfolio-before-reset-2026-10-13
+## Sauvegarde
 
-L'historique Git n'a pas été effacé. Tout peut être récupéré plus tard si tu changes d'avis.
+Les anciens fichiers, y compris les trois exemples retirés, sont récupérables dans [backup/portfolio-before-reset-2026-10-13](https://github.com/hackus-mans/portofolio/tree/backup/portfolio-before-reset-2026-10-13). Aucune réécriture de l'historique Git n'a été effectuée.

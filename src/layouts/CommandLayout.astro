@@ -1,0 +1,7 @@
+---
+import BaseLayout from "./BaseLayout.astro";
+import {site} from "../config";
+---
+<BaseLayout title={site.name+" — Portfolio cybersécurité"} description={site.intro}>
+  <slot />
+</BaseLayout>

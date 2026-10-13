@@ -1,0 +1,28 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import {site} from "../../config";
+const rawBase=import.meta.env.BASE_URL;
+const base=rawBase.endsWith("/")?rawBase:rawBase+"/";
+---
+<BaseLayout title="À propos — Joseph NAKORE" description={site.intro}>
+<main id="main-content">
+  <header class="page-hero"><div class="container">
+    <a class="back-link" href={base}>← Retour à l'accueil</a>
+    <p class="label-dark">ABOUT / THE ENGINEER</p>
+    <h1>Joseph<br />NAKORE<span style="color:var(--volt)">.</span></h1>
+    <p class="lead">{site.intro}</p>
+  </div></header>
+  <section class="container section-pad split-story">
+    <div class="story-side"><p class="mono-kicker">01 / MINDSET</p><h2>Comprendre avant d'agir.</h2><p>Ce portfolio documente ma progression, y compris les limites de mes expériences. Je vise un profil capable de relier sécurité offensive, visibilité défensive et ingénierie de solutions.</p></div>
+    <div class="skill-list">{site.capabilities.map((c,i)=><article class="skill-row"><span class="skill-number">{String(i+1).padStart(2,"0")}</span><div><h3>{c.title}</h3><p>{c.description}</p><div class="skill-tags">{c.tools.map(t=><span>{t}</span>)}</div></div></article>)}</div>
+  </section>
+  <section class="section-pad journey-section"><div class="container journey-grid">
+    <div><p class="mono-kicker">02 / EDUCATION</p><h2>Construire des fondations solides.</h2></div>
+    <div class="journey-items">
+      <div class="journey-item"><span>{site.education.period}</span><h3>{site.education.program}</h3><p>{site.education.school} / {site.education.location}</p></div>
+      <div class="journey-item"><span>PROJETS</span><h3>HoneyShield / CyberMind X / Lumina Academy</h3><p>Expérimentation en détection, automatisation et formation.</p></div>
+      <div class="journey-item"><span>OBJECTIFS CERTIFICATION</span><h3>{site.currentTargets.join(" — ")}</h3><p>Préparations en cours, distinctes des qualifications obtenues.</p></div>
+    </div>
+  </div></section>
+</main>
+</BaseLayout>
