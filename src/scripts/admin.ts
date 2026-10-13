@@ -167,7 +167,24 @@ async function openLibrary(kind:EntryKind){
   const loading=document.createElement("p");loading.className="admin-list-empty";loading.textContent="Chargement des contenus…";box.append(loading);
   if(isArticle(kind)){
     const files=await fetchFiles(kind,true);
-    items=files.map(file=>({slug:file.name.replace(/\.md$/,""),title:file.name.replace(/\.md$/,"").replace(/-/g," "),summary:file.path,status:"draft",path:file.path,sha:file.sha}));
+    items=Array.from({length:files.length},()=>({slug:"",title:"",summary:"",status:"draft"} as ManagedItem));
+    // Small worker pool prevents a burst of hundreds of authenticated GitHub requests.
+    let next=0;
+    await Promise.all(Array.from({length:Math.min(5,files.length)},async()=>{
+      while(next<files.length){
+        const pos=next++,file=files[pos];
+        let meta:Record<string,unknown>={};
+        try{meta=frontmatter(await getText(file.path)).fields;}
+        catch{/* Keep the item editable even if the Markdown metadata is malformed. */}
+        items[pos]={
+          slug:file.name.replace(/\.md$/,""),
+          title:String(meta.title||file.name.replace(/\.md$/,"").replace(/-/g," ")),
+          summary:String(meta.summary||""),
+          status:meta.status==="published"?"published":"draft",
+          path:file.path,sha:file.sha
+        };
+      }
+    }));
   }else{
     await fetchManaged();
     items=[...adminData[kind]];
