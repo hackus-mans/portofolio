@@ -35,3 +35,9 @@ Pour développer localement : `npm ci`, `npm run dev`, `npm run build`.
 ## Sauvegarde
 
 Les anciens fichiers, y compris les trois exemples retirés, sont récupérables dans [backup/portfolio-before-reset-2026-10-13](https://github.com/hackus-mans/portofolio/tree/backup/portfolio-before-reset-2026-10-13). Aucune réécriture de l'historique Git n'a été effectuée.
+
+## NAKORE Studio — portail de publication
+
+La console de rédaction est disponible à https://hackus-mans.github.io/portofolio/admin/ .
+
+Voir docs/ADMIN.md pour l'authentification et le guide d'édition des contenus.

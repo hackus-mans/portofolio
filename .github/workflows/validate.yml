@@ -43,6 +43,7 @@ jobs:
             sleep 1
           done
           node scripts/qa-visual.mjs
+          node scripts/qa-admin.mjs
       - name: Save responsive previews
         if: always()
         uses: actions/upload-artifact@v4
@@ -51,4 +52,6 @@ jobs:
           path: |
             qa-desktop.jpg
             qa-mobile.jpg
+            qa-admin-desktop.jpg
+            qa-admin-mobile.jpg
           if-no-files-found: warn
