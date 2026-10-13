@@ -292,7 +292,7 @@ async function saveEntry(event:SubmitEvent){
     await putFile(path,source,editor.sha);
     delete filesCache[kind];
   }else{
-    if(kind==="projects" && !editor.slug && existingProjectSlugs.includes(slug))throw Error("Ce slug appartient déjà à un projet historique.");
+    if(kind==="projects" && !editor.slug && (existingProjectSlugs.includes(slug)||["index","admin","projects","journal","labs","notes","writeups","certifications","about","contact","ctf","roadmap"].includes(slug)))throw Error("Identifiant URL réservé ou déjà utilisé. Choisis un autre slug.");
     if(!editor.slug && adminData[kind].some(item=>item.slug===slug))throw Error("Cet identifiant existe déjà. Choisis un autre titre ou slug.");
     const base={slug,title,summary,status,updatedAt:today};
     let entry:ManagedItem=base;
