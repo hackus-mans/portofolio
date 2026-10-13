@@ -31,6 +31,7 @@ for(const width of widths){
 }
 check(failures.length===0,"Homepage overflow:\n"+failures.join("\n"));
 await page.setViewportSize({width:390,height:844});
+await page.screenshot({path:"qa-mobile.jpg",fullPage:true,type:"jpeg",quality:82});
 check(await page.locator(".ed-mobile-menu summary").isVisible(),"Mobile menu absent");
 await page.locator(".ed-mobile-menu summary").click();
 check(await page.locator(".ed-mobile-panel").isVisible(),"Mobile menu did not open");
