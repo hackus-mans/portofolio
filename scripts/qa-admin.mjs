@@ -98,6 +98,7 @@ check(articles.writeups.length===1,"Writeup was not created via GitHub API");
 check(decode(articles.writeups[0].content).includes('status: "published"'),"Writeup wasn't published");
 check(decode(articles.writeups[0].content).includes('platform: "Hack The Box"'),"Writeup metadata missing");
 
+await page.locator('[data-section="dashboard"]').click();
 await page.locator('[data-quick="projects"]').click();
 await page.locator("#field-title").fill("Mon Projet de Recherche");
 await page.locator("#field-summary").fill("Dossier créé et administré depuis le portail.");
