@@ -1,8 +1,8 @@
 ---
 import ArchiveCollection from "../../components/ArchiveCollection.astro";
-import {site} from "../../config";
+import {combinedProjects} from "../../lib/adminContent";
 const rawBase=import.meta.env.BASE_URL;
 const base=rawBase.endsWith("/")?rawBase:rawBase+"/";
-const entries=site.projects.map(p=>({title:p.name,summary:p.summary,kind:p.type,tags:p.tags,href:base+p.href,dateText:p.status}));
+const entries=combinedProjects.map(p=>({title:p.name,summary:p.summary,kind:p.type,tags:p.tags,href:base+p.href,dateText:p.status}));
 ---
 <ArchiveCollection title="Projets" overline="SYSTEMS / THE PORTFOLIO" description="Des systèmes construits pour apprendre, expérimenter et transmettre : objectifs, architecture, décisions, résultats et limites documentées." entries={entries} kind="projets" />
