@@ -56,3 +56,25 @@ jobs:
             qa-admin-desktop.jpg
             qa-admin-mobile.jpg
           if-no-files-found: warn
+
+  public-admin-smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Verify public admin route and assets
+        shell: bash
+        run: |
+          set -euo pipefail
+          site="https://hackus-mans.github.io/portofolio/admin/"
+          curl -fLsS --retry 3 --max-time 30 -H "Cache-Control: no-cache" "$site?revision=admin-studio-20261013" -o /tmp/admin.html
+          grep -Fq "admin-login-form" /tmp/admin.html
+          grep -Fq "admin-shell" /tmp/admin.html
+          grep -Fq "admin-editor-form" /tmp/admin.html
+          grep -Fq "Content-Security-Policy" /tmp/admin.html
+          grep -Fq 'noindex,nofollow,noarchive' /tmp/admin.html
+          echo "PASS: admin portal responds from GitHub Pages"
+          for route in "" projects/ ctf/ certifications/ journal/; do
+            code="$(curl -Ls -o /dev/null -w '%{http_code}' "https://hackus-mans.github.io/portofolio/$route")"
+            echo "$route -> HTTP $code"
+            test "$code" = "200"
+          done
+          echo "PASS: portfolio public routes intact"
