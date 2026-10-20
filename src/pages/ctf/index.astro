@@ -1,11 +1,9 @@
 ---
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import {site} from "../../config";
-import {achievements} from "../../lib/adminContent";
 const base=import.meta.env.BASE_URL.endsWith("/")?import.meta.env.BASE_URL:import.meta.env.BASE_URL+"/";
 const results=[
- ...site.proof.filter(proof=>!proof.label.includes("Licence")).map(proof=>({...proof,href:proof.detail==="HoneyShield"?base+"projects/honeyshield/":base+"projects/labs-ctf/"})),
- ...achievements.map(item=>({value:item.result,label:item.title,detail:[item.event,item.year].filter(Boolean).join(" · "),href:item.proofUrl||base+"ctf/"}))
+ ...site.proof.filter(proof=>!proof.label.includes("Licence")).map(proof=>({...proof,href:proof.detail==="HoneyShield"?base+"projects/honeyshield/":base+"projects/labs-ctf/"}))
 ];
 ---
 <BaseLayout title="CTF et distinctions — Joseph NAKORE" description="Compétitions CTF et projets présentés par Joseph NAKORE.">
