@@ -1,7 +1,6 @@
 ---
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import {site} from "../../config";
-import {credentials} from "../../lib/adminContent";
 const base=import.meta.env.BASE_URL.endsWith("/")?import.meta.env.BASE_URL:import.meta.env.BASE_URL+"/";
 ---
 <BaseLayout title="Certifications et formations — Joseph NAKORE" description="Certifications mentionnées et préparations en cours dans le parcours de Joseph NAKORE.">
@@ -17,15 +16,6 @@ const base=import.meta.env.BASE_URL.endsWith("/")?import.meta.env.BASE_URL:impor
       <div><strong>{cert}</strong><small>Qualification mentionnée dans mon portfolio · vérification documentaire à compléter</small></div>
     </article>)}
   </div>
-  {credentials.length>0&&<section class="ed-section" aria-labelledby="published-credentials">
-    <div class="ed-section-heading"><div><span class="ed-overline">NEW / VERIFIED EVIDENCE</span><h2 id="published-credentials">Ajouts récents</h2></div></div>
-    <div class="ed-cert-grid">
-      {credentials.map(cert=><article class="ed-cert-row">
-        <b aria-hidden="true">✓</b><div><strong>{cert.title}</strong><small>{cert.issuer} · {cert.credentialState==="preparing"?"En préparation":"Déclaré obtenu"} {cert.date?" · "+cert.date:""}</small>
-        {cert.verificationUrl&&<a href={cert.verificationUrl} target="_blank" rel="noopener noreferrer" style="color:var(--ed-accent);display:inline-block;margin-top:7px">Vérifier / Voir le justificatif ↗</a>}</div>
-      </article>)}
-    </div>
-  </section>}
   <section class="ed-section" aria-labelledby="current-goals">
     <div class="ed-section-heading"><div><span class="ed-overline">PREPARATION / NOT YET EARNED</span><h2 id="current-goals">Objectifs en préparation</h2></div></div>
     <div class="ed-skills-grid">{site.currentTargets.map(target=><article class="ed-skill-card"><h3>{target}</h3><p>Parcours de préparation en cours. Ce titre n'est pas présenté comme une certification obtenue.</p></article>)}</div>
