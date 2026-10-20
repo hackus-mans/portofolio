@@ -1,6 +1,6 @@
 ---
 title: "SQL Injection - Challenge 1"
-summary: "Vous pouvez trouvé le lab a partir du lien suivant :"
+summary: "lorsque nous arrivons sur le site on avont une page comme suit :"
 publishedAt: "2026-04-27"
 tags: ["Sécurité Web"]
 status: "published"

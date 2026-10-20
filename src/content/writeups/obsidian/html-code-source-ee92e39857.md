@@ -1,6 +1,6 @@
 ---
 title: "HTML - Code source"
-summary: "dès lors que nous arrivons sur le site web , nous voyons un champs qui nous demande d'entrer notre mot de passe"
+summary: "Pas de demande connexion pas même de demande d'inscription Juste une demande : Le mot de passe (password)"
 publishedAt: "2026-07-10"
 tags: ["Sécurité Web"]
 status: "published"

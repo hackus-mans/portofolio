@@ -1,6 +1,6 @@
 ---
 title: "SQL Injection Lab"
-summary: "Le code PHP suivant illustre une requête SQL dynamique dans une connexion . Les variables utilisateur et mot de passe de la requête POST sont concaténées directement dans l'état SQL. php $query \"SELECT FROM users WHERE username'\" + $_POST[\"…"
+summary: "Si la base de données exécute l'instruction SQL ci-dessus, tous les utilisateurs de la table des utilisateurs sont renvoyés. Par conséquent, l'attaquant contourne le mécanisme d'authentification de l'application et se connecte en tant que p…"
 publishedAt: "2026-03-01"
 tags: ["Sécurité Web"]
 status: "published"

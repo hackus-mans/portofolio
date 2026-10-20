@@ -1,6 +1,6 @@
 ---
 title: "Query Gate"
-summary: "Je commence par vérifier que la cible répond :"
+summary: "Je lance ensuite un scan Nmap avec détection des services et les scripts par défaut :"
 publishedAt: "2026-10-01"
 tags: ["Bases de données", "mysql", "Linux"]
 status: "published"
