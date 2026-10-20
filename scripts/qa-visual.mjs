@@ -50,7 +50,7 @@ await page.goto(root+"writeups/",{waitUntil:"domcontentloaded"});
 check(await page.locator("[data-wu-search]").count()===1,"Writeups search missing");
 check(await page.locator(".wu-grid").count()===1,"Writeups card grid missing");
 check(await page.locator("[data-wu-count]").count()===1,"Writeups count missing");
-check(await page.locator("[data-wu-section]").count()===3,"Writeups sections should expose All / Challenges / Labs");
+check(await page.locator(".wu-section-tab[data-wu-section]").count()===3,"Writeups sections should expose All / Challenges / Labs");
 check(await page.locator('[data-wu-filter="platform"]').count()>0,"Platform filter missing");
 check(await page.locator('[data-wu-filter="category"]').count()>0,"Technical domain filter missing");
 const cards=await page.locator("[data-wu-entry]").count();
