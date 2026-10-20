@@ -15,7 +15,10 @@ const writeups = defineCollection({
   loader: glob({ pattern: "**/*.md", base: "./src/content/writeups" }),
   schema: baseSchema.extend({
     platform: z.string().optional(),
-    difficulty: z.string().optional()
+    difficulty: z.string().optional(),
+    category: z.string().optional(),
+    section: z.string().optional(),
+    os: z.string().optional()
   })
 });
 
