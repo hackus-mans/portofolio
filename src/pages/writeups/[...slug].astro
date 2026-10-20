@@ -12,7 +12,8 @@ export async function getStaticPaths() {
 }
 
 const { entry } = Astro.props;
-const { Content } = await render(entry);
+const { Content, headings } = await render(entry);
+const toc = headings.filter(heading => heading.depth === 2 || heading.depth === 3).slice(0,25);
 ---
 <EntryLayout
   title={entry.data.title}
@@ -20,13 +21,15 @@ const { Content } = await render(entry);
   publishedAt={entry.data.publishedAt}
   updatedAt={entry.data.updatedAt}
   tags={entry.data.tags}
+  toc={toc}
   category="Writeups"
   categoryHref="writeups/"
   meta={[
     ...(entry.data.platform ? [{ label: "Plateforme", value: entry.data.platform }] : []),
     ...(entry.data.difficulty ? [{ label: "Niveau", value: entry.data.difficulty }] : []),
     ...(entry.data.category ? [{ label: "Domaine", value: entry.data.category }] : []),
-    ...(entry.data.section ? [{ label: "Type", value: entry.data.section }] : []),
+    ...(entry.data.section ? [{ label: "Type", value: entry.data.section === "LABs" ? "Laboratoire" : entry.data.section === "Challenges" ? "Challenge" : entry.data.section }] : []),
+    ...(entry.data.service ? [{ label: "Service / technologie", value: entry.data.service }] : []),
     ...(entry.data.os ? [{ label: "Système", value: entry.data.os }] : [])
   ]}
 >
