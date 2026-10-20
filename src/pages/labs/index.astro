@@ -1,11 +1,19 @@
 ---
-import {getCollection} from "astro:content";
+import { getCollection } from "astro:content";
 import ArchiveCollection from "../../components/ArchiveCollection.astro";
-import {formatDate,slugFromId} from "../../lib/content";
-const rawBase=import.meta.env.BASE_URL;
-const base=rawBase.endsWith("/")?rawBase:rawBase+"/";
-const entries=(await getCollection("labs")).filter(e=>e.data.status==="published").sort((a,b)=>b.data.publishedAt.getTime()-a.data.publishedAt.getTime()).map(e=>({
- title:e.data.title,summary:e.data.summary,kind:e.data.domain,tags:e.data.tags,href:base+"labs/"+slugFromId(e.id)+"/",date:e.data.publishedAt,dateText:formatDate(e.data.publishedAt)
+import { formatDate, slugFromId } from "../../lib/content";
+const base=import.meta.env.BASE_URL.replace(/\/?$/, "/");
+const [labs, writeups]=await Promise.all([getCollection("labs"),getCollection("writeups")]);
+const standalone=labs.filter(e=>e.data.status==="published").map(e=>({
+  title:e.data.title,summary:e.data.summary,kind:e.data.domain,tags:e.data.tags,
+  href:base+"labs/"+slugFromId(e.id)+"/",date:e.data.publishedAt,dateText:formatDate(e.data.publishedAt)
 }));
+const imported=writeups.filter(e=>e.data.status==="published" && e.data.section==="LABs").map(e=>({
+  title:e.data.title,summary:e.data.summary,kind:e.data.platform||"Laboratoire",tags:e.data.tags,
+  href:base+"writeups/"+slugFromId(e.id)+"/",date:e.data.publishedAt,dateText:formatDate(e.data.publishedAt)
+}));
+const entries=[...standalone,...imported].sort((a,b)=>b.date.getTime()-a.date.getTime()||a.title.localeCompare(b.title,"fr"));
 ---
-<ArchiveCollection title="Labs" overline="FIELD NOTES / EXPERIMENTS" description="Des environnements contrôlés pour relier un comportement à un service, une permission, une vulnérabilité ou un événement de sécurité." entries={entries} kind="labs" />
+<ArchiveCollection title="Laboratoires" overline="PRACTICE / EXPERIMENTS"
+  description="Mes machines et expériences techniques : les comptes rendus documentés dans Obsidian et les laboratoires autonomes, réunis dans un même index."
+  entries={entries} kind="laboratoires" />
