@@ -55,7 +55,7 @@ check(await page.locator('[data-wu-filter="platform"]').count()>0,"Platform filt
 check(await page.locator('[data-wu-filter="category"]').count()>0,"Technical domain filter missing");
 const cards=await page.locator("[data-wu-entry]").count();
 if(cards>0){
- const lab=page.locator('[data-wu-section="Laboratoires"]');
+ const lab=page.locator('.wu-section-tab[data-wu-section="Laboratoires"]');
  await lab.click();
  check(await lab.getAttribute("aria-pressed")==="true","Lab selection is not active");
  const shown=await page.locator("[data-wu-entry]:not([hidden])").count();
