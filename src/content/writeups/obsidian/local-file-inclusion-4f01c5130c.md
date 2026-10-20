@@ -10,6 +10,7 @@ category: "Sécurité Web"
 difficulty: ""
 os: ""
 service: ""
+tools: []
 ---
 
 Dans cet challenge , nous devons accédé au répertoire admin dans le but de récupéré le flag.

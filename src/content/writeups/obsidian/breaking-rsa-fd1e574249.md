@@ -10,6 +10,7 @@ category: "Cryptographie"
 difficulty: ""
 os: ""
 service: ""
+tools: []
 ---
 
 Le challenge **Breacking RSA** est un challenge qui consiste a cassé le RSA mal implémenté en utilisant l’algorithme de factorisation de Fermat.

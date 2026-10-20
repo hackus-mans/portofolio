@@ -10,6 +10,7 @@ category: "Bases de données"
 difficulty: "Très facile"
 os: "Linux"
 service: "Redis"
+tools: []
 ---
 
 ## Étape 1 — Reconnaissance

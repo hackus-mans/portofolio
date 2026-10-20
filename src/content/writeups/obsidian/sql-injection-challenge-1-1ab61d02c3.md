@@ -10,6 +10,7 @@ category: "Sécurité Web"
 difficulty: ""
 os: ""
 service: ""
+tools: []
 ---
 
 Vous pouvez trouvé le lab  a partir du lien suivant : [Course](https://courses.redteamleaders.com/courses/60f2eb1e-7511-4358-9a9e-3f0ab3e5a77c/take)

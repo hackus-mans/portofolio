@@ -10,6 +10,7 @@ category: "Bases de données"
 difficulty: "Facile"
 os: "Linux"
 service: "mysql"
+tools: []
 ---
 
 ## Reconnaissance
