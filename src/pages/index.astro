@@ -1,7 +1,6 @@
 ---
 import CommandLayout from "../layouts/CommandLayout.astro";
 import {site} from "../config";
-import {combinedProjects,achievements} from "../lib/adminContent";
 import {getPublications} from "../lib/publications";
 const publications=await getPublications();
 const base=import.meta.env.BASE_URL.endsWith("/")?import.meta.env.BASE_URL:import.meta.env.BASE_URL+"/";
@@ -12,10 +11,9 @@ const approach=[
  {step:"04",title:"Document",description:"Expliquer le raisonnement, les résultats, les limites et les corrections."}
 ];
 const distinctions=[
- ...site.proof.filter(item=>!item.label.includes("Licence")).map(item=>({...item,href:item.detail==="HoneyShield"?base+"projects/honeyshield/":base+"ctf/"})),
- ...achievements.map(item=>({value:item.result,label:item.title,detail:[item.event,item.year].filter(Boolean).join(" · "),href:item.proofUrl||base+"ctf/"}))
+ ...site.proof.filter(item=>!item.label.includes("Licence")).map(item=>({...item,href:item.detail==="HoneyShield"?base+"projects/honeyshield/":base+"ctf/"}))
 ];
-const projects=combinedProjects;
+const projects=site.projects;
 ---
 <CommandLayout>
 <main class="ed-home" id="main-content">
