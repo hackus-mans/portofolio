@@ -1,14 +1,15 @@
 ---
 title: "SQL Injection - Challenge 1"
-summary: "Vous pouvez trouvé le lab a partir du lien suivant : [Course](https://courses.redteamleaders.com/courses/60f2eb1e-7511-4358-9a9e-3f0ab3e5a77c/take)"
-publishedAt: "2026-10-20"
-tags: ["Autres", "Général"]
+summary: "Vous pouvez trouvé le lab a partir du lien suivant :"
+publishedAt: "2026-04-27"
+tags: ["Sécurité Web"]
 status: "published"
 platform: "Autres"
 section: "LABs"
-category: "Général"
+category: "Sécurité Web"
 difficulty: ""
 os: ""
+service: ""
 ---
 
 Vous pouvez trouvé le lab  a partir du lien suivant : [Course](https://courses.redteamleaders.com/courses/60f2eb1e-7511-4358-9a9e-3f0ab3e5a77c/take)

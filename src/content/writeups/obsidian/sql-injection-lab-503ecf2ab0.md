@@ -1,14 +1,15 @@
 ---
 title: "SQL Injection Lab"
-summary: "vous pouvez trouvé cet lab. [ici](https://tryhackme.com/room/sqlilab)"
-publishedAt: "2026-10-20"
-tags: ["Tryhackme", "Général"]
+summary: "Le code PHP suivant illustre une requête SQL dynamique dans une connexion . Les variables utilisateur et mot de passe de la requête POST sont concaténées directement dans l'état SQL. php $query \"SELECT FROM users WHERE username'\" + $_POST[\"…"
+publishedAt: "2026-03-01"
+tags: ["Sécurité Web"]
 status: "published"
-platform: "Tryhackme"
+platform: "TryHackMe"
 section: "LABs"
-category: "Général"
+category: "Sécurité Web"
 difficulty: ""
 os: ""
+service: ""
 ---
 
 #sql

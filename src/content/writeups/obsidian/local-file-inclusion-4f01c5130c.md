@@ -1,14 +1,15 @@
 ---
 title: "Local file Inclusion"
-summary: "Dans cet challenge , nous devons accédé au répertoire admin dans le but de récupéré le flag."
-publishedAt: "2026-10-20"
-tags: ["Root me", "Web exploitation"]
+summary: "Dans cet challenge , nous devons accédé au répertoire admin dans le but de récupéré le flag"
+publishedAt: "2026-04-27"
+tags: ["Sécurité Web"]
 status: "published"
-platform: "Root me"
+platform: "Root-Me"
 section: "Challenges"
-category: "Web exploitation"
+category: "Sécurité Web"
 difficulty: ""
 os: ""
+service: ""
 ---
 
 Dans cet challenge , nous devons accédé au répertoire admin dans le but de récupéré le flag.

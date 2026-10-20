@@ -1,14 +1,15 @@
 ---
 title: "Preignition"
-summary: "Preignition est une machine Linux très simple d'utilisation qui permet de s'initier à l'énumération et au fuzzing de répertoires d'applications web. Lorsqu'un point d'accès administrateur vulnérable est découvert, l'application web met en évidence les dangers liés à une configuration incorrecte et à l'utilisation d'identifiants par défaut."
-publishedAt: "2026-10-20"
-tags: ["Hackthebox", "http"]
+summary: "Preignition est une machine Linux très simple d'utilisation qui permet de s'initier à l'énumération et au fuzzing de répertoires d'applications web. Lorsqu'un point d'accès administrateur vulnérable est découvert, l'application web met en évidence le…"
+publishedAt: "2026-10-01"
+tags: ["Sécurité Web", "http", "Linux"]
 status: "published"
-platform: "Hackthebox"
+platform: "Hack The Box"
 section: "LABs"
-category: "http"
-difficulty: "very easy"
+category: "Sécurité Web"
+difficulty: "Très facile"
 os: "Linux"
+service: "http"
 ---
 
 ---

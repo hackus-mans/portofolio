@@ -1,14 +1,15 @@
 ---
 title: "Redeemer"
 summary: "Machine Linux d'introduction permettant de découvrir l'énumération d'un serveur Redis et les commandes de base de redis-cli"
-publishedAt: "2026-10-20"
-tags: ["Hackthebox", "Redis"]
+publishedAt: "2026-09-30"
+tags: ["Bases de données", "Redis", "Linux"]
 status: "published"
-platform: "Hackthebox"
+platform: "Hack The Box"
 section: "LABs"
-category: "Redis"
-difficulty: "very easy"
+category: "Bases de données"
+difficulty: "Très facile"
 os: "Linux"
+service: "Redis"
 ---
 
 ## Étape 1 — Reconnaissance

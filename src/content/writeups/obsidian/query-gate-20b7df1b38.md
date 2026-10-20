@@ -1,14 +1,15 @@
 ---
 title: "Query Gate"
 summary: "Je commence par vérifier que la cible répond :"
-publishedAt: "2026-10-20"
-tags: ["Hackviser", "mysql"]
+publishedAt: "2026-10-01"
+tags: ["Bases de données", "mysql", "Linux"]
 status: "published"
 platform: "Hackviser"
 section: "LABs"
-category: "mysql"
-difficulty: "easy"
+category: "Bases de données"
+difficulty: "Facile"
 os: "Linux"
+service: "mysql"
 ---
 
 ## Reconnaissance

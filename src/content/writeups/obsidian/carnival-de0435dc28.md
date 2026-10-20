@@ -1,14 +1,15 @@
 ---
 title: "Carnival"
-summary: "The SMB (Server Message Block) protocol is a communication protocol that allows computers on a network to share files, printers and other resources."
-publishedAt: "2026-10-20"
-tags: ["Hackviser", "SMB"]
+summary: "The SMB (Server Message Block) protocol is a communication protocol that allows computers on a network to share files, printers and other resources"
+publishedAt: "2026-10-01"
+tags: ["Réseaux & services", "SMB", "Windows"]
 status: "published"
 platform: "Hackviser"
 section: "LABs"
-category: "SMB"
-difficulty: "Basic"
+category: "Réseaux & services"
+difficulty: "Facile"
 os: "Windows"
+service: "SMB"
 ---
 
 ## Objectif

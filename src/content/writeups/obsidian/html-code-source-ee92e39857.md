@@ -1,14 +1,15 @@
 ---
 title: "HTML - Code source"
-summary: "Dans cet challenge , il était question d'exploité le code source html du site dans le but de retrouver certaines informations sensibles."
+summary: "dès lors que nous arrivons sur le site web , nous voyons un champs qui nous demande d'entrer notre mot de passe"
 publishedAt: "2026-07-10"
-tags: ["root-me", "web-server"]
+tags: ["Sécurité Web"]
 status: "published"
-platform: "root-me"
+platform: "Root-Me"
 section: "Challenges"
-category: "web-server"
-difficulty: "easy"
+category: "Sécurité Web"
+difficulty: "Facile"
 os: ""
+service: ""
 ---
 
 # 1. Objectif

@@ -1,17 +1,18 @@
 ---
 title: "Breaking RSA"
-summary: "Le challenge ==Breacking RSA== est un challenge qui consiste a cassé le RSA mal implémenté en utilisant l’algorithme de factorisation de Fermat."
-publishedAt: "2026-10-20"
-tags: ["Tryhackme", "Général"]
+summary: "Le challenge Breacking RSA est un challenge qui consiste a cassé le RSA mal implémenté en utilisant l’algorithme de factorisation de Fermat"
+publishedAt: "2026-03-01"
+tags: ["Cryptographie"]
 status: "published"
-platform: "Tryhackme"
+platform: "TryHackMe"
 section: "LABs"
-category: "Général"
+category: "Cryptographie"
 difficulty: ""
 os: ""
+service: ""
 ---
 
-Le challenge ==Breacking RSA== est un challenge qui consiste a cassé le RSA mal implémenté en utilisant l’algorithme de factorisation de Fermat.
+Le challenge **Breacking RSA** est un challenge qui consiste a cassé le RSA mal implémenté en utilisant l’algorithme de factorisation de Fermat.
 
 
 Donc pour réuissir le challenge il faudra repondre étape par étape a un certain nombres de question que le challenge même propose
@@ -20,7 +21,7 @@ Donc pour réuissir le challenge il faudra repondre étape par étape a un certa
 
   
 
-### ==Première question : How many services are running on the box ?==
+### **Première question : How many services are running on the box ?**
 
 cette question nous demande de donnée le nombres de services qui tourne sur la machine cible qu’ils nous ont données.
 
@@ -61,13 +62,13 @@ Donc avec le résultat des deux premiers scans vous pouvez tous suite en déduir
 
   
 
-==Maintenant passons a la phase 2==
+**Maintenant passons a la phase 2**
 
   
 
   
 
-## ==Deuxième question : What is the name of the hidden directory on the web server? (without leading '/')==
+## **Deuxième question : What is the name of the hidden directory on the web server? (without leading '/')**
 
 Si on se souvient bien lors de notre scan dans la première etape nous nous somme rendu compte qu’il y’avais un service http qui y étais , donc ce qui veut dire qu’il y’a un site web.Essayons d’y jeté un coup d’oeil pour voir
 
@@ -101,13 +102,13 @@ donc la commande est : `gosbuster [mode] -u “le_lien_du_site” -w “la_word_
 
 - pour trouvé des réponses conséquente il faudra utilisé les bon dictionnaires
 
-==bon maintenant essayons d’accédé a ce repertoir caché==
+**bon maintenant essayons d’accédé a ce repertoir caché**
 
 ![Capture_dcran_2026-01-23_115958.png](/portofolio/images/writeups/obsidian/breaking-rsa-fd1e574249/capture-dcran-2026-01-23-115958-884259bdb3.png)
 
   
 
-Ah on voit un fichier un peu comme une clé publique (==id_rsa.pub====). Essayons de la téléchargé et voir ce qu’il y’a a l’interieur==
+Ah on voit un fichier un peu comme une clé publique (**id_rsa.pub****). Essayons de la téléchargé et voir ce qu’il y’a a l’interieur**
 
 ![Pratique/LABs/Tryhackme/Pièce jointe/image 4.png](/portofolio/images/writeups/obsidian/breaking-rsa-fd1e574249/image-4-0fa6236d3e.png)
 
@@ -117,7 +118,7 @@ nous pouvons affirmé sans doute qu’il s’agit bien d’une clé public de ty
 
   
 
-## ==Troisième question : What is the length of the discovered RSA key? (in bits)==
+## **Troisième question : What is the length of the discovered RSA key? (in bits)**
 
   
 
@@ -141,7 +142,7 @@ NB: pour mieux comprendre comment es ce que la génération de clé pour ssh fon
 
   
 
-## ==Quatrième question: What are the last 10 digits of n? (where 'n' is the modulus for the public-private key pair)==
+## **Quatrième question: What are the last 10 digits of n? (where 'n' is the modulus for the public-private key pair)**
 
 Pour ce faire vous devrai utiliser le package PyCryptodone comme ils l’avaient mention depuis le début.
 
@@ -163,23 +164,23 @@ et donc vous obtiendrais le résultat (la valeur de n)
 
   
 
-## ==Cinquième question : factorisé n en p et q==
+## **Cinquième question : factorisé n en p et q**
 
 Pour la factorisation de n en p et q vous pouvez utiliser l’outil dcode en ligne en visant le lien suivant
 
-==[Décomposition en Facteurs Premiers - Factorisation en Ligne](https://www.dcode.fr/decomposition-nombres-premiers)==
+**[Décomposition en Facteurs Premiers - Factorisation en Ligne](https://www.dcode.fr/decomposition-nombres-premiers)**
 
   
 
   
 
-## ==Sixième question: difference entre p et q==
+## **Sixième question: difference entre p et q**
 
 il suffit de faire la difference des résultat trouvé entre p et q c’est a dire |p-q|
 
   
 
-## ==Septième question : trouvé la clé privée==
+## **Septième question : trouvé la clé privée**
 
 pour trovué la clé privé , vu qu’on connais n ,e et d ( a partir de p et q) on peut utilisé le code suivant pour le faire
 
@@ -216,7 +217,7 @@ print("[+] Clé privée RSA générée : id_rsa") # on affiche un message au cas
 
   
 
-## ==huitième question : trouvé le flag==
+## **huitième question : trouvé le flag**
 
 pour trouvé le flag, il suffit de se connecté a la machine cible via le protocole ssh en utilisant la clé privé que vous avez reconstruite mais avant n’oublié pas de données une permission de 600 au fichier qui contient la clé privé
 
