@@ -17,12 +17,15 @@ const entries = (await getCollection("writeups"))
     difficulty: entry.data.difficulty || "",
     os: entry.data.os || "",
     service: entry.data.service || "",
+    tools: entry.data.tools || [],
     tags: entry.data.tags,
     date: entry.data.publishedAt,
     href: base + "writeups/" + slugFromId(entry.id) + "/"
   }));
 const platforms = [...new Set(entries.map(e=>e.platform))].sort((a,b)=>a.localeCompare(b,"fr"));
 const categories = [...new Set(entries.map(e=>e.category))].sort((a,b)=>a.localeCompare(b,"fr"));
+const difficulties = [...new Set(entries.map(e=>e.difficulty).filter(Boolean))].sort((a,b)=>["Très facile","Facile","Intermédiaire","Difficile","Expert"].indexOf(a)-["Très facile","Facile","Intermédiaire","Difficile","Expert"].indexOf(b));
+const systems = [...new Set(entries.map(e=>e.os).filter(Boolean))].sort((a,b)=>a.localeCompare(b,"fr"));
 const sections = [
   {name:"Tous", key:"", count:entries.length},
   {name:"Challenges", key:"Challenges", count:entries.filter(e=>e.section==="Challenges").length},
@@ -30,7 +33,9 @@ const sections = [
 ];
 const filters = [
   {key:"platform", label:"Plateforme", values:platforms},
-  {key:"category", label:"Domaine", values:categories}
+  {key:"category", label:"Domaine", values:categories},
+  ...(difficulties.length?[{key:"difficulty",label:"Difficulté",values:difficulties}]:[]),
+  ...(systems.length?[{key:"os",label:"Système",values:systems}]:[])
 ];
 ---
 <BaseLayout title="Write-ups — Joseph NAKORE" description="Challenges et laboratoires de cybersécurité, classés par plateforme et domaine, synchronisés depuis Obsidian.">
@@ -90,8 +95,9 @@ const filters = [
         <div class="wu-grid">
           {entries.map(entry=>(
             <a class="wu-card" href={entry.href} data-wu-entry
-               data-wu-searchable={[entry.title,entry.summary,entry.platform,entry.section,entry.category,entry.difficulty,entry.os,entry.service,...entry.tags].join(" ")}
-               data-wu-category={entry.category} data-wu-platform={entry.platform} data-wu-section={entry.section}>
+               data-wu-searchable={[entry.title,entry.summary,entry.platform,entry.section,entry.category,entry.difficulty,entry.os,entry.service,...entry.tags,...entry.tools].join(" ")}
+               data-wu-category={entry.category} data-wu-platform={entry.platform} data-wu-section={entry.section}
+               data-wu-difficulty={entry.difficulty} data-wu-os={entry.os}>
               <div class="wu-card-top">
                 <span class="wu-card-platform">{entry.platform}</span>
                 <time datetime={entry.date.toISOString()}>{formatDate(entry.date)}</time>
@@ -129,7 +135,7 @@ const filters = [
     const reset=root.querySelector<HTMLButtonElement>("[data-wu-reset]");
     const chips=Array.from(root.querySelectorAll<HTMLButtonElement>("[data-wu-filter]"));
     const tabs=Array.from(root.querySelectorAll<HTMLButtonElement>(".wu-section-tab[data-wu-section]"));
-    const active:Record<string,string>={section:"",platform:"",category:""};
+    const active:Record<string,string>={section:"",platform:"",category:"",difficulty:"",os:""};
     const clean=(s:string)=>s.normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase().trim();
     const apply=()=>{
       const term=clean(search?.value||"");

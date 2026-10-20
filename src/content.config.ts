@@ -19,7 +19,8 @@ const writeups = defineCollection({
     category: z.string().optional(),
     section: z.string().optional(),
     os: z.string().optional(),
-    service: z.string().optional()
+    service: z.string().optional(),
+    tools: z.array(z.string()).default([])
   })
 });
 
