@@ -6,6 +6,10 @@ Site : https://hackus-mans.github.io/portofolio/
 
 La présentation et les pages du portfolio sont conservées. Les catégories **Writeups**, **Labs**, **Notes** et leur agrégateur **Journal** démarrent sans publication d'exemple. Le propriétaire y ajoute progressivement ses vrais contenus, en autonomie.
 
+## Write-ups automatiques depuis Obsidian
+
+La galerie `/writeups/` affiche les notes publiées par synchronisation sécurisée du dépôt privé `hackus-mans/obsidan.note` (dossier `Pratique`). Le convertisseur s'exécute dans GitHub Actions du dépôt privé : le navigateur public n'accède jamais aux notes privées. La première série de notes historiques reste exclue jusqu'à revue de sécurité. Les nouvelles notes sont éligibles automatiquement après le push Obsidian Git, sauf si `publish: false` est défini ; un contrôle de données sensibles et une compilation Astro doivent réussir avant le transfert. La documentation de configuration et de revue est dans `docs/WRITEUPS-SYNC.md` du dépôt privé.
+
 ## Publier un article depuis GitHub
 
 1. Ouvrir [Publier dans mon journal](https://github.com/hackus-mans/portofolio/actions/workflows/publish-content.yml).

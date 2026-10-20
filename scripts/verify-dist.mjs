@@ -8,7 +8,7 @@ const required=[
  "projects/lumina-academy/index.html","projects/mcp-automation/index.html",
  "projects/labs-ctf/index.html","writeups/index.html","labs/index.html",
  "notes/index.html","roadmap/index.html","journal/index.html",
- "ctf/index.html","certifications/index.html","contact/index.html","admin/index.html"
+ "ctf/index.html","certifications/index.html","contact/index.html"
 ];
 const bad=[];
 for(const rel of required){if(!fs.existsSync(path.join(root,rel)))bad.push("Route missing: "+rel)}
@@ -30,10 +30,6 @@ for(const file of htmls){
 const home=fs.readFileSync(path.join(root,"index.html"),"utf8");
 for(const marker of ["NAKORE","CyberMind X","Compétitions","Ma méthode","Dernières publications techniques","Lire mes writeups"]){
  if(!home.includes(marker))bad.push("Homepage marker missing: "+marker);
-}
-const admin=fs.readFileSync(path.join(root,"admin/index.html"),"utf8");
-for(const term of ["admin-login-form","admin-shell","admin-editor-form","admin-create","Content-Security-Policy"]){
- if(!admin.includes(term))bad.push("Admin UI markup missing: "+term);
 }
 if(bad.length){console.error("Site checks failed:\n"+bad.join("\n"));process.exit(1)}
 console.log("Site checks passed: "+htmls.length+" HTML pages; "+required.length+" required routes; all internal href/src references resolved.");

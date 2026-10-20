@@ -24,7 +24,10 @@ const { Content } = await render(entry);
   categoryHref="writeups/"
   meta={[
     ...(entry.data.platform ? [{ label: "Plateforme", value: entry.data.platform }] : []),
-    ...(entry.data.difficulty ? [{ label: "Niveau", value: entry.data.difficulty }] : [])
+    ...(entry.data.difficulty ? [{ label: "Niveau", value: entry.data.difficulty }] : []),
+    ...(entry.data.category ? [{ label: "Domaine", value: entry.data.category }] : []),
+    ...(entry.data.section ? [{ label: "Type", value: entry.data.section }] : []),
+    ...(entry.data.os ? [{ label: "Système", value: entry.data.os }] : [])
   ]}
 >
   <Content />
