@@ -6,72 +6,104 @@ import "../../styles/writeups.css";
 
 const base = import.meta.env.BASE_URL.replace(/\/?$/, "/");
 const entries = (await getCollection("writeups"))
-  .filter((entry) => entry.data.status === "published")
-  .sort((a,b) => b.data.publishedAt.getTime() - a.data.publishedAt.getTime())
-  .map((entry) => ({
+  .filter(entry => entry.data.status === "published")
+  .sort((a,b) => b.data.publishedAt.getTime() - a.data.publishedAt.getTime() || a.data.title.localeCompare(b.data.title,"fr"))
+  .map(entry => ({
     title: entry.data.title,
     summary: entry.data.summary,
-    platform: entry.data.platform || "Personnel",
-    section: entry.data.section || "Autres",
-    category: entry.data.category || "Général",
+    platform: entry.data.platform || "Autre",
+    section: entry.data.section === "Challenges" ? "Challenges" : entry.data.section === "LABs" ? "Laboratoires" : "Autres",
+    category: entry.data.category || "Autres",
     difficulty: entry.data.difficulty || "",
+    os: entry.data.os || "",
+    service: entry.data.service || "",
     tags: entry.data.tags,
     date: entry.data.publishedAt,
     href: base + "writeups/" + slugFromId(entry.id) + "/"
   }));
+const platforms = [...new Set(entries.map(e=>e.platform))].sort((a,b)=>a.localeCompare(b,"fr"));
+const categories = [...new Set(entries.map(e=>e.category))].sort((a,b)=>a.localeCompare(b,"fr"));
+const sections = [
+  {name:"Tous", key:"", count:entries.length},
+  {name:"Challenges", key:"Challenges", count:entries.filter(e=>e.section==="Challenges").length},
+  {name:"Laboratoires", key:"Laboratoires", count:entries.filter(e=>e.section==="Laboratoires").length}
+];
 const filters = [
-  {key:"category", label:"Domaines", values:[...new Set(entries.map(e=>e.category))].sort((a,b)=>a.localeCompare(b,"fr"))},
-  {key:"platform", label:"Plateformes", values:[...new Set(entries.map(e=>e.platform))].sort((a,b)=>a.localeCompare(b,"fr"))},
-  {key:"section", label:"Types", values:[...new Set(entries.map(e=>e.section))].sort((a,b)=>a.localeCompare(b,"fr"))}
-].filter(group=>group.values.length>0);
+  {key:"platform", label:"Plateforme", values:platforms},
+  {key:"category", label:"Domaine", values:categories}
+];
 ---
-<BaseLayout title="Write-ups — Joseph NAKORE" description="Mes write-ups de cybersécurité, challenges et laboratoires : analyses, commandes, résultats et enseignements.">
-  <main id="main-content" class="wu-page" data-wu-page>
+<BaseLayout title="Write-ups — Joseph NAKORE" description="Challenges et laboratoires de cybersécurité, classés par plateforme et domaine, synchronisés depuis Obsidian.">
+  <main class="wu-page" id="main-content" data-wu-page>
     <div class="wu-container">
       <header class="wu-heading">
         <a class="wu-back" href={base}>← Retour au portfolio</a>
-        <div class="wu-eyebrow"><span class="wu-pulse"></span> PRACTICE / FIELD NOTES</div>
+        <div class="wu-eyebrow"><span class="wu-pulse"></span> PRACTICE / WRITE-UPS</div>
         <div class="wu-heading-row">
           <div>
             <h1>Write-ups<span>.</span></h1>
-            <p>Mes investigations en cybersécurité : de l'énumération aux enseignements défensifs, sur des environnements autorisés. Articles rédigés depuis mon espace Obsidian.</p>
+            <p>Mes démarches de résolution, mes observations et mes enseignements. Un même espace pour les challenges et les laboratoires, classés automatiquement depuis Obsidian.</p>
           </div>
-          <div class="wu-counter"><strong>{entries.length.toString().padStart(2,"0")}</strong><span>PUBLICATIONS</span></div>
+          <div class="wu-counter"><strong>{entries.length.toString().padStart(2,"0")}</strong><span>ARTICLES</span></div>
+        </div>
+        <div class="wu-stats" aria-label="Contenu des write-ups">
+          <span><strong>{sections[1].count}</strong> challenges</span>
+          <span><strong>{sections[2].count}</strong> laboratoires</span>
+          <span><strong>{platforms.length}</strong> plateformes</span>
+          <span><strong>{categories.length}</strong> domaines</span>
         </div>
       </header>
 
       <section class="wu-browser" aria-label="Explorer les write-ups">
+        <div class="wu-section-tabs" role="group" aria-label="Type de write-up">
+          {sections.map(section=>
+            <button class:list={["wu-section-tab",{"is-active":!section.key}]} type="button"
+              data-wu-section={section.key || "all"} aria-pressed={!section.key}>
+              {section.name}<span>{section.count}</span>
+            </button>
+          )}
+        </div>
         <label class="wu-search">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.9"/><path d="m16 16 5 5"/></svg>
-          <input type="search" data-wu-search placeholder="Rechercher une machine, une vulnérabilité, un outil…" aria-label="Rechercher dans les write-ups" autocomplete="off"/>
+          <input type="search" data-wu-search placeholder="Machine, vulnérabilité, outil, commande…" aria-label="Rechercher dans les write-ups" autocomplete="off"/>
           <span class="wu-shortcut" aria-hidden="true">/</span>
         </label>
-        {filters.map(group=>(
-          <div class="wu-filter-group" data-wu-filter-group={group.key}>
-            <span class="wu-filter-label">{group.label}</span>
-            <div class="wu-chips" role="group" aria-label={"Filtrer par "+group.label.toLowerCase()}>
-              <button type="button" class="wu-chip is-active" data-wu-filter={group.key} data-wu-value="" aria-pressed="true">Tous</button>
-              {group.values.map(value=><button type="button" class="wu-chip" data-wu-filter={group.key} data-wu-value={value} aria-pressed="false">{value}<span>{entries.filter(e=>e[group.key]===value).length}</span></button>)}
+        <div class="wu-facet-panel">
+          {filters.map(group=>(
+            <div class="wu-filter-group">
+              <span class="wu-filter-label">{group.label}</span>
+              <div class="wu-chips" role="group" aria-label={"Filtrer par "+group.label.toLowerCase()}>
+                <button type="button" class="wu-chip is-active" data-wu-filter={group.key} data-wu-value="" aria-pressed="true">Tous</button>
+                {group.values.map(value=>
+                  <button type="button" class="wu-chip" data-wu-filter={group.key} data-wu-value={value} aria-pressed="false">
+                    {value}<span>{entries.filter(e=>e[group.key]===value).length}</span>
+                  </button>
+                )}
+              </div>
             </div>
-          </div>
-        ))}
+          ))}
+        </div>
         <div class="wu-status-line">
-          <span data-wu-count aria-live="polite">{entries.length} article{entries.length===1?"":"s"}</span>
-          <button class="wu-reset" type="button" data-wu-reset hidden>Effacer les filtres ↺</button>
+          <span data-wu-count aria-live="polite">{entries.length} article{entries.length===1?"":"s"} affichés</span>
+          <button type="button" class="wu-reset" data-wu-reset hidden>Réinitialiser les filtres ↺</button>
         </div>
         <div class="wu-grid">
           {entries.map(entry=>(
             <a class="wu-card" href={entry.href} data-wu-entry
-              data-wu-searchable={[entry.title,entry.summary,entry.platform,entry.section,entry.category,entry.difficulty,...entry.tags].join(" ")}
-              data-wu-category={entry.category} data-wu-platform={entry.platform} data-wu-section={entry.section}>
+               data-wu-searchable={[entry.title,entry.summary,entry.platform,entry.section,entry.category,entry.difficulty,entry.os,entry.service,...entry.tags].join(" ")}
+               data-wu-category={entry.category} data-wu-platform={entry.platform} data-wu-section={entry.section}>
               <div class="wu-card-top">
                 <span class="wu-card-platform">{entry.platform}</span>
                 <time datetime={entry.date.toISOString()}>{formatDate(entry.date)}</time>
               </div>
+              <div class="wu-card-badges">
+                <span class="wu-kind">{entry.section}</span>
+                <span class="wu-domain">{entry.category}</span>
+              </div>
               <h2>{entry.title}</h2>
               <p>{entry.summary}</p>
               <div class="wu-card-meta">
-                <span>{entry.section} <span class="wu-dot">/</span> {entry.category}</span>
+                <span>{entry.service || entry.os || "Documentation technique"}</span>
                 {entry.difficulty&&<span class="wu-difficulty">{entry.difficulty}</span>}
               </div>
               <div class="wu-card-bottom">
@@ -81,59 +113,65 @@ const filters = [
             </a>
           ))}
         </div>
-        {entries.length===0&&<div class="wu-empty-static"><h2>Premières publications en préparation</h2><p>Les notes validées de mon espace Pratique apparaîtront automatiquement ici.</p></div>}
-        <div class="wu-no-results" data-wu-empty hidden><h2>Aucun résultat</h2><p>Essaie un autre mot-clé ou réinitialise les filtres.</p></div>
+        {entries.length===0&&<div class="wu-empty-static"><h2>Publications en préparation</h2><p>Les prochaines notes d'Obsidian apparaîtront automatiquement ici.</p></div>}
+        <div class="wu-no-results" data-wu-empty hidden><h2>Aucun résultat</h2><p>Essaie un autre mot-clé ou change les filtres.</p></div>
       </section>
     </div>
   </main>
 </BaseLayout>
 <script>
-  const root = document.querySelector<HTMLElement>("[data-wu-page]");
-  if (root) {
-    const search = root.querySelector<HTMLInputElement>("[data-wu-search]");
-    const cards = [...root.querySelectorAll<HTMLElement>("[data-wu-entry]")];
-    const count = root.querySelector<HTMLElement>("[data-wu-count]");
-    const empty = root.querySelector<HTMLElement>("[data-wu-empty]");
-    const reset = root.querySelector<HTMLButtonElement>("[data-wu-reset]");
-    const buttons = [...root.querySelectorAll<HTMLButtonElement>("[data-wu-filter]")];
-    const active: Record<string,string> = { category:"", platform:"", section:"" };
-    const normalize = (s:string) => s.normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase().trim();
-    const apply = () => {
-      const q = normalize(search?.value || "");
-      let shown = 0;
-      cards.forEach(card => {
-        const fits = (!q || normalize(card.dataset.wuSearchable || "").includes(q)) &&
-          Object.entries(active).every(([key,value])=>!value || card.dataset["wu"+key.charAt(0).toUpperCase()+key.slice(1)]===value);
-        card.hidden = !fits;
-        if (fits) shown++;
+  const root=document.querySelector<HTMLElement>("[data-wu-page]");
+  if(root){
+    const search=root.querySelector<HTMLInputElement>("[data-wu-search]");
+    const cards=Array.from(root.querySelectorAll<HTMLElement>("[data-wu-entry]"));
+    const counter=root.querySelector<HTMLElement>("[data-wu-count]");
+    const empty=root.querySelector<HTMLElement>("[data-wu-empty]");
+    const reset=root.querySelector<HTMLButtonElement>("[data-wu-reset]");
+    const chips=Array.from(root.querySelectorAll<HTMLButtonElement>("[data-wu-filter]"));
+    const tabs=Array.from(root.querySelectorAll<HTMLButtonElement>(".wu-section-tab[data-wu-section]"));
+    const active:Record<string,string>={section:"",platform:"",category:""};
+    const clean=(s:string)=>s.normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase().trim();
+    const apply=()=>{
+      const term=clean(search?.value||"");
+      let count=0;
+      cards.forEach(card=>{
+        const match=(!term||clean(card.dataset.wuSearchable||"").includes(term))&&
+          Object.entries(active).every(([key,value])=>!value||card.dataset["wu"+key.charAt(0).toUpperCase()+key.slice(1)]===value);
+        card.hidden=!match;
+        if(match)count++;
       });
-      if (count) count.textContent = shown + " article" + (shown===1?"":"s");
-      if (empty) empty.hidden = shown>0 || cards.length===0;
-      if (reset) reset.hidden = !q && Object.values(active).every(value=>!value);
+      if(counter)counter.textContent=count+" article"+(count===1?"":"s")+" affiché"+(count===1?"":"s");
+      if(empty)empty.hidden=count!==0||cards.length===0;
+      if(reset)reset.hidden=!term&&Object.values(active).every(v=>!v);
     };
-    buttons.forEach(button=>button.addEventListener("click",()=>{
-      const key=button.dataset.wuFilter!;
-      active[key]=button.dataset.wuValue || "";
-      buttons.filter(b=>b.dataset.wuFilter===key).forEach(b=>{
-        const selected=b===button;
-        b.classList.toggle("is-active",selected);
-        b.setAttribute("aria-pressed",String(selected));
+    const select=(key:string,value:string)=>{
+      active[key]=value;
+      const options=key==="section"?tabs:chips.filter(b=>b.dataset.wuFilter===key);
+      options.forEach(button=>{
+        const selected=(key==="section"?(button.dataset.wuSection==="all"?"":button.dataset.wuSection):button.dataset.wuValue)===value;
+        button.classList.toggle("is-active",selected);
+        button.setAttribute("aria-pressed",String(selected));
       });
       apply();
-    }));
+    };
+    tabs.forEach(button=>button.addEventListener("click",()=>select("section",button.dataset.wuSection==="all"?"":button.dataset.wuSection||"")));
+    chips.forEach(button=>button.addEventListener("click",()=>select(button.dataset.wuFilter||"",button.dataset.wuValue||"")));
     search?.addEventListener("input",apply);
     reset?.addEventListener("click",()=>{
-      if (search) search.value="";
-      Object.keys(active).forEach(key=>{active[key]="";const all=buttons.find(b=>b.dataset.wuFilter===key && b.dataset.wuValue==="");all?.click()});
-      apply();
+      if(search)search.value="";
+      Object.keys(active).forEach(key=>select(key,""));
       search?.focus();
     });
+    const params=new URLSearchParams(window.location.search);
+    const initialSection=(params.get("type")||"").toLowerCase();
+    if(["lab","labs","laboratoires"].includes(initialSection))select("section","Laboratoires");
+    else if(["challenge","challenges"].includes(initialSection))select("section","Challenges");
     document.addEventListener("keydown",event=>{
-      if(event.key!=="/" || event.altKey || event.ctrlKey || event.metaKey) return;
-      const element=event.target as HTMLElement | null;
-      if (element?.matches("input,textarea,[contenteditable]")) return;
-      event.preventDefault();
-      search?.focus();
+      if(event.key!=="/"||event.altKey||event.ctrlKey||event.metaKey)return;
+      const element=event.target as HTMLElement|null;
+      if(element?.matches("input,textarea,[contenteditable]"))return;
+      event.preventDefault();search?.focus();
     });
+    apply();
   }
 </script>

@@ -50,6 +50,24 @@ await page.goto(root+"writeups/",{waitUntil:"domcontentloaded"});
 check(await page.locator("[data-wu-search]").count()===1,"Writeups search missing");
 check(await page.locator(".wu-grid").count()===1,"Writeups card grid missing");
 check(await page.locator("[data-wu-count]").count()===1,"Writeups count missing");
+check(await page.locator(".wu-section-tab[data-wu-section]").count()===3,"Writeups sections should expose All / Challenges / Labs");
+check(await page.locator('[data-wu-filter="platform"]').count()>0,"Platform filter missing");
+check(await page.locator('[data-wu-filter="category"]').count()>0,"Technical domain filter missing");
+const cards=await page.locator("[data-wu-entry]").count();
+if(cards>0){
+ const lab=page.locator('.wu-section-tab[data-wu-section="Laboratoires"]');
+ await lab.click();
+ check(await lab.getAttribute("aria-pressed")==="true","Lab selection is not active");
+ const shown=await page.locator("[data-wu-entry]:not([hidden])").count();
+ const expected=await page.locator('[data-wu-entry][data-wu-section="Laboratoires"]').count();
+ check(shown===expected,"Lab filter should show only laboratories");
+ const input=page.locator("[data-wu-search]");
+ await input.fill("zzzxxyy-no-such-writeup");
+ check(await page.locator("[data-wu-empty]").isVisible(),"No-results state missing");
+ await page.locator("[data-wu-reset]").click();
+ check(await page.locator("[data-wu-entry]:not([hidden])").count()===cards,"Reset should restore all writeups");
+}
+
 check(errors.length===0,"JavaScript error(s): "+errors.join("; "));
 console.log("EDITORIAL UI QA PASS",JSON.stringify({viewports:widths.length,pages:12,projects:5,results:3,errors:0}));
 await browser.close();

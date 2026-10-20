@@ -18,7 +18,8 @@ const writeups = defineCollection({
     difficulty: z.string().optional(),
     category: z.string().optional(),
     section: z.string().optional(),
-    os: z.string().optional()
+    os: z.string().optional(),
+    service: z.string().optional()
   })
 });
 
