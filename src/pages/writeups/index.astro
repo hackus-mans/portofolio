@@ -128,7 +128,7 @@ const filters = [
     const empty=root.querySelector<HTMLElement>("[data-wu-empty]");
     const reset=root.querySelector<HTMLButtonElement>("[data-wu-reset]");
     const chips=Array.from(root.querySelectorAll<HTMLButtonElement>("[data-wu-filter]"));
-    const tabs=Array.from(root.querySelectorAll<HTMLButtonElement>("[data-wu-section]"));
+    const tabs=Array.from(root.querySelectorAll<HTMLButtonElement>(".wu-section-tab[data-wu-section]"));
     const active:Record<string,string>={section:"",platform:"",category:""};
     const clean=(s:string)=>s.normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase().trim();
     const apply=()=>{
