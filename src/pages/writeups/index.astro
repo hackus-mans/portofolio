@@ -58,7 +58,7 @@ const filters = [
         <div class="wu-section-tabs" role="group" aria-label="Type de write-up">
           {sections.map(section=>
             <button class:list={["wu-section-tab",{"is-active":!section.key}]} type="button"
-              data-wu-section={section.key} aria-pressed={!section.key}>
+              data-wu-section={section.key || "all"} aria-pressed={!section.key}>
               {section.name}<span>{section.count}</span>
             </button>
           )}
@@ -148,13 +148,13 @@ const filters = [
       active[key]=value;
       const options=key==="section"?tabs:chips.filter(b=>b.dataset.wuFilter===key);
       options.forEach(button=>{
-        const selected=(key==="section"?button.dataset.wuSection:button.dataset.wuValue)===value;
+        const selected=(key==="section"?(button.dataset.wuSection==="all"?"":button.dataset.wuSection):button.dataset.wuValue)===value;
         button.classList.toggle("is-active",selected);
         button.setAttribute("aria-pressed",String(selected));
       });
       apply();
     };
-    tabs.forEach(button=>button.addEventListener("click",()=>select("section",button.dataset.wuSection||"")));
+    tabs.forEach(button=>button.addEventListener("click",()=>select("section",button.dataset.wuSection==="all"?"":button.dataset.wuSection||"")));
     chips.forEach(button=>button.addEventListener("click",()=>select(button.dataset.wuFilter||"",button.dataset.wuValue||"")));
     search?.addEventListener("input",apply);
     reset?.addEventListener("click",()=>{
