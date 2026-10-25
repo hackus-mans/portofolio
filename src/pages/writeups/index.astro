@@ -38,7 +38,7 @@ const filters = [
   ...(systems.length?[{key:"os",label:"Système",values:systems}]:[])
 ];
 ---
-<BaseLayout title="Write-ups — Joseph NAKORE" description="Challenges et laboratoires de cybersécurité, classés par plateforme et domaine, synchronisés depuis Obsidian.">
+<BaseLayout title="Write-ups — Joseph NAKORE" description="Comptes rendus de laboratoires et challenges, sélectionnés et publiés après vérification.">
   <main class="wu-page" id="main-content" data-wu-page>
     <div class="wu-container">
       <header class="wu-heading">
@@ -47,7 +47,7 @@ const filters = [
         <div class="wu-heading-row">
           <div>
             <h1>Write-ups<span>.</span></h1>
-            <p>Mes démarches de résolution, mes observations et mes enseignements. Un même espace pour les challenges et les laboratoires, classés automatiquement depuis Obsidian.</p>
+            <p>Un espace dédié à mes comptes rendus techniques vérifiés. Mes notes restent privées tant qu'elles n'ont pas été relues et explicitement approuvées pour publication.</p>
           </div>
           <div class="wu-counter"><strong>{entries.length.toString().padStart(2,"0")}</strong><span>ARTICLES</span></div>
         </div>
@@ -60,6 +60,8 @@ const filters = [
       </header>
 
       <section class="wu-browser" aria-label="Explorer les write-ups">
+        {entries.length>0&&(
+          <Fragment>
         <div class="wu-section-tabs" role="group" aria-label="Type de write-up">
           {sections.map(section=>
             <button class:list={["wu-section-tab",{"is-active":!section.key}]} type="button"
@@ -119,7 +121,9 @@ const filters = [
             </a>
           ))}
         </div>
-        {entries.length===0&&<div class="wu-empty-static"><h2>Publications en préparation</h2><p>Les prochaines notes d'Obsidian apparaîtront automatiquement ici.</p></div>}
+                  </Fragment>
+        )}
+        {entries.length===0&&<div class="wu-empty-static"><h2>Les write-ups seront publiés ici.</h2><p>Cette rubrique repart de zéro. Je prépare une nouvelle collection de labs et de challenges, avec une publication manuelle après vérification du contenu et des captures.</p></div>}
         <div class="wu-no-results" data-wu-empty hidden><h2>Aucun résultat</h2><p>Essaie un autre mot-clé ou change les filtres.</p></div>
       </section>
     </div>
