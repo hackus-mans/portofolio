@@ -5,7 +5,7 @@ import {getCollection} from "astro:content";
 import {slugFromId,formatDate} from "../../lib/content";
 import "../../styles/shade-sections.css";
 
-const base=import.meta.env.BASE_URL.replace(/\\/?$/,"/"); 
+const base=import.meta.env.BASE_URL.replace(/\/?$/,"/"); 
 const all=await getCollection("ctf");
 const competitions=all.filter(c=>c.data.status==="published")
   .sort((a,b)=>a.data.title.localeCompare(b.data.title,"fr"));
@@ -14,7 +14,7 @@ const entries=competitions.map(c=>({
  summary:c.data.summary,
  topline:"CTF / COMPÉTITION",
  date:c.data.generated?"":formatDate(c.data.publishedAt),
- href:base+"ctf/"+slugFromId(c.id).replace(/^obsidian\\//,"")+"/",
+ href:base+"ctf/"+slugFromId(c.id).replace(/^obsidian\//,"")+"/",
  badges:c.data.generated?["Dossier de compétition"]:[c.data.organizer,c.data.team,c.data.rank].filter(Boolean),
  tags:c.data.tags,
  facets:{year:c.data.generated?"":String(c.data.publishedAt.getFullYear())}

@@ -7,21 +7,21 @@ import "../../styles/shade-sections.css";
 export async function getStaticPaths(){
  const entries=(await getCollection("ctf")).filter(c=>c.data.status==="published");
  return entries.map(entry=>({
-   params:{slug:slugFromId(entry.id).replace(/^obsidian\\//,"")},
+   params:{slug:slugFromId(entry.id).replace(/^obsidian\//,"")},
    props:{entry}
  }));
 }
 const {entry}=Astro.props;
 const {Content}=await render(entry);
 const writeups=await getCollection("writeups");
-const id=slugFromId(entry.id).replace(/^obsidian\\//,"");
+const id=slugFromId(entry.id).replace(/^obsidian\//,"");
 const challenges=writeups
  .filter(x=>x.data.status==="published"&&x.data.context==="CTF"&&x.data.competitionId===id)
  .sort((a,b)=>a.data.title.localeCompare(b.data.title,"fr"));
 const categories=[...new Set(challenges.map(x=>x.data.challengeCategory||x.data.category||"Autres"))]
  .sort((a,b)=>a.localeCompare(b,"fr"))
  .map(name=>({name,entries:challenges.filter(x=>(x.data.challengeCategory||x.data.category||"Autres")===name)}));
-const base=import.meta.env.BASE_URL.replace(/\\/?$/,"/");
+const base=import.meta.env.BASE_URL.replace(/\/?$/,"/");
 const backToLibrary=base+"writeups/?type=ctf&competition="+encodeURIComponent(entry.data.title);
 ---
 <BaseLayout title={entry.data.title+" — CTF"} description={entry.data.summary}>
