@@ -1,0 +1,81 @@
+---
+/** A shared faceted archive for competitions, CTF write-ups and Home Lab documents. */
+const {eyebrow,title,description,entries=[],filters=[],emptyTitle="Aucune publication pour le moment.",emptyText="Les contenus explicitement publiés depuis Obsidian apparaîtront ici.",base,links=[]}=Astro.props;
+const all=entries.length;
+---
+<section class="shade-archive" data-shade-browser>
+  <header class="shade-archive-header">
+    <a class="shade-back" href={base}>← Portfolio</a>
+    <div class="shade-eyebrow">~/ {eyebrow}</div>
+    <div class="shade-hero-line"><div><h1>{title}<span>.</span></h1><p>{description}</p></div><div class="shade-counter"><b>{String(all).padStart(2,"0")}</b><small>PUBLICATIONS</small></div></div>
+    {links.length>0&&<nav class="shade-crossnav" aria-label="Explorer la documentation">{links.map(x=><a href={x.href}>{x.label}<span aria-hidden="true"> ↗</span></a>)}</nav>}
+  </header>
+  {all>0?(
+    <div class="shade-browse">
+      <label class="shade-search"><span aria-hidden="true">⌕</span><input data-shade-search type="search" placeholder="Rechercher un titre, un CTF, un outil, une catégorie…" aria-label="Rechercher une publication" autocomplete="off"/><kbd>/</kbd></label>
+      <div class="shade-facet-list">
+        {filters.filter(x=>x.values?.length>0).map(group=><div class="shade-facet-row">
+          <span class="shade-facet-title">{group.label}</span><div class="shade-chips" role="group" aria-label={group.label}>
+            <button class="shade-chip is-active" data-shade-filter={group.key} data-shade-value="" aria-pressed="true" type="button">Tous</button>
+            {group.values.map(value=><button class="shade-chip" data-shade-filter={group.key} data-shade-value={value} aria-pressed="false" type="button">{value}<sup>{entries.filter(x=>x.facets?.[group.key]===value).length}</sup></button>)}
+          </div>
+        </div>)}
+      </div>
+      <div class="shade-result-line"><span data-shade-count aria-live="polite">{all} résultat{all===1?"":"s"}</span><button class="shade-clear" data-shade-clear type="button" hidden>Effacer les filtres ↺</button></div>
+      <div class="shade-cards">
+        {entries.map(entry=><a class="shade-card" href={entry.href} data-shade-entry data-shade-values={JSON.stringify(entry.facets||{})} data-shade-searchable={[entry.title,entry.summary,entry.topline,...(entry.tags||[]),...Object.values(entry.facets||{})].join(" ")}>
+          <div class="shade-card-top"><span>{entry.topline}</span><small>{entry.date||""}</small></div>
+          <h2>{entry.title}</h2><p>{entry.summary}</p>
+          <div class="shade-card-tags">{(entry.badges||[]).slice(0,4).map(b=><span>{b}</span>)}</div>
+          <div class="shade-card-foot"><span>{(entry.tags||[]).slice(0,4).map(t=>"#"+t).join("  ")}</span><b aria-hidden="true">↗</b></div>
+        </a>)}
+      </div>
+      <div class="shade-no-results" data-shade-empty hidden>Aucun résultat : modifie ta recherche ou tes filtres.</div>
+    </div>
+  ):<div class="shade-placeholder"><div class="shade-placeholder-glyph" aria-hidden="true">◇</div><h2>{emptyTitle}</h2><p>{emptyText}</p></div>}
+</section>
+<script>
+  document.querySelectorAll<HTMLElement>("[data-shade-browser]").forEach(root=>{
+    const field=root.querySelector<HTMLInputElement>("[data-shade-search]");
+    const cards=[...root.querySelectorAll<HTMLElement>("[data-shade-entry]")];
+    const buttons=[...root.querySelectorAll<HTMLButtonElement>("[data-shade-filter]")];
+    const count=root.querySelector<HTMLElement>("[data-shade-count]");
+    const clear=root.querySelector<HTMLButtonElement>("[data-shade-clear]");
+    const empty=root.querySelector<HTMLElement>("[data-shade-empty]");
+    const chosen:Record<string,string>={};
+    const normalize=(text:string)=>text.normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase();
+    const apply=()=>{
+      const q=normalize(field?.value||"").trim();let visible=0;
+      cards.forEach(card=>{
+        const values=JSON.parse(card.dataset.shadeValues||"{}");
+        const ok=(!q||normalize(card.dataset.shadeSearchable||"").includes(q))&&Object.entries(chosen).every(([k,v])=>!v||values[k]===v);
+        card.hidden=!ok;if(ok)visible++;
+      });
+      if(count)count.textContent=visible+" résultat"+(visible===1?"":"s");
+      if(empty)empty.hidden=visible>0;
+      if(clear)clear.hidden=!q&&!Object.values(chosen).some(Boolean);
+    };
+    buttons.forEach(b=>b.addEventListener("click",()=>{
+      const key=b.dataset.shadeFilter||"";
+      const value=b.dataset.shadeValue||"";
+      chosen[key]=value;
+      buttons.filter(x=>x.dataset.shadeFilter===key).forEach(x=>{
+        const active=x.dataset.shadeValue===value;
+        x.classList.toggle("is-active",active);x.setAttribute("aria-pressed",String(active));
+      });apply();
+    }));
+    field?.addEventListener("input",apply);
+    clear?.addEventListener("click",()=>{
+      if(field)field.value="";
+      for(const k of Object.keys(chosen))chosen[k]="";
+      buttons.forEach(b=>{const active=!b.dataset.shadeValue;b.classList.toggle("is-active",active);b.setAttribute("aria-pressed",String(active))});
+      apply();field?.focus();
+    });
+    document.addEventListener("keydown",event=>{
+      if(event.key!=="/"||event.ctrlKey||event.metaKey||event.altKey)return;
+      if((event.target as HTMLElement)?.matches("input,textarea,[contenteditable]"))return;
+      if(!root.isConnected)return;event.preventDefault();field?.focus();
+    });
+    apply();
+  });
+</script>

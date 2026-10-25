@@ -1,0 +1,32 @@
+---
+import {getCollection,render} from "astro:content";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import {slugFromId,formatDate} from "../../lib/content";
+import "../../styles/shade-sections.css";
+export async function getStaticPaths(){
+ const collection=(await getCollection("homelab")).filter(x=>x.data.status==="published");
+ return collection.map(entry=>({params:{slug:slugFromId(entry.id)},props:{entry}}));
+}
+const {entry}=Astro.props;
+const {Content}=await render(entry);
+const docs=(await getCollection("homelab")).filter(x=>x.data.status==="published"&&x.data.projectId===entry.data.projectId);
+const base=import.meta.env.BASE_URL.replace(/\/?$/,"/");
+---
+<BaseLayout title={entry.data.title+" — Home Lab"} description={entry.data.summary}>
+ <main class="shade-section-page" id="main-content"><article class="shade-wide shade-detail">
+  <a class="shade-back" href={base+"homelab/"}>← Tous les Home Labs</a>
+  <div class="shade-eyebrow">~/ HOME LAB / {entry.data.projectName||entry.data.title}</div>
+  <h1>{entry.data.title}<span>.</span></h1><p class="shade-lead">{entry.data.summary}</p>
+  <div class="shade-detail-meta">
+    {entry.data.domain&&<span>Domaine : <b>{entry.data.domain}</b></span>}
+    {entry.data.state&&<span>État : <b>{entry.data.state}</b></span>}
+    {entry.data.platform&&<span>Technologie : <b>{entry.data.platform}</b></span>}
+    <span>Date : <b>{formatDate(entry.data.publishedAt)}</b></span>
+  </div>
+  <div class="shade-reading prose"><Content/></div>
+  {docs.length>1&&<section class="shade-related"><div class="shade-eyebrow">~/ DOCUMENTATION ASSOCIÉE</div><h2>Dans ce Home Lab <span>{docs.length-1}</span></h2>
+  <div class="shade-linked-grid">{docs.filter(d=>d.id!==entry.id).map(doc=><a class="shade-linked-card" href={base+"homelab/"+slugFromId(doc.id)+"/"}>
+    <small>{doc.data.documentKind||"Documentation"}</small><h3>{doc.data.title}</h3><p>{doc.data.summary}</p><span>Lire la documentation ↗</span>
+  </a>)}</div></section>}
+ </article></main>
+</BaseLayout>

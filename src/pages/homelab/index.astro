@@ -1,0 +1,31 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import ShadeBrowser from "../../components/ShadeBrowser.astro";
+import {getCollection} from "astro:content";
+import {slugFromId,formatDate} from "../../lib/content";
+import "../../styles/shade-sections.css";
+const base=import.meta.env.BASE_URL.replace(/\/?$/,"/");
+const documents=(await getCollection("homelab")).filter(x=>x.data.status==="published");
+const projects=new Map();
+for(const doc of documents){
+ const id=doc.data.projectId||slugFromId(doc.id);
+ const current=projects.get(id)||{id,docs:[],main:null};
+ current.docs.push(doc);
+ if(doc.data.isProject)current.main=doc;
+ projects.set(id,current);
+}
+const entries=[...projects.values()].map(project=>{
+ const lead=project.main||project.docs[0];
+ const tags=[...new Set(project.docs.flatMap(x=>x.data.tags))];
+ return {title:lead.data.projectName||lead.data.title,summary:lead.data.summary,topline:"HOME LAB / "+(lead.data.domain||"INFRASTRUCTURE"),date:formatDate(lead.data.publishedAt),
+ href:base+"homelab/"+slugFromId(lead.id)+"/",
+ badges:[lead.data.domain,lead.data.state,project.docs.length+" document"+(project.docs.length>1?"s":"")].filter(Boolean),
+ tags,facets:{domain:lead.data.domain||"",state:lead.data.state||"",platform:lead.data.platform||""}};
+});
+const filters=[["domain","Domaine"],["state","État"],["platform","Technologie"]].map(([key,label])=>({key,label,values:[...new Set(entries.map(e=>e.facets[key]).filter(Boolean))].sort((a,b)=>a.localeCompare(b,"fr"))}));
+---
+<BaseLayout title="Home Lab — Joseph NAKORE" description="Mes infrastructures, VM, installations et expérimentations de cybersécurité documentées.">
+  <main class="shade-section-page" id="main-content"><div class="shade-wide">
+    <ShadeBrowser eyebrow="INFRASTRUCTURE / HOME LAB" title="Home Lab" description="Environnements virtualisés, réseaux, installations, configurations, tests et incidents documentés. Un projet peut évoluer à travers plusieurs notes." base={base} entries={entries} filters={filters} links={[{label:"Write-ups",href:base+"writeups/"},{label:"CTF",href:base+"ctf/"},{label:"Labs",href:base+"labs/"}]} emptyTitle="Mes projets de Home Lab arrivent" emptyText="Les infrastructures et leurs documentations apparaîtront ici uniquement lorsqu'elles seront autorisées à la publication depuis Obsidian."/>
+  </div></main>
+</BaseLayout>

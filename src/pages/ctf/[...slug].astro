@@ -1,0 +1,37 @@
+---
+import {getCollection,render} from "astro:content";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import {slugFromId,formatDate} from "../../lib/content";
+import "../../styles/shade-sections.css";
+export async function getStaticPaths(){
+  const entries=(await getCollection("ctf")).filter(x=>x.data.status==="published");
+  return entries.map(entry=>({params:{slug:slugFromId(entry.id)},props:{entry}}));
+}
+const {entry}=Astro.props;
+const {Content}=await render(entry);
+const all=await getCollection("writeups");
+const challenges=all.filter(w=>w.data.status==="published"&&w.data.context==="CTF"&&w.data.competitionId===slugFromId(entry.id));
+const base=import.meta.env.BASE_URL.replace(/\/?$/,"/");
+---
+<BaseLayout title={entry.data.title+" — Compétition CTF"} description={entry.data.summary}>
+ <main class="shade-section-page" id="main-content"><article class="shade-wide shade-detail">
+   <a class="shade-back" href={base+"ctf/"}>← Toutes les compétitions</a>
+   <div class="shade-eyebrow">~/ CTF / COMPÉTITION</div><h1>{entry.data.title}<span>.</span></h1>
+   <p class="shade-lead">{entry.data.summary}</p>
+   <div class="shade-detail-meta">
+     {entry.data.organizer&&<span>Organisateur : <b>{entry.data.organizer}</b></span>}
+     {entry.data.team&&<span>Équipe : <b>{entry.data.team}</b></span>}
+     {entry.data.rank&&<span>Classement : <b>{entry.data.rank}</b></span>}
+     {entry.data.score&&<span>Score : <b>{entry.data.score}</b></span>}
+     <span>Publication : <b>{formatDate(entry.data.publishedAt)}</b></span>
+   </div>
+   <div class="shade-reading prose"><Content/></div>
+   <section class="shade-related"><div class="shade-eyebrow">~/ CHALLENGES LIÉS</div><h2>Write-ups de la compétition <span>{challenges.length}</span></h2>
+   {challenges.length?(
+    <div class="shade-linked-grid">{challenges.map(w=><a class="shade-linked-card" href={base+"writeups/"+slugFromId(w.id)+"/"}>
+      <small>{w.data.challengeCategory||w.data.category||"Challenge"}</small><h3>{w.data.title}</h3><p>{w.data.summary}</p><span>Lire le write-up ↗</span>
+    </a>)}</div>
+   ):<p class="shade-muted">Aucun challenge n'est encore publié pour cette compétition.</p>}
+   </section>
+ </article></main>
+</BaseLayout>

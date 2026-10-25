@@ -1,29 +1,37 @@
 ---
 import BaseLayout from "../../layouts/BaseLayout.astro";
-import {site} from "../../config";
-const base=import.meta.env.BASE_URL.endsWith("/")?import.meta.env.BASE_URL:import.meta.env.BASE_URL+"/";
-const results=[
- ...site.proof.filter(proof=>!proof.label.includes("Licence")).map(proof=>({...proof,href:proof.detail==="HoneyShield"?base+"projects/honeyshield/":base+"projects/labs-ctf/"}))
-];
+import ShadeBrowser from "../../components/ShadeBrowser.astro";
+import {getCollection} from "astro:content";
+import {slugFromId,formatDate} from "../../lib/content";
+import "../../styles/shade-sections.css";
+const base=import.meta.env.BASE_URL.replace(/\/?$/,"/");
+const [competitions,writeups]=await Promise.all([getCollection("ctf"),getCollection("writeups")]);
+const published=competitions.filter(c=>c.data.status==="published");
+const challenges=writeups.filter(w=>w.data.status==="published"&&w.data.context==="CTF");
+const competitionCards=published.map(c=>({
+  title:c.data.title,summary:c.data.summary,topline:"COMPÉTITION CTF",date:formatDate(c.data.publishedAt),
+  href:base+"ctf/"+slugFromId(c.id)+"/",
+  badges:[c.data.organizer,c.data.team,c.data.rank].filter(Boolean),
+  tags:c.data.tags,
+  facets:{competition:c.data.title,year:String(c.data.publishedAt.getFullYear())}
+}));
+const challengeCards=challenges.map(w=>({
+  title:w.data.title,summary:w.data.summary,topline:w.data.competitionName||"CHALLENGE CTF",date:formatDate(w.data.publishedAt),
+  href:base+"writeups/"+slugFromId(w.id)+"/",
+  badges:[w.data.challengeCategory||w.data.category,w.data.difficulty,"Write-up"].filter(Boolean),
+  tags:w.data.tags,
+  facets:{competition:w.data.competitionName||"",category:w.data.challengeCategory||w.data.category||"",platform:w.data.platform||""}
+}));
+const filtersFor=(cards,fields)=>fields.map(([key,label])=>({key,label,values:[...new Set(cards.map(c=>c.facets[key]).filter(Boolean))].sort((a,b)=>a.localeCompare(b,"fr"))}));
 ---
-<BaseLayout title="CTF et distinctions — Joseph NAKORE" description="Compétitions CTF et projets présentés par Joseph NAKORE.">
-<main id="main-content" class="ed-container ed-subpage">
-  <header class="ed-subpage-head">
-    <span class="ed-overline">CTF / COMPETITIONS</span>
-    <h1>Compétitions & distinctions<span class="ed-accent">.</span></h1>
-    <p>J'apprends à tester, comprendre et expliquer mes démarches en laboratoire et lors de compétitions. Les informations ci-dessous proviennent des résultats que j'ai déclarés dans mon portfolio.</p>
-  </header>
-  <div class="ed-honors">
-    {results.map((proof,i)=><a class="ed-honor-card" href={proof.href}>
-      <div class="ed-honor-top"><span class="ed-honor-icon" aria-hidden="true">{i===0?"✧":"▥"}</span><span class="ed-honor-index">0{i+1} / COMPETITION</span></div>
-      <p class="ed-honor-type">{proof.detail}</p><h3>{proof.label}</h3><p class="ed-honor-result">{proof.value}</p>
-      <span class="ed-honor-footer">Consulter le contexte ↗</span>
-    </a>)}
-  </div>
-  <p class="ed-subpage-notice">Les classements sont présentés comme déclarés. Les preuves documentaires et comptes rendus pourront être joints aux fiches correspondantes.</p>
-  <section class="ed-section" aria-labelledby="ctf-practice">
-    <div class="ed-section-heading"><div><span class="ed-overline">CONTINUOUS PRACTICE</span><h2 id="ctf-practice">La pratique au-delà des podiums</h2></div></div>
-    <div class="ed-contact-card"><div><h2>Labs, plateformes et writeups</h2><p>Énumération, Web/API, sécurité offensive, Linux et Windows : je documente une progression méthodique sur des environnements autorisés.</p></div><a class="ed-btn ed-btn-primary" href={base+"projects/labs-ctf/"}>Voir mes labs ↗</a></div>
-  </section>
-</main>
+<BaseLayout title="CTF — Joseph NAKORE" description="Compétitions CTF et write-ups des défis publiés depuis Obsidian SHADE.">
+  <main class="shade-section-page" id="main-content">
+    <div class="shade-wide">
+      <ShadeBrowser eyebrow="CTF / COMPÉTITIONS" title="Capture The Flag" description="Compétitions auxquelles j'ai participé, classements documentés et challenges résolus. Chaque fiche renvoie aux write-ups publiés depuis Obsidian." base={base} entries={competitionCards} filters={filtersFor(competitionCards,[["year","Année"]])} links={[{label:"Tous les write-ups",href:base+"writeups/"},{label:"Home Lab",href:base+"homelab/"}]} emptyTitle="Compétitions en préparation" emptyText="Les fiches de compétition apparaîtront ici lorsque leur propriété publish sera activée dans Obsidian."/>
+      <div class="shade-subsection">
+        <div class="shade-subheading"><div><div class="shade-eyebrow">~/ CHALLENGES</div><h2>Rédactions CTF <span>{challenges.length}</span></h2><p>Un seul write-up : visible ici et dans le catalogue général des Write-ups.</p></div></div>
+        <ShadeBrowser eyebrow="CHALLENGES DOCUMENTÉS" title="Write-ups CTF" description="Filtrer les challenges par compétition, catégorie technique ou plateforme." base={base} entries={challengeCards} filters={filtersFor(challengeCards,[["competition","Compétition"],["category","Catégorie"],["platform","Plateforme"]])} emptyTitle="Aucun write-up CTF publié" emptyText="Crée tes notes dans CTF/Nom-de-compétition/, puis active publish pour les rendre visibles ici."/>
+      </div>
+    </div>
+  </main>
 </BaseLayout>
