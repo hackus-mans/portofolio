@@ -10,14 +10,14 @@ const published=competitions.filter(c=>c.data.status==="published");
 const challenges=writeups.filter(w=>w.data.status==="published"&&w.data.context==="CTF");
 const competitionCards=published.map(c=>({
   title:c.data.title,summary:c.data.summary,topline:"COMPÉTITION CTF",date:formatDate(c.data.publishedAt),
-  href:base+"ctf/"+slugFromId(c.id)+"/",
+  href:base+"ctf/"+slugFromId(c.id).replace(/^obsidian\//,"")+"/",
   badges:[c.data.organizer,c.data.team,c.data.rank].filter(Boolean),
   tags:c.data.tags,
   facets:{competition:c.data.title,year:String(c.data.publishedAt.getFullYear())}
 }));
 const challengeCards=challenges.map(w=>({
   title:w.data.title,summary:w.data.summary,topline:w.data.competitionName||"CHALLENGE CTF",date:formatDate(w.data.publishedAt),
-  href:base+"writeups/"+slugFromId(w.id)+"/",
+  href:base+"writeups/"+slugFromId(w.id).replace(/^obsidian\//,"")+"/",
   badges:[w.data.challengeCategory||w.data.category,w.data.difficulty,"Write-up"].filter(Boolean),
   tags:w.data.tags,
   facets:{competition:w.data.competitionName||"",category:w.data.challengeCategory||w.data.category||"",platform:w.data.platform||""}

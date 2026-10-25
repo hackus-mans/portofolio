@@ -5,7 +5,7 @@ import {slugFromId,formatDate} from "../../lib/content";
 import "../../styles/shade-sections.css";
 export async function getStaticPaths(){
  const collection=(await getCollection("homelab")).filter(x=>x.data.status==="published");
- return collection.map(entry=>({params:{slug:slugFromId(entry.id)},props:{entry}}));
+ return collection.map(entry=>({params:{slug:slugFromId(entry.id).replace(/^obsidian\//,"")},props:{entry}}));
 }
 const {entry}=Astro.props;
 const {Content}=await render(entry);
@@ -25,7 +25,7 @@ const base=import.meta.env.BASE_URL.replace(/\/?$/,"/");
   </div>
   <div class="shade-reading prose"><Content/></div>
   {docs.length>1&&<section class="shade-related"><div class="shade-eyebrow">~/ DOCUMENTATION ASSOCIÉE</div><h2>Dans ce Home Lab <span>{docs.length-1}</span></h2>
-  <div class="shade-linked-grid">{docs.filter(d=>d.id!==entry.id).map(doc=><a class="shade-linked-card" href={base+"homelab/"+slugFromId(doc.id)+"/"}>
+  <div class="shade-linked-grid">{docs.filter(d=>d.id!==entry.id).map(doc=><a class="shade-linked-card" href={base+"homelab/"+slugFromId(doc.id).replace(/^obsidian\//,"")+"/"}>
     <small>{doc.data.documentKind||"Documentation"}</small><h3>{doc.data.title}</h3><p>{doc.data.summary}</p><span>Lire la documentation ↗</span>
   </a>)}</div></section>}
  </article></main>

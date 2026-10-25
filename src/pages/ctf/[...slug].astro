@@ -5,12 +5,12 @@ import {slugFromId,formatDate} from "../../lib/content";
 import "../../styles/shade-sections.css";
 export async function getStaticPaths(){
   const entries=(await getCollection("ctf")).filter(x=>x.data.status==="published");
-  return entries.map(entry=>({params:{slug:slugFromId(entry.id)},props:{entry}}));
+  return entries.map(entry=>({params:{slug:slugFromId(entry.id).replace(/^obsidian\//,"")},props:{entry}}));
 }
 const {entry}=Astro.props;
 const {Content}=await render(entry);
 const all=await getCollection("writeups");
-const challenges=all.filter(w=>w.data.status==="published"&&w.data.context==="CTF"&&w.data.competitionId===slugFromId(entry.id));
+const challenges=all.filter(w=>w.data.status==="published"&&w.data.context==="CTF"&&w.data.competitionId===slugFromId(entry.id).replace(/^obsidian\//,""));
 const base=import.meta.env.BASE_URL.replace(/\/?$/,"/");
 ---
 <BaseLayout title={entry.data.title+" — Compétition CTF"} description={entry.data.summary}>
@@ -28,7 +28,7 @@ const base=import.meta.env.BASE_URL.replace(/\/?$/,"/");
    <div class="shade-reading prose"><Content/></div>
    <section class="shade-related"><div class="shade-eyebrow">~/ CHALLENGES LIÉS</div><h2>Write-ups de la compétition <span>{challenges.length}</span></h2>
    {challenges.length?(
-    <div class="shade-linked-grid">{challenges.map(w=><a class="shade-linked-card" href={base+"writeups/"+slugFromId(w.id)+"/"}>
+    <div class="shade-linked-grid">{challenges.map(w=><a class="shade-linked-card" href={base+"writeups/"+slugFromId(w.id).replace(/^obsidian\//,"")+"/"}>
       <small>{w.data.challengeCategory||w.data.category||"Challenge"}</small><h3>{w.data.title}</h3><p>{w.data.summary}</p><span>Lire le write-up ↗</span>
     </a>)}</div>
    ):<p class="shade-muted">Aucun challenge n'est encore publié pour cette compétition.</p>}
