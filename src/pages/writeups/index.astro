@@ -58,6 +58,11 @@ const filters = [
           </div>
           <div class="wu-counter"><strong>{entries.length.toString().padStart(2,"0")}</strong><span>ARTICLES</span></div>
         </div>
+        <nav class="wu-related-nav" aria-label="Explorer les autres rubriques">
+          <a href={base+"ctf/"}>Compétitions CTF ↗</a>
+          <a href={base+"homelab/"}>Home Lab ↗</a>
+          <a href={base+"labs/"}>Laboratoires ↗</a>
+        </nav>
         <div class="wu-stats" aria-label="Contenu des write-ups">
           <span><strong>{sections[1].count}</strong> challenges</span>
           <span><strong>{sections[2].count}</strong> laboratoires</span>

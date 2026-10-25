@@ -82,3 +82,7 @@
 .ed-site .prose :is(h2,h3){scroll-margin-top:110px}
 .ed-site .prose img{max-width:100%;height:auto;display:block;margin-inline:auto;border-radius:6px}
 @media(max-width:900px){.ed-site .entry-toc{width:100%;max-height:260px}.ed-site .article-sidebar{display:block}}
+
+.wu-related-nav{display:flex;flex-wrap:wrap;gap:9px;margin-top:23px}
+.wu-related-nav a{display:inline-flex;padding:9px 12px;border:1px solid #35454e;border-radius:6px;text-decoration:none;color:#b2c8c9;font:500 12px var(--ed-mono,monospace)}
+.wu-related-nav a:hover,.wu-related-nav a:focus-visible{color:#a4ffe8;border-color:#5fd4c4}
