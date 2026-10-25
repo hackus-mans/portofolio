@@ -1,1 +1,0 @@
-SHADE temporary connectivity test. No private notes, credentials or media. This file must be removed in the same test.
