@@ -1,7 +1,7 @@
 ---
 import BaseLayout from "./BaseLayout.astro";
 import { formatDate } from "../lib/content";
-const {title,summary,publishedAt,updatedAt,tags=[],category,categoryHref,meta=[],toc=[]}=Astro.props;
+const {title,summary,publishedAt,updatedAt,tags=[],category,categoryHref,parentHref,parentLabel,meta=[],toc=[]}=Astro.props;
 const rawBase=import.meta.env.BASE_URL;
 const base=rawBase.endsWith("/")?rawBase:rawBase+"/";
 ---
@@ -11,6 +11,7 @@ const base=rawBase.endsWith("/")?rawBase:rawBase+"/";
       <header class="article-head">
         <div class="container">
           <a class="back-link" href={base+categoryHref}>← Retour : {category}</a>
+          {parentHref&&<a class="back-link" style="margin-left:20px" href={base+parentHref}>← {parentLabel||"Compétition"}</a>}
           <p class="label-dark">FIELD NOTES / {category.toUpperCase()}</p>
           <h1>{title}</h1>
           <p class="lead">{summary}</p>
@@ -31,6 +32,7 @@ const base=rawBase.endsWith("/")?rawBase:rawBase+"/";
             {toc.map(heading=><a href={"#"+heading.slug} class:list={[{"entry-toc-sub":heading.depth===3}]}>{heading.text}</a>)}
           </nav>}
           <a href={base+categoryHref}>← Tous les {category.toLowerCase()}</a>
+          {parentHref&&<a href={base+parentHref}>← {parentLabel||"Compétition CTF"}</a>}
           <a href={base+"projects/"}>Dossiers projets ↗</a>
           <a href={base+"roadmap/"}>Lumina Academy ↗</a>
         </aside>

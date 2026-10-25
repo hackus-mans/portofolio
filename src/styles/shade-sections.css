@@ -57,3 +57,10 @@
 @media(max-width:900px){.shade-cards,.shade-linked-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.shade-facet-row{flex-direction:column;gap:7px}.shade-facet-title{padding-top:0}}
 @media(max-width:600px){.shade-section-page{padding:32px 0 70px}.shade-wide{width:calc(100% - 28px)}.shade-hero-line{align-items:start}.shade-hero-line h1{font-size:37px}.shade-counter b{font-size:24px}.shade-counter{min-width:75px}.shade-cards,.shade-linked-grid{grid-template-columns:1fr}.shade-card{min-height:220px}.shade-facet-row{gap:7px}.shade-chip{padding:6px 10px}.shade-back{margin-bottom:24px}}
 @media(prefers-reduced-motion:reduce){.shade-card{transition:none}.shade-card:hover{transform:none}}
+/* CTF: competition first, category-by-category challenge navigation. */
+.shade-competition-intro{margin:28px 0;padding:14px 18px;border:1px solid #31434c;border-radius:8px;background:#111c23}
+.shade-category{margin-top:32px}
+.shade-category-head{display:flex;align-items:baseline;justify-content:space-between;border-bottom:1px solid #31404d;padding-bottom:13px;margin-bottom:15px;gap:15px}
+.shade-category-head h3{margin:0;font-size:19px;color:#deeee9}
+.shade-category-head span{color:#8fa7b2;font:11px var(--ed-mono,monospace);white-space:nowrap}
+.shade-related>.shade-crossnav{margin-top:30px}

@@ -61,7 +61,6 @@ const filters = [
         <nav class="wu-related-nav" aria-label="Explorer les autres rubriques">
           <a href={base+"ctf/"}>Compétitions CTF ↗</a>
           <a href={base+"homelab/"}>Home Lab ↗</a>
-          <a href={base+"labs/"}>Laboratoires ↗</a>
         </nav>
         <div class="wu-stats" aria-label="Contenu des write-ups">
           <span><strong>{sections[1].count}</strong> challenges</span>
@@ -190,6 +189,8 @@ const filters = [
     if(["lab","labs","laboratoires"].includes(initialSection))select("section","Laboratoires");
     else if(["challenge","challenges"].includes(initialSection))select("section","Challenges");
     else if(["ctf","competition"].includes(initialSection))select("section","CTF");
+    const requestedCompetition=params.get("competition");
+    if(requestedCompetition && competitions.includes(requestedCompetition)) select("competition",requestedCompetition);
     document.addEventListener("keydown",event=>{
       if(event.key!=="/"||event.altKey||event.ctrlKey||event.metaKey)return;
       const element=event.target as HTMLElement|null;

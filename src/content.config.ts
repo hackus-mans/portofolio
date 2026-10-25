@@ -26,7 +26,9 @@ const writeups = defineCollection({
     competitionId: z.string().optional(),
     competitionName: z.string().optional(),
     challengeCategory: z.string().optional(),
-    tier: z.string().optional()
+    tier: z.string().optional(),
+    challengePoints: z.string().optional(),
+    flagFound: z.string().optional()
   })
 });
 
@@ -52,7 +54,8 @@ const ctf = defineCollection({
     team: z.string().optional(),
     rank: z.string().optional(),
     score: z.string().optional(),
-    platform: z.string().optional()
+    platform: z.string().optional(),
+    generated: z.boolean().default(false)
   })
 });
 const homelab = defineCollection({

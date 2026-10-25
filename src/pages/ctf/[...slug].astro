@@ -3,35 +3,60 @@ import {getCollection,render} from "astro:content";
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import {slugFromId,formatDate} from "../../lib/content";
 import "../../styles/shade-sections.css";
+
 export async function getStaticPaths(){
-  const entries=(await getCollection("ctf")).filter(x=>x.data.status==="published");
-  return entries.map(entry=>({params:{slug:slugFromId(entry.id).replace(/^obsidian\//,"")},props:{entry}}));
+ const entries=(await getCollection("ctf")).filter(c=>c.data.status==="published");
+ return entries.map(entry=>({
+   params:{slug:slugFromId(entry.id).replace(/^obsidian\\//,"")},
+   props:{entry}
+ }));
 }
 const {entry}=Astro.props;
 const {Content}=await render(entry);
-const all=await getCollection("writeups");
-const challenges=all.filter(w=>w.data.status==="published"&&w.data.context==="CTF"&&w.data.competitionId===slugFromId(entry.id).replace(/^obsidian\//,""));
-const base=import.meta.env.BASE_URL.replace(/\/?$/,"/");
+const writeups=await getCollection("writeups");
+const id=slugFromId(entry.id).replace(/^obsidian\\//,"");
+const challenges=writeups
+ .filter(x=>x.data.status==="published"&&x.data.context==="CTF"&&x.data.competitionId===id)
+ .sort((a,b)=>a.data.title.localeCompare(b.data.title,"fr"));
+const categories=[...new Set(challenges.map(x=>x.data.challengeCategory||x.data.category||"Autres"))]
+ .sort((a,b)=>a.localeCompare(b,"fr"))
+ .map(name=>({name,entries:challenges.filter(x=>(x.data.challengeCategory||x.data.category||"Autres")===name)}));
+const base=import.meta.env.BASE_URL.replace(/\\/?$/,"/");
+const backToLibrary=base+"writeups/?type=ctf&competition="+encodeURIComponent(entry.data.title);
 ---
-<BaseLayout title={entry.data.title+" — Compétition CTF"} description={entry.data.summary}>
- <main class="shade-section-page" id="main-content"><article class="shade-wide shade-detail">
-   <a class="shade-back" href={base+"ctf/"}>← Toutes les compétitions</a>
-   <div class="shade-eyebrow">~/ CTF / COMPÉTITION</div><h1>{entry.data.title}<span>.</span></h1>
+<BaseLayout title={entry.data.title+" — CTF"} description={entry.data.summary}>
+ <main class="shade-section-page" id="main-content">
+  <article class="shade-wide shade-detail">
+   <a class="shade-back" href={base+"ctf/"}>← Retour aux compétitions</a>
+   <div class="shade-eyebrow">~/ CTF / COMPÉTITION</div>
+   <h1>{entry.data.title}<span>.</span></h1>
    <p class="shade-lead">{entry.data.summary}</p>
-   <div class="shade-detail-meta">
-     {entry.data.organizer&&<span>Organisateur : <b>{entry.data.organizer}</b></span>}
-     {entry.data.team&&<span>Équipe : <b>{entry.data.team}</b></span>}
-     {entry.data.rank&&<span>Classement : <b>{entry.data.rank}</b></span>}
-     {entry.data.score&&<span>Score : <b>{entry.data.score}</b></span>}
-     <span>Publication : <b>{formatDate(entry.data.publishedAt)}</b></span>
-   </div>
-   <div class="shade-reading prose"><Content/></div>
-   <section class="shade-related"><div class="shade-eyebrow">~/ CHALLENGES LIÉS</div><h2>Write-ups de la compétition <span>{challenges.length}</span></h2>
-   {challenges.length?(
-    <div class="shade-linked-grid">{challenges.map(w=><a class="shade-linked-card" href={base+"writeups/"+slugFromId(w.id).replace(/^obsidian\//,"")+"/"}>
-      <small>{w.data.challengeCategory||w.data.category||"Challenge"}</small><h3>{w.data.title}</h3><p>{w.data.summary}</p><span>Lire le write-up ↗</span>
-    </a>)}</div>
-   ):<p class="shade-muted">Aucun challenge n'est encore publié pour cette compétition.</p>}
+   {!entry.data.generated&&<div class="shade-detail-meta">
+      {entry.data.organizer&&<span>Organisateur : <b>{entry.data.organizer}</b></span>}
+      {entry.data.team&&<span>Équipe : <b>{entry.data.team}</b></span>}
+      {entry.data.rank&&<span>Classement : <b>{entry.data.rank}</b></span>}
+      {entry.data.score&&<span>Score : <b>{entry.data.score}</b></span>}
+      <span>Documentation : <b>{formatDate(entry.data.publishedAt)}</b></span>
+    </div>}
+   {entry.data.generated?
+     <p class="shade-muted shade-competition-intro">Cette compétition n'a pas encore de présentation publique. Ses challenges publiés sont disponibles ci-dessous.</p>
+     :<div class="shade-reading prose"><Content/></div>}
+   <section class="shade-related" aria-labelledby="challenges-title">
+     <div class="shade-eyebrow">~/ SOLUTIONS DOCUMENTÉES</div>
+     <h2 id="challenges-title">Challenges & catégories <span>{challenges.length}</span></h2>
+     <p class="shade-muted">Seuls les challenges dont le fichier Markdown porte <code>publish: true</code> sont affichés.</p>
+     {categories.length?categories.map(category=><section class="shade-category" aria-label={"Challenges "+category.name}>
+       <div class="shade-category-head"><h3>{category.name}</h3><span>{category.entries.length} write-up{category.entries.length>1?"s":""}</span></div>
+       <div class="shade-linked-grid">{category.entries.map(w=><a class="shade-linked-card" href={base+"writeups/"+slugFromId(w.id)+"/"}>
+         <small>{w.data.difficulty||"CHALLENGE CTF"}</small>
+         <h3>{w.data.title}</h3><p>{w.data.summary}</p><span>Lire le write-up ↗</span>
+       </a>)}</div>
+     </section>):<p class="shade-muted">Aucun challenge publié pour le moment. Cette compétition reste accessible.</p>}
+     <nav class="shade-crossnav" aria-label="Continuer la navigation">
+       <a href={backToLibrary}>Voir les write-ups de cette compétition ↗</a>
+       <a href={base+"ctf/"}>Toutes les compétitions ↗</a>
+     </nav>
    </section>
- </article></main>
+  </article>
+ </main>
 </BaseLayout>

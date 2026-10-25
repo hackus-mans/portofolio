@@ -25,6 +25,8 @@ const toc = headings.filter(heading => heading.depth === 2 || heading.depth === 
   toc={toc}
   category="Writeups"
   categoryHref="writeups/"
+  parentHref={entry.data.context==="CTF"&&entry.data.competitionId?"ctf/"+entry.data.competitionId+"/":undefined}
+  parentLabel={entry.data.context==="CTF"?(entry.data.competitionName||"Compétition CTF"):undefined}
   meta={[
     ...(entry.data.platform ? [{ label: "Plateforme", value: entry.data.platform }] : []),
     ...(entry.data.difficulty ? [{ label: "Niveau", value: entry.data.difficulty }] : []),
@@ -35,7 +37,9 @@ const toc = headings.filter(heading => heading.depth === 2 || heading.depth === 
     ...(entry.data.tools?.length ? [{ label: "Outils", value: entry.data.tools.join(" · ") }] : []),
     ...(entry.data.competitionName ? [{ label: "Compétition CTF", value: entry.data.competitionName }] : []),
     ...(entry.data.challengeCategory ? [{ label: "Catégorie du challenge", value: entry.data.challengeCategory }] : []),
-    ...(entry.data.activity ? [{ label: "Activité", value: entry.data.activity }] : [])
+    ...(entry.data.activity ? [{ label: "Activité", value: entry.data.activity }] : []),
+    ...(entry.data.challengePoints ? [{ label: "Points CTF", value: entry.data.challengePoints }] : []),
+    ...(entry.data.flagFound ? [{ label: "Flag trouvé", value: entry.data.flagFound }] : [])
   ]}
 >
   <Content />

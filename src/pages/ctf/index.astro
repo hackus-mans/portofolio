@@ -4,34 +4,35 @@ import ShadeBrowser from "../../components/ShadeBrowser.astro";
 import {getCollection} from "astro:content";
 import {slugFromId,formatDate} from "../../lib/content";
 import "../../styles/shade-sections.css";
-const base=import.meta.env.BASE_URL.replace(/\/?$/,"/");
-const [competitions,writeups]=await Promise.all([getCollection("ctf"),getCollection("writeups")]);
-const published=competitions.filter(c=>c.data.status==="published");
-const challenges=writeups.filter(w=>w.data.status==="published"&&w.data.context==="CTF");
-const competitionCards=published.map(c=>({
-  title:c.data.title,summary:c.data.summary,topline:"COMPÉTITION CTF",date:formatDate(c.data.publishedAt),
-  href:base+"ctf/"+slugFromId(c.id).replace(/^obsidian\//,"")+"/",
-  badges:[c.data.organizer,c.data.team,c.data.rank].filter(Boolean),
-  tags:c.data.tags,
-  facets:{competition:c.data.title,year:String(c.data.publishedAt.getFullYear())}
+
+const base=import.meta.env.BASE_URL.replace(/\\/?$/,"/"); 
+const all=await getCollection("ctf");
+const competitions=all.filter(c=>c.data.status==="published")
+  .sort((a,b)=>a.data.title.localeCompare(b.data.title,"fr"));
+const entries=competitions.map(c=>({
+ title:c.data.title,
+ summary:c.data.summary,
+ topline:"CTF / COMPÉTITION",
+ date:c.data.generated?"":formatDate(c.data.publishedAt),
+ href:base+"ctf/"+slugFromId(c.id).replace(/^obsidian\\//,"")+"/",
+ badges:c.data.generated?["Dossier de compétition"]:[c.data.organizer,c.data.team,c.data.rank].filter(Boolean),
+ tags:c.data.tags,
+ facets:{year:c.data.generated?"":String(c.data.publishedAt.getFullYear())}
 }));
-const challengeCards=challenges.map(w=>({
-  title:w.data.title,summary:w.data.summary,topline:w.data.competitionName||"CHALLENGE CTF",date:formatDate(w.data.publishedAt),
-  href:base+"writeups/"+slugFromId(w.id).replace(/^obsidian\//,"")+"/",
-  badges:[w.data.challengeCategory||w.data.category,w.data.difficulty,"Write-up"].filter(Boolean),
-  tags:w.data.tags,
-  facets:{competition:w.data.competitionName||"",category:w.data.challengeCategory||w.data.category||"",platform:w.data.platform||""}
-}));
-const filtersFor=(cards,fields)=>fields.map(([key,label])=>({key,label,values:[...new Set(cards.map(c=>c.facets[key]).filter(Boolean))].sort((a,b)=>a.localeCompare(b,"fr"))}));
+const years=[...new Set(entries.map(c=>c.facets.year).filter(Boolean))].sort((a,b)=>b.localeCompare(a));
 ---
-<BaseLayout title="CTF — Joseph NAKORE" description="Compétitions CTF et write-ups des défis publiés depuis Obsidian SHADE.">
-  <main class="shade-section-page" id="main-content">
-    <div class="shade-wide">
-      <ShadeBrowser eyebrow="CTF / COMPÉTITIONS" title="Capture The Flag" description="Compétitions auxquelles j'ai participé, classements documentés et challenges résolus. Chaque fiche renvoie aux write-ups publiés depuis Obsidian." base={base} entries={competitionCards} filters={filtersFor(competitionCards,[["year","Année"]])} links={[{label:"Tous les write-ups",href:base+"writeups/"},{label:"Home Lab",href:base+"homelab/"}]} emptyTitle="Compétitions en préparation" emptyText="Les fiches de compétition apparaîtront ici lorsque leur propriété publish sera activée dans Obsidian."/>
-      <div class="shade-subsection">
-        <div class="shade-subheading"><div><div class="shade-eyebrow">~/ CHALLENGES</div><h2>Rédactions CTF <span>{challenges.length}</span></h2><p>Un seul write-up : visible ici et dans le catalogue général des Write-ups.</p></div></div>
-        <ShadeBrowser eyebrow="CHALLENGES DOCUMENTÉS" title="Write-ups CTF" description="Filtrer les challenges par compétition, catégorie technique ou plateforme." base={base} entries={challengeCards} filters={filtersFor(challengeCards,[["competition","Compétition"],["category","Catégorie"],["platform","Plateforme"]])} emptyTitle="Aucun write-up CTF publié" emptyText="Crée tes notes dans CTF/Nom-de-compétition/, puis active publish pour les rendre visibles ici."/>
-      </div>
-    </div>
-  </main>
+<BaseLayout title="CTF — Joseph NAKORE" description="Compétitions Capture The Flag : dossiers, catégories et write-ups techniques.">
+  <main class="shade-section-page" id="main-content"><div class="shade-wide">
+    <ShadeBrowser
+      eyebrow="CTF / COMPÉTITIONS"
+      title="Capture The Flag"
+      description="Explore mes compétitions. Ouvre un événement pour retrouver ses catégories et les challenges dont j'ai autorisé la publication."
+      base={base}
+      entries={entries}
+      filters={[{key:"year",label:"Année",values:years}]}
+      links={[{label:"Explorer tous mes write-ups",href:base+"writeups/"},{label:"Voir les challenges CTF publiés",href:base+"writeups/?type=ctf"}]}
+      emptyTitle="Aucune compétition enregistrée"
+      emptyText="Dès qu'un dossier de compétition sera synchronisé depuis CTF/ dans Obsidian, sa fiche apparaîtra ici. Les write-ups restent privés sans publish: true."
+    />
+  </div></main>
 </BaseLayout>
