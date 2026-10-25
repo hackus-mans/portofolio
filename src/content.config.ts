@@ -20,7 +20,13 @@ const writeups = defineCollection({
     section: z.string().optional(),
     os: z.string().optional(),
     service: z.string().optional(),
-    tools: z.array(z.string()).default([])
+    tools: z.array(z.string()).default([]),
+    context: z.string().optional(),
+    activity: z.string().optional(),
+    competitionId: z.string().optional(),
+    competitionName: z.string().optional(),
+    challengeCategory: z.string().optional(),
+    tier: z.string().optional()
   })
 });
 
@@ -39,4 +45,26 @@ const notes = defineCollection({
   })
 });
 
-export const collections = { writeups, labs, notes };
+const ctf = defineCollection({
+  loader: glob({ pattern: "**/*.md", base: "./src/content/ctf" }),
+  schema: baseSchema.extend({
+    organizer: z.string().optional(),
+    team: z.string().optional(),
+    rank: z.string().optional(),
+    score: z.string().optional(),
+    platform: z.string().optional()
+  })
+});
+const homelab = defineCollection({
+  loader: glob({ pattern: "**/*.md", base: "./src/content/homelab" }),
+  schema: baseSchema.extend({
+    projectId: z.string(),
+    projectName: z.string().optional(),
+    documentKind: z.string().optional(),
+    isProject: z.boolean().default(false),
+    domain: z.string().optional(),
+    state: z.string().optional(),
+    platform: z.string().optional()
+  })
+});
+export const collections = { writeups, labs, notes, ctf, homelab };

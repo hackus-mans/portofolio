@@ -18,6 +18,10 @@ const entries = (await getCollection("writeups"))
     os: entry.data.os || "",
     service: entry.data.service || "",
     tools: entry.data.tools || [],
+    context: entry.data.context || "",
+    competition: entry.data.competitionName || "",
+    challengeCategory: entry.data.challengeCategory || "",
+    activity: entry.data.activity || "",
     tags: entry.data.tags,
     date: entry.data.publishedAt,
     href: base + "writeups/" + slugFromId(entry.id) + "/"
@@ -26,14 +30,17 @@ const platforms = [...new Set(entries.map(e=>e.platform))].sort((a,b)=>a.localeC
 const categories = [...new Set(entries.map(e=>e.category))].sort((a,b)=>a.localeCompare(b,"fr"));
 const difficulties = [...new Set(entries.map(e=>e.difficulty).filter(Boolean))].sort((a,b)=>["Très facile","Facile","Intermédiaire","Difficile","Expert"].indexOf(a)-["Très facile","Facile","Intermédiaire","Difficile","Expert"].indexOf(b));
 const systems = [...new Set(entries.map(e=>e.os).filter(Boolean))].sort((a,b)=>a.localeCompare(b,"fr"));
+const competitions = [...new Set(entries.map(e=>e.competition).filter(Boolean))].sort((a,b)=>a.localeCompare(b,"fr"));
 const sections = [
   {name:"Tous", key:"", count:entries.length},
   {name:"Challenges", key:"Challenges", count:entries.filter(e=>e.section==="Challenges").length},
-  {name:"Laboratoires", key:"Laboratoires", count:entries.filter(e=>e.section==="Laboratoires").length}
+  {name:"Laboratoires", key:"Laboratoires", count:entries.filter(e=>e.section==="Laboratoires").length},
+  {name:"CTF", key:"CTF", count:entries.filter(e=>e.context==="CTF").length}
 ];
 const filters = [
   {key:"platform", label:"Plateforme", values:platforms},
   {key:"category", label:"Domaine", values:categories},
+  ...(competitions.length?[{key:"competition",label:"Compétition",values:competitions}]:[]),
   ...(difficulties.length?[{key:"difficulty",label:"Difficulté",values:difficulties}]:[]),
   ...(systems.length?[{key:"os",label:"Système",values:systems}]:[])
 ];
@@ -54,6 +61,7 @@ const filters = [
         <div class="wu-stats" aria-label="Contenu des write-ups">
           <span><strong>{sections[1].count}</strong> challenges</span>
           <span><strong>{sections[2].count}</strong> laboratoires</span>
+          {sections[3].count>0&&<span><strong>{sections[3].count}</strong> challenges CTF</span>}
           <span><strong>{platforms.length}</strong> plateformes</span>
           <span><strong>{categories.length}</strong> domaines</span>
         </div>
@@ -97,15 +105,15 @@ const filters = [
         <div class="wu-grid">
           {entries.map(entry=>(
             <a class="wu-card" href={entry.href} data-wu-entry
-               data-wu-searchable={[entry.title,entry.summary,entry.platform,entry.section,entry.category,entry.difficulty,entry.os,entry.service,...entry.tags,...entry.tools].join(" ")}
+               data-wu-searchable={[entry.title,entry.summary,entry.platform,entry.section,entry.category,entry.difficulty,entry.os,entry.service,entry.competition,entry.challengeCategory,...entry.tags,...entry.tools].join(" ")}
                data-wu-category={entry.category} data-wu-platform={entry.platform} data-wu-section={entry.section}
-               data-wu-difficulty={entry.difficulty} data-wu-os={entry.os}>
+               data-wu-difficulty={entry.difficulty} data-wu-os={entry.os} data-wu-competition={entry.competition} data-wu-context={entry.context}>
               <div class="wu-card-top">
-                <span class="wu-card-platform">{entry.platform}</span>
+                <span class="wu-card-platform">{entry.competition || entry.platform}</span>
                 <time datetime={entry.date.toISOString()}>{formatDate(entry.date)}</time>
               </div>
               <div class="wu-card-badges">
-                <span class="wu-kind">{entry.section}</span>
+                <span class="wu-kind">{entry.context==="CTF"?"CTF · "+(entry.challengeCategory||"Challenge"):entry.section}</span>
                 <span class="wu-domain">{entry.category}</span>
               </div>
               <h2>{entry.title}</h2>
@@ -123,7 +131,7 @@ const filters = [
         </div>
                   </Fragment>
         )}
-        {entries.length===0&&<div class="wu-empty-static"><h2>Les write-ups seront publiés ici.</h2><p>Cette rubrique repart de zéro. Je prépare une nouvelle collection de labs et de challenges, avec une publication manuelle après vérification du contenu et des captures.</p></div>}
+        {entries.length===0&&<div class="wu-empty-static"><h2>Les write-ups seront publiés ici.</h2><p>Cette rubrique repart de zéro. Je prépare une nouvelle collection de labs et de challenges, lorsque leur propriété publish sera activée dans Obsidian.</p></div>}
         <div class="wu-no-results" data-wu-empty hidden><h2>Aucun résultat</h2><p>Essaie un autre mot-clé ou change les filtres.</p></div>
       </section>
     </div>
@@ -139,14 +147,14 @@ const filters = [
     const reset=root.querySelector<HTMLButtonElement>("[data-wu-reset]");
     const chips=Array.from(root.querySelectorAll<HTMLButtonElement>("[data-wu-filter]"));
     const tabs=Array.from(root.querySelectorAll<HTMLButtonElement>(".wu-section-tab[data-wu-section]"));
-    const active:Record<string,string>={section:"",platform:"",category:"",difficulty:"",os:""};
+    const active:Record<string,string>={section:"",platform:"",category:"",difficulty:"",os:"",competition:""};
     const clean=(s:string)=>s.normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase().trim();
     const apply=()=>{
       const term=clean(search?.value||"");
       let count=0;
       cards.forEach(card=>{
         const match=(!term||clean(card.dataset.wuSearchable||"").includes(term))&&
-          Object.entries(active).every(([key,value])=>!value||card.dataset["wu"+key.charAt(0).toUpperCase()+key.slice(1)]===value);
+          Object.entries(active).every(([key,value])=>!value||(key==="section"&&value==="CTF"?card.dataset.wuContext==="CTF":card.dataset["wu"+key.charAt(0).toUpperCase()+key.slice(1)]===value));
         card.hidden=!match;
         if(match)count++;
       });
@@ -176,6 +184,7 @@ const filters = [
     const initialSection=(params.get("type")||"").toLowerCase();
     if(["lab","labs","laboratoires"].includes(initialSection))select("section","Laboratoires");
     else if(["challenge","challenges"].includes(initialSection))select("section","Challenges");
+    else if(["ctf","competition"].includes(initialSection))select("section","CTF");
     document.addEventListener("keydown",event=>{
       if(event.key!=="/"||event.altKey||event.ctrlKey||event.metaKey)return;
       const element=event.target as HTMLElement|null;

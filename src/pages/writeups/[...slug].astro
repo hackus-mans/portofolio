@@ -32,7 +32,10 @@ const toc = headings.filter(heading => heading.depth === 2 || heading.depth === 
     ...(entry.data.section ? [{ label: "Type", value: entry.data.section === "LABs" ? "Laboratoire" : entry.data.section === "Challenges" ? "Challenge" : entry.data.section }] : []),
     ...(entry.data.service ? [{ label: "Service / technologie", value: entry.data.service }] : []),
     ...(entry.data.os ? [{ label: "Système", value: entry.data.os }] : []),
-    ...(entry.data.tools?.length ? [{ label: "Outils", value: entry.data.tools.join(" · ") }] : [])
+    ...(entry.data.tools?.length ? [{ label: "Outils", value: entry.data.tools.join(" · ") }] : []),
+    ...(entry.data.competitionName ? [{ label: "Compétition CTF", value: entry.data.competitionName }] : []),
+    ...(entry.data.challengeCategory ? [{ label: "Catégorie du challenge", value: entry.data.challengeCategory }] : []),
+    ...(entry.data.activity ? [{ label: "Activité", value: entry.data.activity }] : [])
   ]}
 >
   <Content />

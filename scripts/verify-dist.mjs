@@ -8,7 +8,7 @@ const required=[
  "projects/lumina-academy/index.html","projects/mcp-automation/index.html",
  "projects/labs-ctf/index.html","writeups/index.html","labs/index.html",
  "notes/index.html","roadmap/index.html","journal/index.html",
- "ctf/index.html","certifications/index.html","contact/index.html"
+ "ctf/index.html","homelab/index.html","certifications/index.html","contact/index.html"
 ];
 const bad=[];
 for(const rel of required){if(!fs.existsSync(path.join(root,rel)))bad.push("Route missing: "+rel)}
