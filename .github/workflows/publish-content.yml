@@ -6,7 +6,7 @@ on:
         description: Type de publication
         required: true
         type: choice
-        options: [notes, labs, writeups]
+        options: [notes, labs]
         default: notes
       title:
         description: Titre
