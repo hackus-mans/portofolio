@@ -5,6 +5,7 @@ import "../styles/editorial.css";
 import { site } from "../config";
 import EditorialNav from "../components/EditorialNav.astro";
 import EditorialFooter from "../components/EditorialFooter.astro";
+import ArticleLightbox from "../components/ArticleLightbox.astro";
 
 
 
@@ -58,6 +59,7 @@ const schema = {
     <a class="ed-skip" href="#main-content">Aller au contenu</a>
     <EditorialNav />
     <slot />
+    <ArticleLightbox />
     <EditorialFooter />
   </body>
 </html>

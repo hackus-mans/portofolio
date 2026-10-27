@@ -15,6 +15,13 @@ for(const rel of required){if(!fs.existsSync(path.join(root,rel)))bad.push("Rout
 const walk=dir=>fs.readdirSync(dir,{withFileTypes:true}).flatMap(v=>v.isDirectory()?walk(path.join(dir,v.name)):[path.join(dir,v.name)]);
 const htmls=walk(root).filter(f=>f.endsWith(".html"));
 for(const file of htmls){
+ const relative=path.relative(root,file).split(path.sep).join("/");
+ if(/^(writeups|ctf|homelab)\/.+\/index\.html$/.test(relative)){
+   const markup=fs.readFileSync(file,"utf8");
+   for(const marker of ["data-shade-image-viewer","data-image-expanded","data-image-close","data-image-next"]){
+     if(!markup.includes(marker))bad.push(relative+": article screenshot viewer missing "+marker);
+   }
+ }
  const content=fs.readFileSync(file,"utf8");
  for(const [,uri] of content.matchAll(/\b(?:href|src)="([^"]+)"/g)){
   if(!uri.startsWith(base))continue;

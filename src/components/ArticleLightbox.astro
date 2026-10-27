@@ -1,0 +1,125 @@
+---
+import "../styles/article-lightbox.css";
+---
+<!-- SHADE screenshot viewer. Images and captions remain in their original Markdown. -->
+<dialog class="shade-image-viewer" data-shade-image-viewer aria-label="Visionneuse d'images">
+  <div class="shade-image-viewer__panel">
+    <header class="shade-image-viewer__top">
+      <div class="shade-image-viewer__heading">
+        <span class="shade-image-viewer__kicker">SHADE / CAPTURE</span>
+        <span data-image-counter aria-live="polite"></span>
+      </div>
+      <button type="button" class="shade-image-viewer__close" data-image-close aria-label="Fermer la visionneuse" title="Fermer (Échap)">✕</button>
+    </header>
+    <div class="shade-image-viewer__stage" data-image-stage>
+      <button type="button" class="shade-image-viewer__nav shade-image-viewer__prev" data-image-prev aria-label="Capture précédente" title="Précédente (←)">‹</button>
+      <figure class="shade-image-viewer__figure">
+        <img data-image-expanded alt="" />
+        <figcaption data-image-caption></figcaption>
+      </figure>
+      <button type="button" class="shade-image-viewer__nav shade-image-viewer__next" data-image-next aria-label="Capture suivante" title="Suivante (→)">›</button>
+    </div>
+    <footer class="shade-image-viewer__footer">
+      <span>Échap ou clic en dehors de l'image pour fermer</span>
+      <span>← → pour naviguer</span>
+    </footer>
+  </div>
+</dialog>
+<script>
+  const viewer = document.querySelector<HTMLDialogElement>("[data-shade-image-viewer]");
+  if (viewer && !viewer.dataset.initialized) {
+    viewer.dataset.initialized = "true";
+    // Exclude site decorations; only rendered Markdown body images are interactive.
+    const images = Array.from(
+      document.querySelectorAll<HTMLImageElement>(".article-layout .prose img, .shade-reading img")
+    ).filter((img) => img.getAttribute("src") && !img.closest("[data-no-lightbox]"));
+    const displayed = viewer.querySelector<HTMLImageElement>("[data-image-expanded]");
+    const caption = viewer.querySelector<HTMLElement>("[data-image-caption]");
+    const counter = viewer.querySelector<HTMLElement>("[data-image-counter]");
+    const previous = viewer.querySelector<HTMLButtonElement>("[data-image-prev]");
+    const next = viewer.querySelector<HTMLButtonElement>("[data-image-next]");
+    const close = viewer.querySelector<HTMLButtonElement>("[data-image-close]");
+    const stage = viewer.querySelector<HTMLElement>("[data-image-stage]");
+    let current = 0;
+    let originalFocus: HTMLElement | null = null;
+    let swipeStart: { x: number; y: number } | null = null;
+
+    const show = (index: number) => {
+      if (!images.length || !displayed) return;
+      current = (index + images.length) % images.length;
+      const source = images[current];
+      displayed.src = source.src;
+      displayed.alt = source.alt || "Capture du write-up";
+      const description = source.closest("figure")?.querySelector("figcaption")?.textContent?.trim()
+        || source.alt?.trim() || "Capture " + (current + 1);
+      if (caption) caption.textContent = description;
+      if (counter) counter.textContent = (current + 1) + " / " + images.length;
+      if (previous) previous.disabled = images.length < 2;
+      if (next) next.disabled = images.length < 2;
+    };
+
+    const open = (index: number, trigger: HTMLElement) => {
+      originalFocus = trigger;
+      show(index);
+      if (!viewer.open) viewer.showModal();
+    };
+
+    images.forEach((image, index) => {
+      const ancestor = image.closest<HTMLAnchorElement>("a");
+      if (ancestor) {
+        // Do not override a Markdown link to a different page.
+        const href = ancestor.getAttribute("href") || "";
+        if (!/\.(?:png|jpe?g|gif|webp|avif|svg)(?:[?#]|$)/i.test(href)) return;
+        ancestor.classList.add("shade-image-trigger");
+        ancestor.setAttribute("aria-label", "Agrandir l'image : " + (image.alt || (index + 1)));
+        ancestor.addEventListener("click", (event) => {
+          if (event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
+          event.preventDefault();
+          open(index, ancestor);
+        });
+        return;
+      }
+      if (image.closest("button")) return;
+      const trigger = document.createElement("button");
+      trigger.type = "button";
+      trigger.className = "shade-image-trigger";
+      trigger.title = "Cliquer pour agrandir";
+      trigger.setAttribute("aria-label", "Agrandir l'image : " + (image.alt || "capture " + (index + 1)));
+      image.parentNode?.insertBefore(trigger, image);
+      trigger.appendChild(image);
+      trigger.addEventListener("click", () => open(index, trigger));
+    });
+
+    previous?.addEventListener("click", () => show(current - 1));
+    next?.addEventListener("click", () => show(current + 1));
+    close?.addEventListener("click", () => viewer.close());
+    viewer.addEventListener("click", (event) => {
+      if (event.target === viewer) viewer.close();
+    });
+    viewer.addEventListener("keydown", (event) => {
+      if (event.key === "ArrowLeft") {
+        event.preventDefault();
+        show(current - 1);
+      } else if (event.key === "ArrowRight") {
+        event.preventDefault();
+        show(current + 1);
+      }
+      // Escape closes the native modal.
+    });
+    stage?.addEventListener("touchstart", (event) => {
+      if (event.touches.length === 1) swipeStart = { x: event.touches[0].clientX, y: event.touches[0].clientY };
+    }, { passive: true });
+    stage?.addEventListener("touchend", (event) => {
+      if (!swipeStart || !event.changedTouches.length) return;
+      const dx = event.changedTouches[0].clientX - swipeStart.x;
+      const dy = event.changedTouches[0].clientY - swipeStart.y;
+      swipeStart = null;
+      if (Math.abs(dx) > 65 && Math.abs(dx) > Math.abs(dy) * 1.4) show(current + (dx < 0 ? 1 : -1));
+    }, { passive: true });
+    viewer.addEventListener("close", () => {
+      displayed?.removeAttribute("src");
+      originalFocus?.focus();
+      originalFocus = null;
+    });
+  }
+</script>
