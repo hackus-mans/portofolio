@@ -1,7 +1,7 @@
 ---
 title: "DEMO-ARENA-2026"
 summary: "Compétition CTF — consulter les challenges et write-ups publiés."
-publishedAt: "2026-10-25"
+publishedAt: "2026-10-27"
 tags: []
 status: "published"
 generated: true
