@@ -70,7 +70,34 @@ jobs:
         run: |
           set -euo pipefail
           base="https://hackus-mans.github.io/portofolio"
-          for path in "/" "/writeups/" "/writeups/obsidian/responder-8a77bd0b2a/" "/writeups/obsidian/three-df84494374/"; do
+          # Read the currently published catalogue; never require a private/retracted article.
+          curl --fail --location --silent --show-error --retry 3 "$base/writeups/" -o /tmp/shade-catalogue.html
+          python3 - <<'PY' > /tmp/shade-published-paths.txt
+          from html.parser import HTMLParser
+          from urllib.parse import urlparse
+          class Cards(HTMLParser):
+              def __init__(self):
+                  super().__init__()
+                  self.routes = set()
+              def handle_starttag(self, tag, attrs):
+                  if tag != "a":
+                      return
+                  a = dict(attrs)
+                  if "wu-card" not in a.get("class", "").split():
+                      return
+                  path = urlparse(a.get("href", "")).path
+                  if path.startswith("/portofolio/writeups/") and path.endswith("/"):
+                      self.routes.add(path[len("/portofolio"):])
+          parser = Cards()
+          with open("/tmp/shade-catalogue.html", encoding="utf-8") as file:
+              parser.feed(file.read())
+          print("\n".join(sorted(parser.routes)))
+          PY
+          paths=("/" "/writeups/" "/ctf/" "/homelab/" "/projects/" "/about/" "/contact/" "/journal/" "/notes/")
+          while IFS= read -r article; do
+            if [[ -n "$article" ]]; then paths+=("$article"); fi
+          done < /tmp/shade-published-paths.txt
+          for path in "${paths[@]}"; do
             url="$base$path"
             echo "Checking $url"
             success=0
