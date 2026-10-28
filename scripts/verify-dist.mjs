@@ -34,6 +34,18 @@ for(const file of htmls){
   if(!fs.existsSync(target)&&!fs.existsSync(alt))bad.push(path.relative(root,file)+": broken internal asset/link "+uri);
  }
 }
+const library=fs.readFileSync(path.join(root,"writeups/index.html"),"utf8");
+const writeupContentRoot=path.resolve("src/content/writeups");
+if(fs.existsSync(writeupContentRoot)){
+ const publishedFiles=walk(writeupContentRoot).filter(file=>file.endsWith(".md"));
+ for(const file of publishedFiles){
+   const relative=path.relative(writeupContentRoot,file).split(path.sep).join("/");
+   const slug=relative.replace(/\.md$/i,"").replace(/\/index$/i,"");
+   const destination=path.join(root,"writeups",slug,"index.html");
+   if(!fs.existsSync(destination))bad.push("Published write-up route missing: "+slug);
+   if(!library.includes(base+"writeups/"+slug+"/"))bad.push("Write-up missing from catalogue: "+slug);
+ }
+}
 const home=fs.readFileSync(path.join(root,"index.html"),"utf8");
 for(const marker of ["NAKORE","CyberMind X","Compétitions","Ma méthode","Dernières publications techniques","Lire mes writeups"]){
  if(!home.includes(marker))bad.push("Homepage marker missing: "+marker);

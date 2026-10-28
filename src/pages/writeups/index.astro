@@ -190,7 +190,7 @@ const filters = [
     else if(["challenge","challenges"].includes(initialSection))select("section","Challenges");
     else if(["ctf","competition"].includes(initialSection))select("section","CTF");
     const requestedCompetition=params.get("competition");
-    if(requestedCompetition && competitions.includes(requestedCompetition)) select("competition",requestedCompetition);
+    if(requestedCompetition && chips.some(chip => chip.dataset.wuFilter==="competition" && chip.dataset.wuValue===requestedCompetition)) select("competition",requestedCompetition);
     document.addEventListener("keydown",event=>{
       if(event.key!=="/"||event.altKey||event.ctrlKey||event.metaKey)return;
       const element=event.target as HTMLElement|null;
