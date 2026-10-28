@@ -19,8 +19,40 @@ jobs:
         with:
           ref: main
       - uses: withastro/action@v6
-  deploy:
+  browser-qa:
+    name: Browser QA — all pages and mobile
     needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: npm install --no-save --ignore-scripts playwright-core
+      - run: npm run build
+      - run: node scripts/verify-dist.mjs
+      - name: Exercise site in Chromium
+        shell: bash
+        run: |
+          set -euo pipefail
+          export CHROME_BIN="$(command -v google-chrome || command -v chromium || command -v chromium-browser)"
+          npm run preview -- --host 127.0.0.1 --port 4173 > /tmp/shade-preview.log 2>&1 &
+          for i in $(seq 1 45); do
+            if curl -fsS http://127.0.0.1:4173/portofolio/ -o /dev/null; then break; fi
+            sleep 1
+          done
+          node scripts/qa-visual.mjs
+      - name: Save SHADE browser screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: shade-full-browser-qa
+          path: qa/screenshots/
+          if-no-files-found: ignore
+  deploy:
+    needs: [build, browser-qa]
     runs-on: ubuntu-latest
     environment:
       name: github-pages

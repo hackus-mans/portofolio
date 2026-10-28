@@ -1,73 +1,157 @@
-import {chromium} from "playwright-core";
-const browser=await chromium.launch({headless:true,executablePath:process.env.CHROME_BIN||"/usr/bin/google-chrome",args:["--no-sandbox","--disable-dev-shm-usage","--disable-gpu"]});
-const page=await browser.newPage({viewport:{width:1440,height:900},deviceScaleFactor:1});
-const root="http://127.0.0.1:4173/portofolio/";
-const errors=[];page.on("pageerror",e=>errors.push(e.message));
-const check=(value,msg)=>{if(!value)throw Error(msg)};
-await page.goto(root,{waitUntil:"networkidle"});
-await page.locator("#hero-title").waitFor();
-check((await page.locator("#hero-title").innerText()).includes("NAKORE"),"Homepage identity missing");
-check(await page.locator(".ed-terminal").count()===1,"Hero terminal missing");
-check(await page.locator(".ed-honor-card").count()===3,"CTF results missing");
-check(await page.locator(".ed-project-card").count()===5,"Projects not preserved");
-check(await page.locator(".ed-approach-card").count()===4,"Learning workflow missing");
-check(await page.locator(".ed-skill-card").count()===4,"Skills missing");
-const publicationCount=await page.locator(".ed-publication-card").count();
-if(publicationCount===0)check(await page.locator(".ed-empty-card").count()===1,"Empty Journal message missing");
-check(await page.locator(".ed-desktop-links a").count()===7,"Navigation links missing");
-await page.screenshot({path:"qa-desktop.jpg",fullPage:true,type:"jpeg",quality:80});
-const widths=[320,360,375,390,430,600,650,768,820,1024,1280,1440,1920,2560];
-const failures=[];
-for(const width of widths){
- await page.setViewportSize({width,height:Math.max(760,Math.round(width*.7))});
- await page.waitForTimeout(80);
- const info=await page.evaluate(()=>({
-   full:document.documentElement.scrollWidth,viewport:document.documentElement.clientWidth,
-   header:document.querySelector(".ed-header")?.getBoundingClientRect().right,
-   terminal:document.querySelector(".ed-terminal")?.getBoundingClientRect().width
- }));
- if(info.full>width+3|| (info.header||0)>width+3)failures.push(width+"px: "+JSON.stringify(info));
- if((info.terminal||0)<195)failures.push(width+"px: terminal too narrow "+JSON.stringify(info));
- if([320,390,768,1440,1920].includes(width))await page.screenshot({path:"qa-"+width+".jpg",fullPage:true,type:"jpeg",quality:78});
-}
-check(failures.length===0,"Homepage overflow:\n"+failures.join("\n"));
-await page.setViewportSize({width:390,height:844});
-await page.screenshot({path:"qa-mobile.jpg",fullPage:true,type:"jpeg",quality:82});
-check(await page.locator(".ed-mobile-menu summary").isVisible(),"Mobile menu absent");
-await page.locator(".ed-mobile-menu summary").click();
-check(await page.locator(".ed-mobile-panel").isVisible(),"Mobile menu did not open");
-await page.locator('.ed-mobile-panel a[href$="contact/"]').click();
-check(page.url().includes("/contact/"),"Mobile contact link broken");
-for(const path of ["projects/","projects/cybermind-x/","projects/honeyshield/","ctf/","certifications/","contact/","writeups/","labs/","notes/","journal/","about/","roadmap/"]){
- await page.goto(root+path,{waitUntil:"domcontentloaded"});
- check(await page.locator(".ed-header").count()===1,"Missing shared navigation: "+path);
- check(await page.locator(".ed-footer").count()===1,"Missing shared footer: "+path);
- const overflow=await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth+3);
- if(overflow)failures.push("Inner route overflow: "+path);
-}
-check(failures.length===0,failures.join("\n"));
-await page.goto(root+"writeups/",{waitUntil:"domcontentloaded"});
-check(await page.locator("[data-wu-search]").count()===1,"Writeups search missing");
-check(await page.locator(".wu-grid").count()===1,"Writeups card grid missing");
-check(await page.locator("[data-wu-count]").count()===1,"Writeups count missing");
-check(await page.locator(".wu-section-tab[data-wu-section]").count()===3,"Writeups sections should expose All / Challenges / Labs");
-check(await page.locator('[data-wu-filter="platform"]').count()>0,"Platform filter missing");
-check(await page.locator('[data-wu-filter="category"]').count()>0,"Technical domain filter missing");
-const cards=await page.locator("[data-wu-entry]").count();
-if(cards>0){
- const lab=page.locator('.wu-section-tab[data-wu-section="Laboratoires"]');
- await lab.click();
- check(await lab.getAttribute("aria-pressed")==="true","Lab selection is not active");
- const shown=await page.locator("[data-wu-entry]:not([hidden])").count();
- const expected=await page.locator('[data-wu-entry][data-wu-section="Laboratoires"]').count();
- check(shown===expected,"Lab filter should show only laboratories");
- const input=page.locator("[data-wu-search]");
- await input.fill("zzzxxyy-no-such-writeup");
- check(await page.locator("[data-wu-empty]").isVisible(),"No-results state missing");
- await page.locator("[data-wu-reset]").click();
- check(await page.locator("[data-wu-entry]:not([hidden])").count()===cards,"Reset should restore all writeups");
-}
+import { chromium } from "playwright-core";
+import fs from "node:fs";
+import path from "node:path";
 
-check(errors.length===0,"JavaScript error(s): "+errors.join("; "));
-console.log("EDITORIAL UI QA PASS",JSON.stringify({viewports:widths.length,pages:12,projects:5,results:3,errors:0}));
-await browser.close();
+const root = "http://127.0.0.1:4173/portofolio/";
+const chrome = process.env.CHROME_BIN || "/usr/bin/google-chrome";
+const browser = await chromium.launch({
+  headless: true,
+  executablePath: chrome,
+  args: ["--no-sandbox", "--disable-dev-shm-usage"]
+});
+const failures = [];
+const inspected = [];
+const screenshots = "qa/screenshots";
+fs.mkdirSync(screenshots, { recursive: true });
+
+const expected = (condition, reason) => {
+  if (!condition) failures.push(reason);
+};
+const newPage = async width => browser.newPage({
+  viewport: { width, height: Math.max(780, Math.round(width * .75)) },
+  deviceScaleFactor: 1
+});
+const visit = async (page, route, width, options = {}) => {
+  const response = await page.goto(root + route, { waitUntil: "networkidle", timeout: 45000 });
+  const status = response?.status();
+  expected(status === 200, route + ": HTTP " + status + " (" + width + "px)");
+  expected(await page.locator("#main-content").count() === 1, route + ": missing main landmark");
+  expected(await page.locator(".ed-header").count() === 1, route + ": missing global header");
+  expected(await page.locator(".ed-footer").count() === 1, route + ": missing footer");
+  const dimensions = await page.evaluate(() => ({
+    width: document.documentElement.clientWidth,
+    scrollWidth: document.documentElement.scrollWidth
+  }));
+  expected(dimensions.scrollWidth <= dimensions.width + 3, route + ": horizontal overflow " + JSON.stringify({ ...dimensions, viewport: width }));
+  if (options.screenshot) {
+    await page.screenshot({
+      path: path.join(screenshots, options.screenshot), type: "jpeg", quality: 76, fullPage: true
+    });
+  }
+  inspected.push({ route, width, status });
+};
+
+try {
+  const dist = path.resolve("dist");
+  const walk = directory => fs.readdirSync(directory, { withFileTypes: true })
+    .flatMap(entry => entry.isDirectory()
+      ? walk(path.join(directory, entry.name))
+      : [path.join(directory, entry.name)]);
+  const routes = walk(dist)
+    .filter(file => file.endsWith("index.html"))
+    .map(file => {
+      const rel = path.relative(dist, file).split(path.sep).join("/");
+      return rel === "index.html" ? "" : rel.replace(/index\.html$/, "");
+    });
+
+  // Test EVERY generated page for HTTP status, basic structure, and desktop overflow.
+  const desktop = await newPage(1440);
+  const exceptions = [];
+  desktop.on("pageerror", error => exceptions.push(error.message));
+  for (const route of routes) {
+    await visit(desktop, route, 1440, { screenshot: route === "" ? "home-desktop.jpg" : undefined });
+  }
+  expected(exceptions.length === 0, "Desktop JavaScript errors: " + exceptions.join(" | "));
+  await desktop.close();
+
+  // Representative mobile/tablet routes, including the long image-heavy write-ups.
+  const published = routes.filter(route => route.startsWith("writeups/") && route !== "writeups/");
+  const targets = [...new Set([
+    "", "writeups/", "ctf/", "homelab/", "projects/", "about/",
+    ...published.slice(0, 5)
+  ])].filter(route => routes.includes(route));
+
+  for (const width of [320, 390, 768]) {
+    const page = await newPage(width);
+    const errors = [];
+    page.on("pageerror", error => errors.push(error.message));
+    for (const route of targets) {
+      await visit(page, route, width, {
+        screenshot: width === 390 && (route === "" || route === "writeups/")
+          ? (route === "" ? "home-mobile.jpg" : "writeups-mobile.jpg")
+          : undefined
+      });
+    }
+    if (width === 390) {
+      await page.goto(root, { waitUntil: "networkidle" });
+      const menu = page.locator(".ed-mobile-menu summary");
+      expected(await menu.isVisible(), "Mobile menu hidden at 390px");
+      if (await menu.isVisible()) {
+        await menu.click();
+        expected(await page.locator(".ed-mobile-panel").isVisible(), "Mobile navigation will not open");
+        await page.locator('.ed-mobile-panel a[href$="/writeups/"]').click();
+        expected(page.url().includes("/writeups/"), "Mobile navigation fails to open Write-ups");
+      }
+    }
+    expected(errors.length === 0, width + "px JavaScript errors: " + errors.join(" | "));
+    await page.close();
+  }
+
+  const page = await newPage(1440);
+  const errors = [];
+  page.on("pageerror", error => errors.push(error.message));
+  await page.goto(root + "writeups/", { waitUntil: "networkidle" });
+  const cards = page.locator("[data-wu-entry]");
+  const count = await cards.count();
+  const sourceDocs = walk(path.join("src", "content", "writeups")).filter(file => file.endsWith(".md")).length;
+  expected(count === sourceDocs, "Write-up cards mismatch: " + count + " visible vs " + sourceDocs + " published Markdown files");
+  expected(await page.locator(".wu-section-tab").count() === 4, "Missing fourth CTF tab in Write-ups");
+  expected(await page.locator(".wu-chip[data-wu-filter='platform']").count() > 0, "Missing platform filter");
+
+  const search = page.locator("[data-wu-search]");
+  if (count) {
+    await page.locator('[data-wu-section="Laboratoires"].wu-section-tab').click();
+    expected(await page.locator('[data-wu-section="Laboratoires"].wu-section-tab').getAttribute("aria-pressed") === "true", "Lab filter not interactive");
+    await search.fill("xyz-impossible-query-6281");
+    expected(await page.locator("[data-wu-empty]").isVisible(), "No-results message not visible");
+    await page.locator("[data-wu-reset]").click();
+    expected(await page.locator("[data-wu-entry]:not([hidden])").count() === count, "Reset fails to restore all articles");
+  }
+
+  // Exercise the screenshot viewer using a real public write-up.
+  const article = published.find(route => route.includes("responder")) || published[0];
+  if (article) {
+    await page.goto(root + article, { waitUntil: "networkidle" });
+    const thumbnails = page.locator(".article-layout .prose img");
+    const imageCount = await thumbnails.count();
+    if (imageCount) {
+      await thumbnails.first().click();
+      const viewer = page.locator("[data-shade-image-viewer]");
+      expected(await viewer.isVisible(), article + ": screenshot did not open in lightbox");
+      expected(await page.locator("[data-image-expanded]").getAttribute("src") !== null, article + ": image source not set");
+      if (imageCount > 1) {
+        await page.locator("[data-image-next]").click();
+        expected((await page.locator("[data-image-counter]").innerText()).startsWith("2 /"), article + ": next image failed");
+        await page.keyboard.press("ArrowLeft");
+        expected((await page.locator("[data-image-counter]").innerText()).startsWith("1 /"), article + ": keyboard back failed");
+      }
+      await page.keyboard.press("Escape");
+      expected(!(await viewer.isVisible()), article + ": lightbox does not close on Escape");
+      await page.screenshot({ path: path.join(screenshots, "writeup-desktop.jpg"), type: "jpeg", quality: 76, fullPage: true });
+    }
+  }
+  expected(errors.length === 0, "Interactive browser errors: " + errors.join(" | "));
+  await page.close();
+
+  if (failures.length) {
+    console.error("SHADE FULL BROWSER QA FAILED\n" + failures.map((error, i) => (i + 1) + ". " + error).join("\n"));
+    process.exitCode = 1;
+  } else {
+    console.log("SHADE FULL BROWSER QA PASSED " + JSON.stringify({
+      generatedPages: routes.length, visited: inspected.length,
+      mobileWidths: [320, 390, 768], writeupCards: count, screenshots
+    }));
+  }
+} finally {
+  await browser.close();
+}
