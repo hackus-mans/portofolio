@@ -27,3 +27,33 @@ jobs:
     steps:
       - id: deployment
         uses: actions/deploy-pages@v5
+
+  verify-live:
+    name: Verify public SHADE URLs
+    needs: deploy
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check GitHub Pages over HTTPS
+        shell: bash
+        run: |
+          set -euo pipefail
+          base="https://hackus-mans.github.io/portofolio"
+          for path in "/" "/writeups/" "/writeups/obsidian/responder-8a77bd0b2a/" "/writeups/obsidian/three-df84494374/"; do
+            url="$base$path"
+            echo "Checking $url"
+            success=0
+            for attempt in {1..6}; do
+              status=$(curl --location --silent --show-error --output /tmp/shade-response.html --write-out '%{http_code}' --max-time 25 "$url") || status=000
+              echo "Attempt $attempt: HTTP $status"
+              if [[ "$status" == "200" ]]; then
+                success=1
+                break
+              fi
+              sleep 5
+            done
+            if [[ "$success" != 1 ]]; then
+              echo "::error::Public page not responding with HTTP 200: $url"
+              exit 1
+            fi
+          done
+          echo "All public SHADE URLs responded with HTTP 200."
