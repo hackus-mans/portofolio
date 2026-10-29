@@ -1,5 +1,5 @@
 ---
-title: "Sans titre"
+title: "Ignitiion"
 summary: "Ignition est une machine Linux de difficulté Very Easy sur Hack The Box, axée sur les bases de l'énumération des applications Web et la résolution des noms de domaine virtuels (Virtual Hosts). La machine héberge un serveur Web Nginx nécessitant une c…"
 publishedAt: "2026-10-28"
 tags: ["HTTP", "Sécurité Web", "linux", "Nmap", "Curl"]
