@@ -1,7 +1,7 @@
 ---
 title: "Pièce jointe"
 summary: "Compétition CTF — consulter les challenges et write-ups publiés."
-publishedAt: "2026-11-15"
+publishedAt: "2026-11-18"
 tags: []
 status: "published"
 generated: true
